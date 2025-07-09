@@ -1,2 +1,0 @@
-# 仅对 .pages.dev 生效
-https://*.pages.dev/* /price.txt 200 Host=*.pages.dev

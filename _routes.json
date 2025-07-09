@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "path": "/*",
+      "if": "(http.host matches '.*\\.pages\\.dev$')",
+      "headers": {
+        "x-rewrite-url": "/price.txt"
+      }
+    }
+  ]
+}
