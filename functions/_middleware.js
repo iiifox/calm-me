@@ -4,27 +4,44 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const isPagesDev = url.hostname.endsWith('.pages.dev');
   
-  // 阻止直接访问敏感文件
-  if (url.pathname.includes('price.txt')) {
-    return new Response('Not Found', { status: 404 });
-  }
-  
-  // 仅处理.pages.dev的根请求
+  // 处理根路径请求
   if (isPagesDev && url.pathname === '/') {
-    // 从非公开位置获取文件
-    const fileResponse = await fetch(new URL('/private/price.txt', url));
+    try {
+      // 获取文件内容（从非公开位置）
+      const fileUrl = new URL('/private/price.txt', url.origin);
+      const fileResponse = await fetch(fileUrl);
+      
+      // 如果文件存在则返回
+      if (fileResponse.status === 200) {
+        const headers = new Headers(fileResponse.headers);
+        headers.set('Cache-Control', 'no-store');
+        headers.set('Content-Type', 'text/plain');
+        
+        return new Response(fileResponse.body, {
+          status: 200,
+          headers
+        });
+      }
+    } catch (e) {
+      // 文件获取失败处理
+    }
     
-    // 克隆响应并添加安全头
-    const headers = new Headers(fileResponse.headers);
-    headers.set('Cache-Control', 'no-store');
-    headers.set('Content-Security-Policy', "default-src 'none'");
-    
-    return new Response(fileResponse.body, {
-      status: 200,
-      headers
+    // 文件不存在时返回404
+    return new Response('Price data not found', { 
+      status: 404,
+      headers: { 'Content-Type': 'text/plain' }
     });
   }
   
-  // 其他请求正常处理
+  // 阻止直接访问私有文件
+  if (url.pathname.includes('/private/') || 
+      url.pathname.includes('price.txt')) {
+    return new Response('Access denied', { 
+      status: 403,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+  }
+  
+  // 6其他请求正常处理
   return next();
 }
