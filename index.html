@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时价格展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #343a40;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #212529;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .price-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .price-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: #4263eb;
+            color: white;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .price-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 10px 0;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .channel {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .value {
+            font-weight: 700;
+            color: #e64980;
+        }
+
+        .action-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .copy-btn {
+            background: #40c057;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(64, 192, 87, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: #37b24d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(64, 192, 87, 0.4);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #40c057;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #495057;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #e03131;
+            background: #fff5f5;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .price-container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>实时价格展示</h1>
+        <p class="subtitle">数据来源: price.txt | 最后更新时间: <span id="updateTime"></span></p>
+    </header>
+
+    <div class="price-container" id="priceContainer">
+        <div class="loading">
+            <p>正在加载价格数据...</p>
+        </div>
+    </div>
+
+    <div class="action-section">
+        <button class="copy-btn" id="copyRatesBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+            </svg>
+            复制费率
+        </button>
+    </div>
+</div>
+
+<div class="notification" id="notification">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+    </svg>
+    <span>费率已成功复制到剪贴板！</span>
+</div>
+
+<script>
+    // 从price.txt获取数据
+    async function fetchPriceData() {
+        try {
+            const response = await fetch('price.txt');
+            if (!response.ok) {
+                throw new Error(`获取数据失败: ${response.status}`);
+            }
+            const text = await response.text();
+            return parsePriceData(text);
+        } catch (error) {
+            console.error('获取价格数据时出错:', error);
+            showError('获取价格数据失败，请检查price.txt文件是否存在');
+            return null;
+        }
+    }
+
+    // 解析price.txt数据
+    function parsePriceData(text) {
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+        const timeBlocks = [];
+        let currentBlock = null;
+        let date = '';
+
+        for (const line of lines) {
+            // 检测日期行
+            if (/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(line)) {
+                date = line;
+                continue;
+            }
+
+            // 检测时间块开始
+            const timeMatch = line.match(/(\d{1,2}:\d{2})\s*开始/);
+            if (timeMatch) {
+                if (currentBlock) timeBlocks.push(currentBlock);
+                currentBlock = { time: timeMatch[1], rates: [] };
+                continue;
+            }
+
+            // 检测费率行
+            if (currentBlock && line.includes('，')) {
+                const ratePairs = line.split('，');
+                for (const pair of ratePairs) {
+                    const match = pair.match(/([^\d]+)(\d+)/);
+                    if (match) {
+                        const channel = match[1].trim();
+                        const value = match[2].trim();
+                        currentBlock.rates.push({ channel, value });
+                    }
+                }
+            }
+        }
+
+        // 添加第一个时间块（00:00）
+        if (lines.length > 0 && !timeMatch) {
+            const firstRateLine = lines.find(line => line.includes('，'));
+            if (firstRateLine) {
+                const ratePairs = firstRateLine.split('，');
+                const firstBlock = { time: '00:00', rates: [] };
+                for (const pair of ratePairs) {
+                    const match = pair.match(/([^\d]+)(\d+)/);
+                    if (match) {
+                        const channel = match[1].trim();
+                        const value = match[2].trim();
+                        firstBlock.rates.push({ channel, value });
+                    }
+                }
+                timeBlocks.unshift(firstBlock);
+            }
+        }
+
+        // 添加最后一个区块
+        if (currentBlock) timeBlocks.push(currentBlock);
+
+        return { date, timeBlocks };
+    }
+
+    // 渲染价格卡片
+    function renderPriceCards(data) {
+        const container = document.getElementById('priceContainer');
+        container.innerHTML = '';
+
+        if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
+            container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
+            return;
+        }
+
+        // 更新页面上的日期
+        if (data.date) {
+            document.getElementById('updateTime').textContent = data.date;
+        }
+
+        // 渲染每个时间块
+        data.timeBlocks.forEach(block => {
+            const card = document.createElement('div');
+            card.className = 'price-card';
+
+            const header = document.createElement('div');
+            header.className = 'card-header';
+            header.innerHTML = `<span>${block.time} 费率</span>`;
+
+            const content = document.createElement('div');
+            content.className = 'card-content';
+
+            // 创建两列布局
+            const column1 = document.createElement('div');
+            const column2 = document.createElement('div');
+
+            // 将费率分成两列
+            const half = Math.ceil(block.rates.length / 2);
+            block.rates.slice(0, half).forEach(rate => {
+                column1.appendChild(createRateItem(rate.channel, rate.value));
+            });
+
+            block.rates.slice(half).forEach(rate => {
+                column2.appendChild(createRateItem(rate.channel, rate.value));
+            });
+
+            content.appendChild(column1);
+            content.appendChild(column2);
+
+            card.appendChild(header);
+            card.appendChild(content);
+            container.appendChild(card);
+        });
+    }
+
+    // 创建费率项
+    function createRateItem(channel, value) {
+        const item = document.createElement('div');
+        item.className = 'price-item';
+        item.innerHTML = `
+                <span class="channel">${channel}</span>
+                <span class="value">${value}</span>
+            `;
+        return item;
+    }
+
+    // 显示错误信息
+    function showError(message) {
+        const container = document.getElementById('priceContainer');
+        container.innerHTML = `<div class="error">${message}</div>`;
+    }
+
+    // 复制费率到剪贴板
+    async function copyRatesToClipboard(data) {
+        if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
+            showNotification('没有可复制的费率数据', true);
+            return;
+        }
+
+        // 收集所有渠道
+        const allChannels = new Set();
+        data.timeBlocks.forEach(block => {
+            block.rates.forEach(rate => {
+                allChannels.add(rate.channel);
+            });
+        });
+
+        // 构建费率字符串
+        let ratesString = '';
+
+        // 对于每个渠道
+        for (const channel of allChannels) {
+            // 对于每个时间块
+            data.timeBlocks.forEach(block => {
+                // 查找该渠道在该时间块的费率
+                const rate = block.rates.find(r => r.channel === channel);
+                if (rate) {
+                    // 格式化费率值 (905 -> 0.905, 91 -> 0.91)
+                    let formattedValue = rate.value;
+                    if (formattedValue.length === 2) {
+                        formattedValue = `0.${formattedValue}`;
+                    } else if (formattedValue.length === 3) {
+                        formattedValue = `0.${formattedValue.slice(0, 1)}${formattedValue.slice(1)}`;
+                    }
+
+                    ratesString += `${channel}${block.time}/${formattedValue}\n`;
+                }
+            });
+        }
+
+        // 添加微信的特殊处理（在所有时间块都显示）
+        if (allChannels.has('微信')) {
+            data.timeBlocks.forEach(block => {
+                const wechatRate = data.timeBlocks[0].rates.find(r => r.channel === '微信');
+                if (wechatRate) {
+                    let formattedValue = wechatRate.value;
+                    if (formattedValue.length === 2) {
+                        formattedValue = `0.${formattedValue}`;
+                    }
+                    ratesString += `微信${block.time}/${formattedValue}\n`;
+                }
+            });
+        }
+
+        // 复制到剪贴板
+        try {
+            await navigator.clipboard.writeText(ratesString);
+            showNotification('费率已成功复制到剪贴板！');
+        } catch (err) {
+            console.error('复制失败:', err);
+            showNotification('复制失败，请手动复制', true);
+        }
+    }
+
+    // 显示通知
+    function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        notification.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="${isError ? 'M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z' : 'M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z'}"/>
+                </svg>
+                <span>${message}</span>
+            `;
+        notification.style.background = isError ? '#e03131' : '#40c057';
+        notification.classList.add('show');
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', async () => {
+        const priceData = await fetchPriceData();
+        if (priceData) {
+            renderPriceCards(priceData);
+
+            // 添加复制按钮事件
+            document.getElementById('copyRatesBtn').addEventListener('click', () => {
+                copyRatesToClipboard(priceData);
+            });
+        }
+    });
+</script>
+</body>
+</html>
