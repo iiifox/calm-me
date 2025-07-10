@@ -3,248 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>实时价格展示</title>
+    <title>价格费率展示</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; margin-bottom: 10px; font-size: 2rem; }
+        .subtitle { color: #7f8c8d; font-size: 1.1rem; }
+        .price-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .price-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
+        .price-card:hover { transform: translateY(-5px); }
+        .card-header { background: #3498db; color: white; padding: 15px; font-size: 1.2rem; font-weight: 600; }
+        .card-content { padding: 20px; }
+        .price-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .price-item:last-child { border-bottom: none; }
+        .channel { font-weight: 600; color: #2c3e50; }
+        .value { font-weight: 700; color: #e74c3c; }
+        .notes-section { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .notes-section h2 { color: #2c3e50; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #3498db; }
+        .notes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .note-item { background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db; }
+        .note-item strong { color: #e74c3c; }
+        .action-section { text-align: center; padding: 20px; }
+        .copy-btn { background: #2ecc71; color: white; border: none; padding: 14px 32px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(46,204,113,0.3); font-weight: 600; }
+        .copy-btn:hover { background: #27ae60; transform: translateY(-3px); box-shadow: 0 7px 15px rgba(46,204,113,0.4); }
+        .copy-btn:active { transform: translateY(0); }
+        .notification { position: fixed; top: 20px; right: 20px; background: #2ecc71; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; z-index: 1000; }
+        .notification.show { display: block; animation: fadeInOut 3s forwards; }
+        .notification.error { background: #e74c3c; }
+        .error { text-align: center; padding: 40px; color: #e74c3c; background: #fff5f5; border-radius: 10px; margin: 20px 0; }
+        .refresh-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: 600; }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
-
-        body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            color: #343a40;
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #212529;
-            margin-bottom: 10px;
-            font-size: 2.2rem;
-        }
-
-        .subtitle {
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
-
-        .price-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .price-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-
-        .price-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            background: #4263eb;
-            color: white;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-content {
-            padding: 20px;
-        }
-
-        .price-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 10px 0;
-        }
-
-        .price-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: #f8f9fa;
-            border-radius: 6px;
-        }
-
-        .channel {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .value {
-            font-weight: 700;
-            color: #e64980;
-        }
-
-        .action-section {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .copy-btn {
-            background: #40c057;
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(64, 192, 87, 0.3);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-
-        .copy-btn:hover {
-            background: #37b24d;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(64, 192, 87, 0.4);
-        }
-
-        .copy-btn:active {
-            transform: translateY(0);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #40c057;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.4s ease;
-        }
-
-        .notification.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2rem;
-            color: #495057;
-        }
-
-        .error {
-            text-align: center;
-            padding: 40px;
-            color: #e03131;
-            background: #fff5f5;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
         @media (max-width: 768px) {
-            .price-container {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
+            .price-container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>实时价格展示</h1>
-        <p class="subtitle">数据来源: price.txt | 最后更新时间: <span id="updateTime"></span></p>
+        <h1>价格费率展示</h1>
+        <p class="subtitle">数据来源: price.txt | 最后更新时间: <span id="updateTime">-</span></p>
     </header>
 
     <div class="price-container" id="priceContainer">
-        <div class="loading">
-            <p>正在加载价格数据...</p>
+        <p>正在加载数据...</p>
+    </div>
+
+    <div class="notes-section">
+        <h2>微信费率</h2>
+        <div class="notes-grid" id="notesGrid">
+            <!-- 这里会动态生成附加说明内容 -->
         </div>
     </div>
 
     <div class="action-section">
-        <button class="copy-btn" id="copyRatesBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-            </svg>
-            复制费率
-        </button>
+        <button class="copy-btn" id="copyRatesBtn">复制费率</button>
     </div>
 </div>
 
-<div class="notification" id="notification">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
-    </svg>
-    <span>费率已成功复制到剪贴板！</span>
-</div>
+<div class="notification" id="notification">费率已复制到剪贴板</div>
 
 <script>
     // 从price.txt获取数据
     async function fetchPriceData() {
         try {
             const response = await fetch('price.txt');
-            if (!response.ok) {
-                throw new Error(`获取数据失败: ${response.status}`);
-            }
-            const text = await response.text();
-            return parsePriceData(text);
+            if (!response.ok) throw new Error('文件访问失败');
+            return await response.text();
         } catch (error) {
-            console.error('获取价格数据时出错:', error);
-            showError('获取价格数据失败，请检查price.txt文件是否存在');
+            showError('获取数据失败: ' + error.message);
             return null;
         }
     }
 
     // 解析price.txt数据
     function parsePriceData(text) {
-        const lines = text.split('\n').filter(line => line.trim() !== '');
+        const lines = text.split('\n');
         const timeBlocks = [];
         let currentBlock = null;
         let date = '';
+        let notes = [];
+        let emptyLineCount = 0;
+        let isNotesSection = false;
 
         for (const line of lines) {
+            const trimmedLine = line.trim();
+
+            // 检测空行
+            if (trimmedLine === '') {
+                emptyLineCount++;
+                // 当遇到两个连续空行时，开始解析附加说明
+                if (emptyLineCount >= 2) {
+                    isNotesSection = true;
+                }
+                continue;
+            } else {
+                emptyLineCount = 0;
+            }
+
+            // 如果已进入附加说明部分
+            if (isNotesSection) {
+                notes.push(trimmedLine);
+                continue;
+            }
+
             // 检测日期行
-            if (/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(line)) {
-                date = line;
+            if (/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(trimmedLine)) {
+                date = trimmedLine;
                 continue;
             }
 
             // 检测时间块开始
-            const timeMatch = line.match(/(\d{1,2}:\d{2})\s*开始/);
+            const timeMatch = trimmedLine.match(/(\d{1,2}:\d{2})\s*开始/);
             if (timeMatch) {
                 if (currentBlock) timeBlocks.push(currentBlock);
                 currentBlock = { time: timeMatch[1], rates: [] };
@@ -252,47 +130,37 @@
             }
 
             // 检测费率行
-            if (currentBlock && line.includes('，')) {
-                const ratePairs = line.split('，');
+            if (trimmedLine.includes('，') || trimmedLine.includes(',')) {
+                const ratePairs = trimmedLine.split(/[，,]/);
                 for (const pair of ratePairs) {
                     const match = pair.match(/([^\d]+)(\d+)/);
                     if (match) {
                         const channel = match[1].trim();
                         const value = match[2].trim();
-                        currentBlock.rates.push({ channel, value });
-                    }
-                }
-            }
-        }
 
-        // 添加第一个时间块（00:00）
-        if (lines.length > 0 && !timeMatch) {
-            const firstRateLine = lines.find(line => line.includes('，'));
-            if (firstRateLine) {
-                const ratePairs = firstRateLine.split('，');
-                const firstBlock = { time: '00:00', rates: [] };
-                for (const pair of ratePairs) {
-                    const match = pair.match(/([^\d]+)(\d+)/);
-                    if (match) {
-                        const channel = match[1].trim();
-                        const value = match[2].trim();
-                        firstBlock.rates.push({ channel, value });
+                        if (currentBlock) {
+                            currentBlock.rates.push({ channel, value });
+                        } else {
+                            // 处理第一个时间块 (00:00)
+                            if (timeBlocks.length === 0) {
+                                timeBlocks.push({ time: '00:00', rates: [] });
+                            }
+                            timeBlocks[0].rates.push({ channel, value });
+                        }
                     }
                 }
-                timeBlocks.unshift(firstBlock);
             }
         }
 
         // 添加最后一个区块
         if (currentBlock) timeBlocks.push(currentBlock);
 
-        return { date, timeBlocks };
+        return { date, timeBlocks, notes };
     }
 
     // 渲染价格卡片
     function renderPriceCards(data) {
         const container = document.getElementById('priceContainer');
-        container.innerHTML = '';
 
         if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
             container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
@@ -304,6 +172,8 @@
             document.getElementById('updateTime').textContent = data.date;
         }
 
+        container.innerHTML = '';
+
         // 渲染每个时间块
         data.timeBlocks.forEach(block => {
             const card = document.createElement('div');
@@ -311,27 +181,29 @@
 
             const header = document.createElement('div');
             header.className = 'card-header';
-            header.innerHTML = `<span>${block.time} 费率</span>`;
+            header.textContent = `${block.time} 费率`;
 
             const content = document.createElement('div');
             content.className = 'card-content';
 
-            // 创建两列布局
-            const column1 = document.createElement('div');
-            const column2 = document.createElement('div');
+            // 添加费率项
+            block.rates.forEach(rate => {
+                const item = document.createElement('div');
+                item.className = 'price-item';
 
-            // 将费率分成两列
-            const half = Math.ceil(block.rates.length / 2);
-            block.rates.slice(0, half).forEach(rate => {
-                column1.appendChild(createRateItem(rate.channel, rate.value));
+                // 格式化费率值 (如9显示为0.9，91显示为0.91，915显示为0.915)
+                let formattedValue = rate.value;
+                if (formattedValue.length === 1) {
+                    formattedValue = `0.${formattedValue}`;
+                } else if (formattedValue.length === 2) {
+                    formattedValue = `0.${formattedValue}`;
+                } else if (formattedValue.length === 3) {
+                    formattedValue = `0.${formattedValue}`;
+                }
+
+                item.innerHTML = `<span class="channel">${rate.channel}</span><span class="value">${formattedValue}</span>`;
+                content.appendChild(item);
             });
-
-            block.rates.slice(half).forEach(rate => {
-                column2.appendChild(createRateItem(rate.channel, rate.value));
-            });
-
-            content.appendChild(column1);
-            content.appendChild(column2);
 
             card.appendChild(header);
             card.appendChild(content);
@@ -339,29 +211,63 @@
         });
     }
 
-    // 创建费率项
-    function createRateItem(channel, value) {
-        const item = document.createElement('div');
-        item.className = 'price-item';
-        item.innerHTML = `
-                <span class="channel">${channel}</span>
-                <span class="value">${value}</span>
-            `;
-        return item;
+    // 渲染附加说明（修正版）
+    function renderNotes(notes) {
+        const container = document.getElementById('notesGrid');
+        container.innerHTML = '';
+
+        if (!notes || notes.length === 0) {
+            container.innerHTML = '<p>暂无附加说明</p>';
+            return;
+        }
+
+        notes.forEach(note => {
+            // 精确匹配费率数字（如 "90.5"），排除其他数字（如 "200"）
+            const discountMatch = note.match(/(\d+\.\d+|\d+(?=\s*$))/);
+            const discount = discountMatch ? discountMatch[0] : '';
+
+            const noteItem = document.createElement('div');
+            noteItem.className = 'note-item';
+
+            if (discount) {
+                // 仅高亮最后一个数字（费率部分）
+                const lastSpaceIndex = note.lastIndexOf(' ');
+                const prefix = note.substring(0, lastSpaceIndex + 1);
+                const suffix = note.substring(lastSpaceIndex + 1);
+
+                noteItem.innerHTML = `${prefix}<strong>${suffix}</strong>`;
+            } else {
+                noteItem.textContent = note;
+            }
+
+            container.appendChild(noteItem);
+        });
     }
 
     // 显示错误信息
     function showError(message) {
         const container = document.getElementById('priceContainer');
-        container.innerHTML = `<div class="error">${message}</div>`;
+        container.innerHTML = `
+                <div class="error">
+                    <p>${message}</p>
+                    <p>请确保price.txt文件存在于项目根目录</p>
+                    <button class="refresh-btn" onclick="location.reload()">刷新页面</button>
+                </div>
+            `;
+
+        // 禁用复制按钮
+        document.getElementById('copyRatesBtn').disabled = true;
     }
 
     // 复制费率到剪贴板
     async function copyRatesToClipboard(data) {
         if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
-            showNotification('没有可复制的费率数据', true);
+            showNotification('没有可复制的数据', true);
             return;
         }
+
+        // 构建费率字符串
+        let ratesString = '';
 
         // 收集所有渠道
         const allChannels = new Set();
@@ -371,9 +277,6 @@
             });
         });
 
-        // 构建费率字符串
-        let ratesString = '';
-
         // 对于每个渠道
         for (const channel of allChannels) {
             // 对于每个时间块
@@ -381,12 +284,14 @@
                 // 查找该渠道在该时间块的费率
                 const rate = block.rates.find(r => r.channel === channel);
                 if (rate) {
-                    // 格式化费率值 (905 -> 0.905, 91 -> 0.91)
+                    // 格式化费率值
                     let formattedValue = rate.value;
-                    if (formattedValue.length === 2) {
+                    if (formattedValue.length === 1) {
+                        formattedValue = `0.${formattedValue}`;
+                    } else if (formattedValue.length === 2) {
                         formattedValue = `0.${formattedValue}`;
                     } else if (formattedValue.length === 3) {
-                        formattedValue = `0.${formattedValue.slice(0, 1)}${formattedValue.slice(1)}`;
+                        formattedValue = `0.${formattedValue}`;
                     }
 
                     ratesString += `${channel}${block.time}/${formattedValue}\n`;
@@ -394,57 +299,42 @@
             });
         }
 
-        // 添加微信的特殊处理（在所有时间块都显示）
-        if (allChannels.has('微信')) {
-            data.timeBlocks.forEach(block => {
-                const wechatRate = data.timeBlocks[0].rates.find(r => r.channel === '微信');
-                if (wechatRate) {
-                    let formattedValue = wechatRate.value;
-                    if (formattedValue.length === 2) {
-                        formattedValue = `0.${formattedValue}`;
-                    }
-                    ratesString += `微信${block.time}/${formattedValue}\n`;
-                }
-            });
-        }
-
         // 复制到剪贴板
         try {
             await navigator.clipboard.writeText(ratesString);
-            showNotification('费率已成功复制到剪贴板！');
+            showNotification('费率已复制到剪贴板');
         } catch (err) {
-            console.error('复制失败:', err);
-            showNotification('复制失败，请手动复制', true);
+            showNotification('复制失败: ' + err.message, true);
         }
     }
 
     // 显示通知
     function showNotification(message, isError = false) {
         const notification = document.getElementById('notification');
-        notification.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="${isError ? 'M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z' : 'M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z'}"/>
-                </svg>
-                <span>${message}</span>
-            `;
-        notification.style.background = isError ? '#e03131' : '#40c057';
-        notification.classList.add('show');
+        notification.textContent = message;
+        notification.className = isError ? 'notification error show' : 'notification show';
 
         setTimeout(() => {
             notification.classList.remove('show');
         }, 3000);
     }
 
-    // 页面加载完成后执行
+    // 页面初始化
     document.addEventListener('DOMContentLoaded', async () => {
-        const priceData = await fetchPriceData();
-        if (priceData) {
+        const rawData = await fetchPriceData();
+        if (!rawData) return;
+
+        try {
+            const priceData = parsePriceData(rawData);
             renderPriceCards(priceData);
+            renderNotes(priceData.notes); // 动态渲染附加说明
 
             // 添加复制按钮事件
             document.getElementById('copyRatesBtn').addEventListener('click', () => {
                 copyRatesToClipboard(priceData);
             });
+        } catch (error) {
+            showError('解析数据失败: ' + error.message);
         }
     });
 </script>
