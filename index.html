@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>价格费率展示</title>
+    <title>calm-luei</title>
     <style>
         * {
             margin: 0;
@@ -228,7 +228,7 @@
     </div>
 
     <div class="notes-section">
-        <h2>附加说明</h2>
+        <h2>微信折扣</h2>
         <div class="notes-grid" id="notesGrid">
             <!-- 动态生成内容 -->
         </div>
@@ -463,14 +463,14 @@
         document.getElementById('copyRatesBtn').disabled = true;
     }
 
-    // 复制费率到剪贴板
+    // 复制费率到剪贴板（修正版，确保所有时间点都有费率）
     async function copyRatesToClipboard(data) {
         if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
             showNotification('没有可复制的数据', true);
             return;
         }
 
-        let ratesString = '';
+        // 获取所有渠道（去重）
         const allChannels = new Set();
         data.timeBlocks.forEach(block => {
             block.rates.forEach(rate => {
@@ -478,14 +478,94 @@
             });
         });
 
-        for (const channel of allChannels) {
-            data.timeBlocks.forEach(block => {
-                const rate = block.rates.find(r => r.channel === channel);
-                if (rate) {
-                    ratesString += `${channel}${block.time}/${formatRateValue(rate.value)}\n`;
+        // 为每个渠道创建费率时间线
+        const channelTimelines = {};
+        allChannels.forEach(channel => {
+            channelTimelines[channel] = [];
+        });
+
+        // 初始化第一个时间块（00:00）作为基准
+        const baseRates = {};
+        data.timeBlocks[0].rates.forEach(rate => {
+            baseRates[rate.channel] = rate.value;
+            channelTimelines[rate.channel].push({
+                time: data.timeBlocks[0].time,
+                value: rate.value
+            });
+        });
+
+        // 确保所有渠道都在第一个时间块有值
+        allChannels.forEach(channel => {
+            if (!(channel in baseRates)) {
+                baseRates[channel] = null; // 标记为需要继承
+            }
+        });
+
+        // 处理后续时间块（修正继承逻辑）
+        for (let i = 1; i < data.timeBlocks.length; i++) {
+            const block = data.timeBlocks[i];
+            const currentRates = {};
+
+            // 首先继承前一个时间块的费率
+            Object.assign(currentRates, baseRates);
+
+            // 更新当前时间块有变化的费率
+            block.rates.forEach(rate => {
+                currentRates[rate.channel] = rate.value;
+            });
+
+            // 更新所有渠道的费率时间线
+            allChannels.forEach(channel => {
+                // 如果该渠道在当前时间块有明确费率
+                const explicitRate = block.rates.find(r => r.channel === channel);
+                if (explicitRate) {
+                    channelTimelines[channel].push({
+                        time: block.time,
+                        value: explicitRate.value
+                    });
+                }
+                // 否则继承前一个费率（确保每个时间块都有记录）
+                else if (baseRates[channel] !== null) {
+                    channelTimelines[channel].push({
+                        time: block.time,
+                        value: baseRates[channel]
+                    });
                 }
             });
+
+            // 更新基准费率
+            Object.assign(baseRates, currentRates);
         }
+
+        // 构建复制字符串
+        let ratesString = '';
+        allChannels.forEach(channel => {
+            // 确保每个时间块都有记录
+            const timeline = channelTimelines[channel];
+            const allTimes = data.timeBlocks.map(block => block.time);
+
+            // 填充缺失的时间点
+            const completeTimeline = [];
+            let lastValue = null;
+
+            allTimes.forEach(time => {
+                const entry = timeline.find(e => e.time === time);
+                if (entry) {
+                    completeTimeline.push(entry);
+                    lastValue = entry.value;
+                } else if (lastValue !== null) {
+                    completeTimeline.push({
+                        time: time,
+                        value: lastValue
+                    });
+                }
+            });
+
+            // 添加到输出字符串
+            completeTimeline.forEach(entry => {
+                ratesString += `${channel}${entry.time}/${formatRateValue(entry.value)}\n`;
+            });
+        });
 
         try {
             await navigator.clipboard.writeText(ratesString);
