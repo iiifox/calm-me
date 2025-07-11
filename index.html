@@ -266,8 +266,8 @@
         if (num === 0) {
             return 0;
         }
-        if (num === 100) {
-            return 1;
+        if (num >= 100) {
+            return num / 100;
         }
         return parseFloat('0.' + num.toString());
     }
