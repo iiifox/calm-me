@@ -262,13 +262,14 @@
 
     // 辅助函数：格式化费率值（9 → 0.9，91 → 0.91，915 → 0.915）
     function formatRateValue(value) {
-        if (value === 0) {
+        const num = Number(value);
+        if (num === 0) {
             return 0;
         }
-        if (value === 100) {
+        if (num === 100) {
             return 1;
         }
-        return parseFloat('0.' + value.toString());
+        return parseFloat('0.' + num.toString());
     }
 
     // 从price.txt获取数据
