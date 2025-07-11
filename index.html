@@ -265,6 +265,9 @@
         if (value === 0) {
             return 0;
         }
+        if (value === 100) {
+            return 1;
+        }
         return parseFloat('0.' + value.toString());
     }
 
