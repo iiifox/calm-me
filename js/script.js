@@ -4,16 +4,16 @@ function formatTime(timeStr) {
 	return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
 }
 
-// 辅助函数：格式化费率值
+// 辅助函数：格式化费率值 映射到区间 {0}∪[0.2,2)
 function formatRateValue(value) {
 	const num = Number(value);
-	if (num === 0) {
-		return 0;
-	}
-	if (num >= 100 && num < 200) {
-		return num / 100;
-	}
-	return parseFloat('0.' + num.toString());
+    if (num < 0 || num > 2000) return "Error";
+    if (num === 0) return 0;
+    
+    if (num < 2) return num;
+    if (num < 20) return parseFloat((num / 10).toFixed(3));
+    if (num < 200) return parseFloat((num / 100).toFixed(3));
+    return parseFloat((num / 1000).toFixed(3));
 }
 
 // 从price.txt获取数据
@@ -44,7 +44,7 @@ function parsePriceData(text) {
 		// 检测空行
 		if (trimmedLine === '') {
 			emptyLineCount++;
-			if (emptyLineCount >= 2) {
+			if (emptyLineCount >= 3) {
 				isNotesSection = true;
 			}
 			continue;
@@ -78,17 +78,17 @@ function parsePriceData(text) {
 		// 返利平台费率行。可能会一行多个费率用逗号分隔
 		const ratePairs = trimmedLine.split(/[，,]/);
 		for (const pair of ratePairs) {
-			const match = pair.match(/(.*[^\d\s])\s*(\d+)$/);
+			const match = pair.match(/(.*?)\s*(\d*\.?\d+)$/);
 			if (match) {
 				const channel = match[1].trim();
-				const value = match[2].trim();
-
+				const value = formatRateValue(match[2].trim());
 				if (currentBlock) {
 					currentBlock.rates.push({channel, value});
 				} else {
 					if (timeBlocks.length === 0) {
 						timeBlocks.push({time: '00:00', rates: []});
 					}
+					// 00:00调价下的渠道
 					timeBlocks[0].rates.push({channel, value});
 				}
 			}
@@ -149,7 +149,7 @@ function renderPriceCards(data) {
 			item.className = 'price-item';
 			item.innerHTML = `
 					<span class="channel">${rate.channel}</span>
-					<span class="value">${formatRateValue(rate.value)}</span>
+					<span class="value">${rate.value}</span>
 				`;
 			content.appendChild(item);
 		});
@@ -171,37 +171,15 @@ function renderNotes(notes) {
 	}
 
 	notes.forEach(note => {
-		let prefix = '';
-		let discount = '';
-		const lastSpaceIndex = note.lastIndexOf(' ');
-
-		// 有空格时，按最后一个空格分割，并去除 prefix 末尾的空格
-		if (lastSpaceIndex !== -1) {
-			prefix = note.substring(0, lastSpaceIndex).trimEnd();
-			discount = note.substring(lastSpaceIndex + 1);
-		} else {
-			// 无空格时，尝试提取末尾数字
-			const numMatch = note.match(/\d+$/);
-			if (numMatch) {
-				discount = numMatch[0];
-				prefix = note.substring(0, note.length - discount.length);
-			} else {
-				// 无数字时，整个作为 prefix
-				prefix = note;
-			}
-		}
-
-		const noteItem = document.createElement('div');
-		noteItem.className = 'note-item';
-
-		// 如果有 discount，加粗显示，并补一个空格
-		if (discount) {
+		const match = note.match(/(.*?)\s*(\d*\.?\d+)$/);
+		if (match) {
+			const prefix = match[1].trim();
+			const discount = formatRateValue(match[2].trim());
+			const noteItem = document.createElement('div');
+			noteItem.className = 'note-item';
 			noteItem.innerHTML = `${prefix} <strong>${discount}</strong>`;
-		} else {
-			noteItem.textContent = prefix;
+			container.appendChild(noteItem);
 		}
-
-		container.appendChild(noteItem);
 	});
 }
 
@@ -219,7 +197,7 @@ function showError(message) {
 	document.getElementById('copyRatesBtn').disabled = true;
 }
 
-// 复制费率到剪贴板（修正版，确保所有时间点都有费率）
+// 复制费率到剪贴板
 async function copyRatesToClipboard(data) {
 	if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
 		showNotification('没有可复制的数据', true);
@@ -241,16 +219,11 @@ async function copyRatesToClipboard(data) {
 	});
 
 	// 初始化所有渠道在第一个时间块（默认为0）
-	const allTimes = data.timeBlocks.map(block => block.time);
 	allChannels.forEach(channel => {
-		// 检查该渠道是否在第一个时间块存在
-		const existsInFirstBlock = data.timeBlocks[0].rates.some(rate => rate.channel === channel);
-
+		const rate = data.timeBlocks[0].rates.find(r => r.channel === channel);
 		channelTimelines[channel].push({
-			time: data.timeBlocks[0].time,
-			value: existsInFirstBlock ?
-				data.timeBlocks[0].rates.find(rate => rate.channel === channel).value :
-				'0' // 不存在则设为0
+		  time: data.timeBlocks[0].time,
+		  value: rate ? rate.value : '0'
 		});
 	});
 
@@ -261,7 +234,6 @@ async function copyRatesToClipboard(data) {
 		allChannels.forEach(channel => {
 			// 检查该渠道在当前时间块是否有明确费率
 			const explicitRate = block.rates.find(rate => rate.channel === channel);
-
 			if (explicitRate) {
 				// 有明确费率，使用新值
 				channelTimelines[channel].push({
@@ -283,7 +255,7 @@ async function copyRatesToClipboard(data) {
 	let ratesString = '';
 	allChannels.forEach(channel => {
 		channelTimelines[channel].forEach(entry => {
-			ratesString += `${channel}${entry.time}/${formatRateValue(entry.value)}\n`;
+			ratesString += `${channel}${entry.time}/${entry.value}\n`;
 		});
 	});
 
