@@ -411,7 +411,7 @@
             if (trimmedLine.includes('，') || trimmedLine.includes(',')) {
                 const ratePairs = trimmedLine.split(/[，,]/);
                 for (const pair of ratePairs) {
-                    const match = pair.match(/([^\d]+)(\d+)/);
+                    const match = pair.match(/(.*[^\d\s])\s*(\d+)$/);
                     if (match) {
                         const channel = match[1].trim();
                         const value = match[2].trim();
