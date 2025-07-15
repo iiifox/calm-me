@@ -407,26 +407,24 @@
                 continue;
             }
 
-            // 检测费率行
-            if (trimmedLine.includes('，') || trimmedLine.includes(',')) {
-                const ratePairs = trimmedLine.split(/[，,]/);
-                for (const pair of ratePairs) {
-                    const match = pair.match(/(.*[^\d\s])\s*(\d+)$/);
-                    if (match) {
-                        const channel = match[1].trim();
-                        const value = match[2].trim();
-
-                        if (currentBlock) {
-                            currentBlock.rates.push({channel, value});
-                        } else {
-                            if (timeBlocks.length === 0) {
-                                timeBlocks.push({time: '00:00', rates: []});
-                            }
-                            timeBlocks[0].rates.push({channel, value});
-                        }
-                    }
-                }
-            }
+    		// 返利平台费率行。可能会一行多个费率用逗号分隔
+    		const ratePairs = trimmedLine.split(/[，,]/);
+    		for (const pair of ratePairs) {
+    			const match = pair.match(/(.*[^\d\s])\s*(\d+)$/);
+    			if (match) {
+    				const channel = match[1].trim();
+    				const value = match[2].trim();
+    
+    				if (currentBlock) {
+    					currentBlock.rates.push({channel, value});
+    				} else {
+    					if (timeBlocks.length === 0) {
+    						timeBlocks.push({time: '00:00', rates: []});
+    					}
+    					timeBlocks[0].rates.push({channel, value});
+    				}
+    			}
+    		}
         }
 
         // 添加最后一个区块
