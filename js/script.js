@@ -53,7 +53,7 @@ function parsePriceData(text) {
 		}
 
 		// 昨日费率 超链接形式
-		if (/^(https?:\/\/)?([^:/?#\s]+)(:\d+)?([^?#\s]*)(\?[^#\s]*)?(#\S*)?/.test(trimmedLine)) {
+		if (/^https?:\/\/[^\s/?#]+\.[^\s/?#]+(\/[^\s?#]*)?(\?[^#\s]*)?(#\S*)?/i.test(trimmedLine)) {
 			document.getElementById("yesterday").href = trimmedLine;
 			continue;
 		}
