@@ -1,6 +1,6 @@
-https://bad10562.calm-luei.pages.dev/
+https://9d42ba8e.calm-luei.pages.dev/
 
-2025/7/24
+2025/7/25
 
 渠道A   895
 渠道B   90
@@ -12,30 +12,8 @@ https://bad10562.calm-luei.pages.dev/
 渠道VA   90
 渠道H     89
 
-10:25开始
-渠道A   905
-渠道B   91
-渠道C   915
-渠道D   92
-渠道E   925
-渠道TA  97
-渠道TB  98
-渠道VA   90
-渠道H     90
 
-12:30开始
-渠道A   91
-渠道B   915
-渠道C   92
-渠道D   925
-渠道E   93
-渠道TA  97
-渠道TB  98
-渠道VA   90
-渠道H     1
-
-
-
+微信不变
 
 点券10起   82.5
 qb10起  85.5
