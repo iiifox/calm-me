@@ -162,25 +162,24 @@ function renderPriceCards(data) {
 // 配置对象：包含名称映射和多行悬停提示
 const discountConfig = {
     nameMap: {
+        "1起": "1起",
         "点券10起": "10起",
         "点券10可限": "10可限",
+        "qb10起": "qb10起",
+        "qb10起可限": "qb10可限",
         "点券50起": "50起",
+        "qb50起": "qb50起",
 
         "点券100": "100起",
         "点券100起": "100起",
 
         "点券100极速": "100极速",
-        "单笔200极速": "200极速",
-        "点券可限": "可限",
-        "心悦卡100/200": "心悦卡",
-        // 其他保持不变的项
-        "1起": "1起",
-        "qb10起": "qb10起",
-        "qb10起可限": "qb10可限",
-        "qb50起": "qb50起",
         "qb100起": "qb100起",
         "单笔200": "单笔200",
-        "可限极速": "可限极速"
+        "单笔200极速": "200极速",
+        "点券可限": "可限",
+        "可限极速": "可限极速",
+        "心悦卡100/200": "心悦卡"
     },
     tooltipMap: {
         "1起": "腾讯综合无限充(1起)\n腾讯端游无限充(1起)\n腾讯QB无限充(1起)",
@@ -267,22 +266,15 @@ function renderNotes(notes) {
         item.tooltip = discountConfig.tooltipMap[item.newPrefix] || '';
     });
 
-    // 自定义排序顺序（使用新名称）
-    const customOrder = [
-        "1起", "10起", "10可限", "qb10起",
-        "qb10可限", "qb10可限",
-        "50起", "qb50起",
-        "100起",
-        "100极速", "qb100起",
-        "单笔200", "200极速", "可限", "可限极速", "心悦卡"
-    ];
+    // 获取顺序（直接使用 tooltipMap 的键）
+    const order = Object.keys(discountConfig.tooltipMap);
 
-    // 按自定义顺序排序
+    // 按顺序排序
     const sortedDiscounts = [];
     const otherDiscounts = [];
 
-    // 精确匹配自定义顺序（使用新名称）
-    customOrder.forEach(orderedPrefix => {
+    // 精确匹配自定义顺序
+    order.forEach(orderedPrefix => {
         const index = discountItems.findIndex(item =>
             item.newPrefix === orderedPrefix
         );
