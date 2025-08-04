@@ -159,6 +159,49 @@ function renderPriceCards(data) {
     });
 }
 
+// 配置对象：包含名称映射和多行悬停提示
+const discountConfig = {
+    nameMap: {
+        "点券10起": "10起",
+        "点券10可限": "10可限",
+        "点券50起": "50起",
+
+        "点券100": "100起",
+        "点券100起": "100起",
+
+        "点券100极速": "100极速",
+        "单笔200极速": "200极速",
+        "点券可限": "可限",
+        "心悦卡100/200": "心悦卡",
+        // 其他保持不变的项
+        "1起": "1起",
+        "qb10起": "qb10起",
+        "qb10起可限": "qb10可限",
+        "qb50起": "qb50起",
+        "qb100起": "qb100起",
+        "单笔200": "单笔200",
+        "可限极速": "可限极速"
+    },
+    tooltipMap: {
+        "1起": "腾讯综合无限充(1起)\n腾讯端游无限充(1起)\n腾讯QB无限充(1起)",
+        "10起": "腾讯综合(10起)\n腾讯端游(10起)\n腾讯综合无限充(10起)\n腾讯端游无限充(10起)",
+        "10可限": "腾讯综合(10起可限)\n腾讯端游(10起可限)",
+        "qb10起": "腾讯QB(10起)",
+        "qb10可限": "腾讯QB(10起可限)",
+        "50起": "腾讯综合(50起)\n腾讯端游(50起)",
+        "qb50起": "腾讯Q币(50起)",
+        "100起": "腾讯综合(100起)\n腾讯端游(100起)\n元梦红包(100起)",
+        "100极速": "腾讯综合(极速100起)\n腾讯端游(极速100起)",
+        "qb100起": "腾讯Q币(100起)",
+        "单笔200": "单笔200（赠送点卷）",
+        "200极速": "单笔200(极速赠送点卷)",
+        "可限": "腾讯综合(可限金额)\n腾讯端游(可限金额)",
+        "可限极速": "腾讯综合(极速可限金额)\n腾讯端游(极速可限金额)",
+        "心悦卡": "悦享卡/小黑卡(心悦100/200)"
+    }
+};
+
+// 在 renderNotes 函数中使用配置
 function renderNotes(notes) {
     const container = document.getElementById('notesGrid');
     container.innerHTML = '';
@@ -167,16 +210,6 @@ function renderNotes(notes) {
         container.innerHTML = '<p>暂无微信报价</p>';
         return;
     }
-
-    // 预定义的排序顺序
-    const customOrder = [
-        "1起", "点券10起", "点券10可限", "qb10起",
-	"qb10可限", "qb10起可限",
-        "点券50起", "qb50起", 
-	"点券100", "点券100起",
-	"点券100极速", "qb100起",
-        "单笔200", "单笔200极速", "点券可限", "可限极速", "心悦卡100/200"
-    ];
 
     // 解析所有折扣项（正确值）
     const discountItems = [];
@@ -228,14 +261,30 @@ function renderNotes(notes) {
         }
     });
 
+    // 应用名称映射和提示信息
+    discountItems.forEach(item => {
+        item.newPrefix = discountConfig.nameMap[item.prefix] || item.prefix;
+        item.tooltip = discountConfig.tooltipMap[item.newPrefix] || '';
+    });
+
+    // 自定义排序顺序（使用新名称）
+    const customOrder = [
+        "1起", "10起", "10可限", "qb10起",
+        "qb10可限", "qb10可限",
+        "50起", "qb50起",
+        "100起",
+        "100极速", "qb100起",
+        "单笔200", "200极速", "可限", "可限极速", "心悦卡"
+    ];
+
     // 按自定义顺序排序
     const sortedDiscounts = [];
     const otherDiscounts = [];
 
-    // 精确匹配自定义顺序
+    // 精确匹配自定义顺序（使用新名称）
     customOrder.forEach(orderedPrefix => {
         const index = discountItems.findIndex(item =>
-            item.prefix === orderedPrefix
+            item.newPrefix === orderedPrefix
         );
 
         if (index !== -1) {
@@ -251,7 +300,8 @@ function renderNotes(notes) {
     sortedDiscounts.forEach(item => {
         const noteItem = document.createElement('div');
         noteItem.className = 'note-item';
-        noteItem.innerHTML = `${item.prefix} <strong>${item.value}</strong>`;
+        noteItem.setAttribute('data-tooltip', item.tooltip);
+        noteItem.innerHTML = `${item.newPrefix} <strong>${item.value}</strong>`;
         container.appendChild(noteItem);
     });
 
@@ -265,7 +315,8 @@ function renderNotes(notes) {
         otherDiscounts.forEach(item => {
             const noteItem = document.createElement('div');
             noteItem.className = 'note-item extra';
-            noteItem.innerHTML = `${item.prefix} <strong>${item.value}</strong>`;
+            noteItem.setAttribute('data-tooltip', item.tooltip);
+            noteItem.innerHTML = `${item.newPrefix} <strong>${item.value}</strong>`;
             container.appendChild(noteItem);
         });
     }
