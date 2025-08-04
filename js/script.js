@@ -27,6 +27,19 @@ async function fetchPriceData() {
     }
 }
 
+// 加载配置文件
+async function fetchConfig() {
+    try {
+        const response = await fetch('config/config.json');
+        if (!response.ok) throw new Error('配置文件加载失败');
+        return await response.json();
+    } catch (error) {
+        showError('配置加载失败: ' + error.message);
+        return null;
+    }
+}
+
+
 // 解析price.txt数据（核心修改部分）
 function parsePriceData(text) {
     const lines = text.split('\n');
@@ -159,49 +172,9 @@ function renderPriceCards(data) {
     });
 }
 
-// 配置对象：包含名称映射和多行悬停提示
-const discountConfig = {
-    nameMap: {
-        "1起": "1起",
-        "点券10起": "10起",
-        "点券10可限": "10可限",
-        "qb10起": "qb10起",
-        "qb10起可限": "qb10可限",
-        "点券50起": "50起",
-        "qb50起": "qb50起",
-
-        "点券100": "100起",
-        "点券100起": "100起",
-
-        "点券100极速": "100极速",
-        "qb100起": "qb100起",
-        "单笔200": "单笔200",
-        "单笔200极速": "200极速",
-        "点券可限": "可限",
-        "可限极速": "可限极速",
-        "心悦卡100/200": "心悦卡"
-    },
-    tooltipMap: {
-        "1起": "腾讯综合无限充(1起)\n腾讯端游无限充(1起)\n腾讯QB无限充(1起)",
-        "10起": "腾讯综合(10起)\n腾讯端游(10起)\n腾讯综合无限充(10起)\n腾讯端游无限充(10起)",
-        "10可限": "腾讯综合(10起可限)\n腾讯端游(10起可限)",
-        "qb10起": "腾讯QB(10起)",
-        "qb10可限": "腾讯QB(10起可限)",
-        "50起": "腾讯综合(50起)\n腾讯端游(50起)",
-        "qb50起": "腾讯Q币(50起)",
-        "100起": "腾讯综合(100起)\n腾讯端游(100起)",
-        "100极速": "腾讯综合(极速100起)\n腾讯端游(极速100起)",
-        "qb100起": "腾讯Q币(100起)",
-        "单笔200": "单笔200（赠送点卷）",
-        "200极速": "单笔200(极速赠送点卷)",
-        "可限": "腾讯综合(可限金额)\n腾讯端游(可限金额)",
-        "可限极速": "腾讯综合(极速可限金额)\n腾讯端游(极速可限金额)",
-        "心悦卡": "悦享卡/小黑卡(心悦100/200)"
-    }
-};
 
 // 在 renderNotes 函数中使用配置
-function renderNotes(notes) {
+function renderNotes(notes,channelConfig) {
     const container = document.getElementById('notesGrid');
     container.innerHTML = '';
 
@@ -262,12 +235,12 @@ function renderNotes(notes) {
 
     // 应用名称映射和提示信息
     discountItems.forEach(item => {
-        item.newPrefix = discountConfig.nameMap[item.prefix] || item.prefix;
-        item.tooltip = discountConfig.tooltipMap[item.newPrefix] || '';
+        item.newPrefix = channelConfig.nameMap[item.prefix] || item.prefix;
+        item.tooltip = channelConfig.channelMap[item.newPrefix] || '';
     });
 
     // 获取顺序（直接使用 tooltipMap 的键）
-    const order = Object.keys(discountConfig.tooltipMap);
+    const order = Object.keys(channelConfig.channelMap);
 
     // 按顺序排序
     const sortedDiscounts = [];
@@ -408,13 +381,19 @@ function showNotification(message, isError = false) {
 
 // 页面初始化
 document.addEventListener('DOMContentLoaded', async () => {
+    // 加载配置文件
+    const config = await fetchConfig();
+    if (!config) return;
+    const channelConfig = config.channelConfig;
+
+    // 加载价格数据
     const rawData = await fetchPriceData();
     if (!rawData) return;
 
     try {
         const priceData = parsePriceData(rawData);
         renderPriceCards(priceData);
-        renderNotes(priceData.notes);
+        renderNotes(priceData.notes, channelConfig);
 
         document.getElementById('copyRatesBtn').addEventListener('click', () => {
             copyRatesToClipboard(priceData);
