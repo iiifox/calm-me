@@ -1,7 +1,7 @@
 {
   "authorization": ["z0", "z2", "labourers", "lltwuliao2"],
   "host": "ggbboo.xyz",
-  "gboChannelConfig": {
+  "channelConfig": {
     "nameMap": {
       "1起": "1起",
       "点券10起": "10起",
