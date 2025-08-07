@@ -79,7 +79,7 @@ function parsePriceData(text) {
         }
 
         // 检测时间块开始
-        const timeMatch = trimmedLine.match(/(\d{1,2}[:：]\d{2})\s*开始/);
+        const timeMatch = trimmedLine.match(/(\d{1,2}[:：]\d{2})点?\s*开始/);
         if (timeMatch) {
             // 统一替换中文冒号为英文冒号
             const normalizedTime = timeMatch[1].replace('：', ':');
