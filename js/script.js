@@ -79,10 +79,15 @@ function parsePriceData(text) {
         }
 
         // 检测时间块开始
-        const timeMatch = trimmedLine.match(/(\d{1,2}[:：]\d{2})点?\s*开始/);
+        const timeMatch = trimmedLine.match(/(\d{1,2}(?:[:：]\d{2})?)点?开始/);
         if (timeMatch) {
             // 统一替换中文冒号为英文冒号
             const normalizedTime = timeMatch[1].replace('：', ':');
+			// 如果时间字符串中没有冒号（即只有小时），则添加分钟部分
+			if (!normalizedTime.includes(':')) {
+				normalizedTime += ':00';
+			}
+			
             if (currentBlock) timeBlocks.push(currentBlock);
             currentBlock = {
                 time: normalizedTime, rates: []
