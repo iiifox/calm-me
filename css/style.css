@@ -241,18 +241,8 @@ h1 {
 }
 
 /* 响应式调整 */
-@media (max-width: 1024px) {
-    .price-container {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
-
-/* 平板设备 */
+/* 平板 大屏手机 */
 @media (max-width: 768px) {
-    .price-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
     h1 {
         font-size: 1.8rem;
     }
@@ -269,10 +259,6 @@ h1 {
 
 /* 小屏幕手机 */
 @media (max-width: 480px) {
-    .price-container {
-        grid-template-columns: 1fr;
-    }
-
     body {
         padding: 15px;
     }
@@ -296,7 +282,7 @@ h1 {
 }
 
 
-/* 在 style.css 中添加以下内容 */
+/* 鼠标悬停显示 */
 
 .note-item {
     position: relative;
