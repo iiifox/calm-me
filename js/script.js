@@ -196,8 +196,8 @@ function renderNotes(notes,channelConfig) {
         const cleanLine = line.replace(/[（(].*?[)）]/g, '').trim();
         if (!cleanLine) return;
 
-        // 尝试匹配带顿号的分隔符（如"点券可限、单笔200"）
-        if (cleanLine.includes('、')) {
+        // 尝试匹配带分隔符的格式（如"点券可限、单笔200"，"qb10起,点券100起、心悦卡100/200 865"，"点券100极速 ，qb10起可限"）
+        if (cleanLine.includes('、') || cleanLine.includes(',') || cleanLine.includes('，')) {
             // 首先提取整行的数值
             const valueMatch = cleanLine.match(/(\d+(?:\.\d+)?)\s*$/);
             if (valueMatch) {
@@ -207,7 +207,7 @@ function renderNotes(notes,channelConfig) {
                 // 移除数值部分，保留前缀部分
                 const prefixPart = cleanLine.substring(0, valueMatch.index).trim();
                 // 拆分前缀部分
-                const parts = prefixPart.split('、').map(p => p.trim());
+                const parts = prefixPart.split(/[、,，]/).map(p => p.trim());
                 // 为每个部分创建条目
                 parts.forEach(part => {
                     if (part) {
