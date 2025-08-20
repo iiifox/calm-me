@@ -193,7 +193,7 @@ function renderGbo(gbo,channelConfig) {
 
     gbo.forEach(line => {
         // 移除括号内的注释内容
-        const cleanLine = line.replace(/[（(].*?[)）]/g, '').trim();
+        const cleanLine = line.replace(/^(.*\d).*$/, '$1').replace(/(综合、端游|端游、综合)\s*/g, "点券").replace(/(\d+)\s+([^\d\s])/g, '$1$2').trim();
         if (!cleanLine) return;
 
         // 尝试匹配带分隔符的格式（如"点券可限、单笔200"，"qb10起,点券100起、心悦卡100/200 865"，"点券100极速 ，qb10起可限"）
