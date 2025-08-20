@@ -46,7 +46,7 @@ function parsePriceData(text) {
     const timeBlocks = [];
     let currentBlock = null;
     let date = '';
-    let notes = [];
+    let gbo = [];
     // 微信折扣区标志
     let isWechatSection = false;
 
@@ -62,7 +62,7 @@ function parsePriceData(text) {
 
         // 微信费率部分
         if (isWechatSection) {
-            notes.push(trimmedLine);
+            gbo.push(trimmedLine);
             continue;
         }
 
@@ -128,7 +128,7 @@ function parsePriceData(text) {
     const updateTime = `${date} ${timeBlocks[timeBlocks.length - 1].time}`
 
     return {
-        date, timeBlocks, notes, updateTime
+        date, timeBlocks, gbo, updateTime
     };
 }
 
@@ -178,12 +178,12 @@ function renderPriceCards(data) {
 }
 
 
-// 在 renderNotes 函数中使用配置
-function renderNotes(notes,channelConfig) {
-    const container = document.getElementById('notesGrid');
+// 在 renderGbo 函数中使用配置
+function renderGbo(gbo,channelConfig) {
+    const container = document.getElementById('gboGrid');
     container.innerHTML = '';
 
-    if (!notes || notes.length === 0) {
+    if (!gbo || gbo.length === 0) {
         container.innerHTML = '<p>暂无微信报价</p>';
         return;
     }
@@ -191,7 +191,7 @@ function renderNotes(notes,channelConfig) {
     // 解析所有折扣项（正确值）
     const discountItems = [];
 
-    notes.forEach(line => {
+    gbo.forEach(line => {
         // 移除括号内的注释内容
         const cleanLine = line.replace(/[（(].*?[)）]/g, '').trim();
         if (!cleanLine) return;
@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const priceData = parsePriceData(rawData);
         renderPriceCards(priceData);
-        renderNotes(priceData.notes, channelConfig);
+        rendergbo(priceData.gbo, channelConfig);
 
         document.getElementById('copyRatesBtn').addEventListener('click', () => {
             copyRatesToClipboard(priceData);
