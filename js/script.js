@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const priceData = parsePriceData(rawData);
         renderPriceCards(priceData);
-        rendergbo(priceData.gbo, channelConfig);
+        renderGbo(priceData.gbo, channelConfig);
 
         document.getElementById('copyRatesBtn').addEventListener('click', () => {
             copyRatesToClipboard(priceData);
