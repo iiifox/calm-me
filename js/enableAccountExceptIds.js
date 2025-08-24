@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         自动启用gbo中被异常停用账号
+// @name         gbo自动启用
 // @namespace    https://iiifox.me/js/enableAccountExceptIds.js
 // @version      1.2.9
 // @description  自动检测并每3分钟启用一次被异常停用的账号
@@ -112,4 +112,5 @@
         }, 2000);
     });
 })();
+
 
