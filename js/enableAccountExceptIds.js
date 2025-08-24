@@ -98,8 +98,8 @@
     // 页面加载后执行
     window.addEventListener("load", () => {
         setTimeout(() => {
-            let username = localStorage.getItem("username");
-            let sid = localStorage.getItem("sid");
+            let username = sessionStorage.getItem("username");
+            let sid = sessionStorage.getItem("sid");
 
             if (!username || !sid) {
                 console.log("未找到 sessionStorage 中的 username 或 sid");
@@ -112,3 +112,4 @@
         }, 2000);
     });
 })();
+
