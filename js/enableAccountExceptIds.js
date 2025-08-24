@@ -1,9 +1,11 @@
 // ==UserScript==
-// @name         iiifoxの自动启用被异常停用账号（GBO）
+// @name         自动启用gbo中被异常停用账号
 // @namespace    https://iiifox.me/js/enableAccountExceptIds.js
-// @version      1.1
+// @version      1.2.9
 // @description  自动检测并每3分钟启用一次被异常停用的账号
+// @author       iiifox
 // @match        *://*.ggbboo.xyz/*
+// @match        *://ggbboo.xyz/*
 // @grant        GM_xmlhttpRequest
 // @connect      ggbboo.xyz
 // ==/UserScript==
@@ -96,8 +98,8 @@
     // 页面加载后执行
     window.addEventListener("load", () => {
         setTimeout(() => {
-            let username = sessionStorage.getItem("username");
-            let sid = sessionStorage.getItem("sid");
+            let username = localStorage.getItem("username");
+            let sid = localStorage.getItem("sid");
 
             if (!username || !sid) {
                 console.log("未找到 sessionStorage 中的 username 或 sid");
