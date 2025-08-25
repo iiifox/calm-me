@@ -1,0 +1,52 @@
+.page-container {
+  display: flex;
+  flex-direction: row;
+}
+
+/* 左侧固定目录 */
+.sidebar-left {
+  width: 220px;
+  position: sticky;
+  top: 80px;
+  background: #fafafa;
+  border-right: 1px solid #ddd;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* 右侧悬浮目录 */
+.sidebar-right {
+  width: 220px;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: #fafafa;
+  border-left: 1px solid #ddd;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* 正文内容 */
+.content {
+  flex: 1;
+  padding: 20px;
+  /* 右侧悬浮时加右边距防止遮挡 */
+  margin-right: 250px;
+}
+
+/* TOC 样式 */
+.sidebar ul {
+  list-style: none;
+  padding-left: 0;
+}
+.sidebar li {
+  margin: 5px 0;
+}
+.sidebar li.toc-h2 { margin-left: 10px; }
+.sidebar li.toc-h3 { margin-left: 20px; }
+
+/* 可选：TOC 链接 hover 效果 */
+.sidebar a { text-decoration: none; color: #0366d6; }
+.sidebar a:hover { text-decoration: underline; }
