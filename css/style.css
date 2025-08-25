@@ -37,14 +37,29 @@ h1 {
     font-size: 1.1rem;
 }
 
-.price-container {
+.qz-section {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.qz-section .section-title {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+.qz-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 20px;
     margin-bottom: 30px;
 }
 
-.price-card {
+.qz-card {
     background: white;
     border-radius: 10px;
     overflow: hidden;
@@ -52,7 +67,7 @@ h1 {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.price-card:hover {
+.qz-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
@@ -70,14 +85,14 @@ h1 {
     padding: 20px;
 }
 
-.price-item {
+.qz-item {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px solid #eee;
 }
 
-.price-item:last-child {
+.qz-item:last-child {
     border-bottom: none;
 }
 
@@ -112,7 +127,7 @@ h1 {
     gap: 15px;
 }
 
-.note-item {
+.gbo-item {
     background: #f8f9fa;
     padding: 15px;
     border-radius: 8px;
@@ -120,11 +135,11 @@ h1 {
     transition: transform 0.2s ease;
 }
 
-.note-item:hover {
+.gbo-item:hover {
     transform: translateX(5px);
 }
 
-.note-item strong {
+.gbo-item strong {
     color: #e74c3c;
 }
 
@@ -284,12 +299,12 @@ h1 {
 
 /* 鼠标悬停显示 */
 
-.note-item {
+.gbo-item {
     position: relative;
     cursor: help;
 }
 
-.note-item:hover::after {
+.gbo-item:hover::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -311,7 +326,7 @@ h1 {
     line-height: 1.5;
 }
 
-.note-item:hover::before {
+.gbo-item:hover::before {
     content: '';
     position: absolute;
     bottom: 100%;
@@ -325,13 +340,13 @@ h1 {
 
 /* 响应式调整 */
 @media (max-width: 768px) {
-    .note-item:hover::after {
+    .gbo-item:hover::after {
         left: 0;
         transform: translateX(0);
         min-width: 200px;
     }
 
-    .note-item:hover::before {
+    .gbo-item:hover::before {
         left: 20px;
         transform: translateX(0);
     }
