@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en" }}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page.title | default: site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+  <!-- 页面容器 -->
+  <div class="page-container">
+
+    <!-- 左侧固定目录 -->
+    {% if page.toc_position == "left" %}
+    <aside class="sidebar sidebar-left">
+      <h2>目录</h2>
+      <nav id="toc"></nav>
+    </aside>
+    {% endif %}
+
+    <!-- 右侧悬浮目录 -->
+    {% if page.toc_position == "right" %}
+    <aside class="sidebar sidebar-right">
+      <h2>目录</h2>
+      <nav id="toc"></nav>
+    </aside>
+    {% endif %}
+
+    <!-- 正文 -->
+    <main class="content">
+      {{ content }}
+    </main>
+  </div>
+
+  <!-- TOC JS -->
+  <script src="{{ '/assets/js/toc.js' | relative_url }}"></script>
+</body>
+</html>
