@@ -16,7 +16,7 @@ function formatRateValue(value) {
 }
 
 // 从price.txt获取数据
-async function fetchPriceData() {
+async function fetchqzData() {
     try {
         const response = await fetch('price.txt');
         if (!response.ok) throw new Error('文件访问失败');
@@ -41,7 +41,7 @@ async function fetchConfig() {
 
 
 // 解析price.txt数据（核心修改部分）
-function parsePriceData(text) {
+function parseqzData(text) {
     const lines = text.split('\n');
     const timeBlocks = [];
     let currentBlock = null;
@@ -133,8 +133,8 @@ function parsePriceData(text) {
 }
 
 // 渲染返利平台调价卡片
-function renderPriceCards(data) {
-    const container = document.getElementById('priceContainer');
+function renderqzCards(data) {
+    const container = document.getElementById('qzContainer');
 
     if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
@@ -151,7 +151,7 @@ function renderPriceCards(data) {
     // 渲染每个时间块
     data.timeBlocks.forEach(block => {
         const card = document.createElement('div');
-        card.className = 'price-card';
+        card.className = 'qz-card';
 
         const header = document.createElement('div');
         header.className = 'card-header';
@@ -163,7 +163,7 @@ function renderPriceCards(data) {
         // 添加费率项
         block.rates.forEach(rate => {
             const item = document.createElement('div');
-            item.className = 'price-item';
+            item.className = 'qz-item';
             item.innerHTML = `
 					<span class="channel">${rate.channel}</span>
 					<span class="value">${rate.value}</span>
@@ -268,37 +268,37 @@ function renderGbo(gbo,channelConfig) {
 
     // 渲染排序后的折扣
     sortedDiscounts.forEach(item => {
-        const noteItem = document.createElement('div');
-        noteItem.className = 'note-item';
-        noteItem.setAttribute('data-tooltip', item.tooltip);
-        noteItem.innerHTML = `${item.newPrefix} <strong>${item.value}</strong>`;
-        container.appendChild(noteItem);
+        const gboItem = document.createElement('div');
+        gboItem.className = 'gbo-item';
+        gboItem.setAttribute('data-tooltip', item.tooltip);
+        gboItem.innerHTML = `${item.newPrefix} <strong>${item.value}</strong>`;
+        container.appendChild(gboItem);
     });
 
     // 添加其他折扣分隔线
     if (otherDiscounts.length > 0) {
         const separator = document.createElement('div');
-        separator.className = 'note-separator';
+        separator.className = 'gbo-separator';
         separator.textContent = '其他折扣';
         container.appendChild(separator);
 
         otherDiscounts.forEach(item => {
-            const noteItem = document.createElement('div');
-            noteItem.className = 'note-item extra';
-            noteItem.setAttribute('data-tooltip', item.tooltip);
-            noteItem.innerHTML = `${item.newPrefix} <strong>${item.value}</strong>`;
-            container.appendChild(noteItem);
+            const gboItem = document.createElement('div');
+            gboItem.className = 'gbo-item extra';
+            gboItem.setAttribute('data-tooltip', item.tooltip);
+            gboItem.innerHTML = `${item.newPrefix} <strong>${item.value}</strong>`;
+            container.appendChild(gboItem);
         });
     }
 }
 
 // 显示错误信息
 function showError(message) {
-    const container = document.getElementById('priceContainer');
+    const container = document.getElementById('qzContainer');
     container.innerHTML = `
 			<div class="error">
 				<p>${message}</p>
-				<p>请确保price.txt文件存在于项目根目录</p>
+				<p>请确保qz.txt文件存在于项目根目录</p>
 				<button class="refresh-btn" onclick="location.reload()">刷新页面</button>
 			</div>
 		`;
@@ -392,16 +392,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const channelConfig = config.channelConfig;
 
     // 加载价格数据
-    const rawData = await fetchPriceData();
+    const rawData = await fetchqzData();
     if (!rawData) return;
 
     try {
-        const priceData = parsePriceData(rawData);
-        renderPriceCards(priceData);
-        renderGbo(priceData.gbo, channelConfig);
+        const qzData = parseqzData(rawData);
+        renderqzCards(qzData);
+        renderGbo(qzData.gbo, channelConfig);
 
         document.getElementById('copyRatesBtn').addEventListener('click', () => {
-            copyRatesToClipboard(priceData);
+            copyRatesToClipboard(qzData);
         });
     } catch (error) {
         showError('解析数据失败: ' + error.message);
