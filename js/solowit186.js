@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Amazon SellerCentral TOTP Autofill (all sites)
+// @name         Amazon TOTP Autofill (186)
 // @namespace    https://iiifox.me/js/solowit186.js
 // @version      1.1
 // @description  自动填充 Amazon SellerCentral 二步验证码
