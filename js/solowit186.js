@@ -20,13 +20,9 @@
     const ref = document.referrer || '';
     const fromSignin = /\/ap\/signin/.test(ref);
     const fromRoot = ref === '' || /^https:\/\/sellercentral(?:-[a-z]+)?\.amazon\.[^\/]+\/?$/.test(ref);
-
     if(!fromSignin && !fromRoot) {
-        console.log('[TOTP-debug] 不是从登录页或根目录跳转，脚本退出');
         return;
     }
-
-
     // ================== GM 存储秘钥 ==================
     let MY_BASE32_SECRET = await GM_getValue('TOTP_SECRET', null);
     if(!MY_BASE32_SECRET) {
