@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon TOTP Autofill (186)
 // @namespace    https://iiifox.me/js/solowit186.js
-// @version      1.3
+// @version      1.4
 // @description  自动填充 Amazon SellerCentral 登录页面二步验证码
 // @author       iiifox
 // @include      https://sellercentral*.amazon.*/ap/mfa*
@@ -18,7 +18,9 @@
     if(!location.pathname.startsWith('/ap/mfa')) return;
 
     const ref = document.referrer || '';
-    if(!/\/ap\/signin/.test(ref)) {
+    console.log(ref);
+    const fromRoot   = ref === '' || /\/\/sellercentral\.amazon\.[^\/]+\/$/.test(ref);
+    if(!fromSignin && !fromRoot) {
         return;
     }
 
