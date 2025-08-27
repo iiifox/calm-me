@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Amazon TOTP Autofill (186)
 // @namespace    https://iiifox.me/js/solowit186.js
-// @version      1.2
-// @description  自动填充 Amazon SellerCentral 二步验证码
+// @version      1.3
+// @description  自动填充 Amazon SellerCentral 登录页面二步验证码
 // @author       iiifox
 // @include      https://sellercentral*.amazon.*/ap/mfa*
 // @run-at       document-idle
-// @grant        none
+// @grant        GM_setValue
+// @grant        GM_getValue
 // ==/UserScript==
 
 
@@ -14,9 +15,28 @@
     'use strict';
     console.log('[TOTP-debug] script loaded', location.href);
 
-    // ============== 配置：把这里替换为你的 Base32 secret ==============
-    const MY_BASE32_SECRET = 'CDIZMYALURSL42UABYMBQDT44T5GI6EPPRL7VKRT3ZLLFNYDCXJA'; // 替换
-    // ===================================================================
+    if(!location.pathname.startsWith('/ap/mfa')) return;
+
+    const ref = document.referrer || '';
+    if(!/\/ap\/signin/.test(ref)) {
+        return;
+    }
+
+    // ================== GM 存储秘钥 ==================
+    let MY_BASE32_SECRET = await GM_getValue('TOTP_SECRET', null);
+    if(!MY_BASE32_SECRET) {
+        MY_BASE32_SECRET = prompt("请输入你的 Google Authenticator TOTP Secret (Base32):");
+        if(MY_BASE32_SECRET) {
+            await GM_setValue('TOTP_SECRET', MY_BASE32_SECRET.trim());
+            console.log('[TOTP-debug] 秘钥已保存到 Tampermonkey 本地存储');
+        } else {
+            console.warn('[TOTP-debug] 没有输入秘钥，脚本无法生成 OTP');
+            return; // 不继续运行
+        }
+    } else {
+        console.log('[TOTP-debug] 已加载本地存储秘钥');
+    }
+    // ==================================================
 
     // 小工具：检查我们是否处于最顶层（或跨域 iframe）
     try {
