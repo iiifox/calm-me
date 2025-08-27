@@ -4,7 +4,7 @@
 // @version      1.1
 // @description  自动填充 Amazon SellerCentral 二步验证码
 // @author       iiifox
-// @include      https://sellercentral*.amazon.*/*
+// @include      https://sellercentral*.amazon.*/ap/mfa*
 // @run-at       document-idle
 // @grant        none
 // ==/UserScript==
