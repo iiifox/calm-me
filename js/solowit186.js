@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon TOTP Autofill (186)
 // @namespace    https://iiifox.me/js/solowit186.js
-// @version      1.4
+// @version      1.5
 // @description  自动填充 Amazon SellerCentral 登录页面二步验证码
 // @author       iiifox
 // @include      https://sellercentral*.amazon.*/ap/mfa*
@@ -18,11 +18,14 @@
     if(!location.pathname.startsWith('/ap/mfa')) return;
 
     const ref = document.referrer || '';
-    console.log(ref);
-    const fromRoot   = ref === '' || /\/\/sellercentral\.amazon\.[^\/]+\/$/.test(ref);
+    const fromSignin = /\/ap\/signin/.test(ref);
+    const fromRoot = ref === '' || /^https:\/\/sellercentral(?:-[a-z]+)?\.amazon\.[^\/]+\/?$/.test(ref);
+
     if(!fromSignin && !fromRoot) {
+        console.log('[TOTP-debug] 不是从登录页或根目录跳转，脚本退出');
         return;
     }
+
 
     // ================== GM 存储秘钥 ==================
     let MY_BASE32_SECRET = await GM_getValue('TOTP_SECRET', null);
