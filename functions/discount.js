@@ -47,14 +47,17 @@ function parseQz(lines) {
 async function parseGbo(lines, request) {
     const gbo = {};
 
-    const gboUrl = new URL('/config/gbo.json', new URL(request.url).origin);
-    console.log(gboUrl.toString()); // 打印 URL，检查是否正确
-    const resp = await fetch(gboUrl);
+    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
 
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
-            headers: {'Content-Type': 'application/json'}
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',  // 允许所有来源
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
         });
     }
     const channelConfig = await resp.json().channelConfig;
@@ -118,12 +121,7 @@ export async function onRequest(context) {
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',  // 允许所有来源
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Content-Type'
-            }
+            headers: {'Content-Type': 'application/json'}
         });
     }
     const text = await resp.text();
