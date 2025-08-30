@@ -47,7 +47,10 @@ function parseQz(lines) {
 async function parseGbo(lines, request) {
     const gbo = {};
 
-    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
+    const gboUrl = new URL('/config/gbo.json', new URL(request.url).origin);
+    console.log(gboUrl.toString()); // 打印 URL，检查是否正确
+    const resp = await fetch(gboUrl);
+
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
@@ -115,7 +118,12 @@ export async function onRequest(context) {
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
-            headers: {'Content-Type': 'application/json'}
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',  // 允许所有来源
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
         });
     }
     const text = await resp.text();
