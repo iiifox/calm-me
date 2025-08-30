@@ -150,11 +150,9 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    // const gbo = await parseGbo(gboLines, new URL('/config/gbo.json', new URL(request.url).origin));
+    const gbo = await parseGbo(gboLines, new URL('https://iiifox.me/config/gbo.json'));
 
-    u = new URL('/config/gbo.json', new URL(request.url).origin);
-
-    const out = {yesterdayPage, date, qz, "url": u};
+    const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
         headers: {'Content-Type': 'application/json'}
     });
