@@ -44,12 +44,12 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-async function parseGbo(lines, request) {
+function parseGbo(lines, request) {
     const gbo = {};
 
-    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
+    const resp = fetch(new URL('/config/gbo.json', new URL(request.url).origin))
     if (!resp.ok) throw new Error('Failed to fetch gbo.json');
-    const channelConfig = await resp.json().channelConfig;
+    const channelConfig = resp.json().channelConfig;
 
     // 解析所有折扣项（正确值）
     const discountItems = [];
@@ -105,7 +105,7 @@ async function parseGbo(lines, request) {
 
 export async function onRequest(context) {
     // context 提供 request, env, params, waitUntil, next 等信息
-    const {request, params, waitUntil } = context
+    const {request, params, waitUntil} = context
 
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin))
     if (!resp.ok) {
@@ -150,12 +150,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gboPromise  = await parseGbo(gboLines, request);
-
-    waitUntil(gboPromise);
-    const gbo = await gboPromise;
-
-    console.log('gbo:', gbo);  // 打印 gbo，看看是否为空
+    const gbo = parseGbo(gboLines, request);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
