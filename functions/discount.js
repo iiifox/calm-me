@@ -44,13 +44,10 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-async function parseGbo(lines, request) {
+async function parseGbo(lines, url) {
     const gbo = {};
 
-    console.log("开始进入 parseGbo")
-    console.log(new URL('/config/gbo.json', new URL(request.url).origin))
-
-    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
+    const resp = await fetch(url);
     if (!resp.ok) throw new Error('Failed to fetch gbo.json');
     const channelConfig = await resp.json().channelConfig;
 
@@ -153,9 +150,9 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = await parseGbo(gboLines, request);
+    const gbo = await parseGbo(gboLines, new URL('/config/gbo.json', new URL(request.url).origin));
 
-    const out = {yesterdayPage, date, qz};
+    const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
         headers: {'Content-Type': 'application/json'}
     });
