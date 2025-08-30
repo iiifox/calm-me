@@ -105,7 +105,7 @@ async function parseGbo(lines, request) {
 
 export async function onRequest(context) {
     // context 提供 request, env, params, waitUntil, next 等信息
-    const {request, params} = context
+    const {request, params, waitUntil } = context
 
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin))
     if (!resp.ok) {
@@ -150,7 +150,10 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = await parseGbo(gboLines, request);
+    const gboPromise  = await parseGbo(gboLines, request);
+
+    waitUntil(gboPromise);
+    const gbo = await gboPromise;
 
     console.log('gbo:', gbo);  // 打印 gbo，看看是否为空
 
