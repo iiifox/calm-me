@@ -14,7 +14,7 @@ function formatRateValue(value) {
 }
 
 export async function onRequest() {
-    const resp = await fetch(new URL('/price.txt', window.location.origin))
+    const resp = await fetch(`${window.location.origin}/price.txt`)
     if (!resp.ok) {
         return new Response(JSON.stringify({error: 'price.txt 获取失败'}), {
             status: 502,
