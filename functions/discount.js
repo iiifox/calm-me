@@ -125,6 +125,7 @@ export async function onRequest(context) {
 
     let currentSystem = "qz";
     for (const line of lines) {
+        console.log(line)
         // 昨日费率页面
         if (/^https:\/\/[\w-]+(\.[\w-]+)+(?:\/[^\s?#]*)?(?:\?[^#\s]*)?(?:#\S*)?/i.test(line)) {
             yesterdayPage = line;
