@@ -47,7 +47,12 @@ function parseQz(lines) {
 async function parseGbo(lines) {
     const gbo = {};
 
-    const resp = await fetch('https://iiifox.me/config/gbo.json');
+    const resp = await fetch('https://iiifox.me/config/gbo.json', {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+    });
     if (!resp.ok) throw new Error('Failed to fetch gbo.json');
     const channelConfig = await resp.json().channelConfig;
 
