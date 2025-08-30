@@ -16,12 +16,16 @@ function formatRateValue(value) {
 // 解析qz折扣
 function parseQz(lines) {
     const qz = {};
+    let timeOrder = [];
     let currentTimeKey = ""
     for (const line of lines) {
         // “30号过点” 视为 00:00
         if (line.includes('过点')) {
             currentTimeKey = '00:00';
-            if (!qz[currentTimeKey]) qz[currentTimeKey] = {};
+            if (!qz[currentTimeKey]) {
+                qz[currentTimeKey] = {};
+                timeOrder.push(currentTimeKey);
+            }
             continue;
         }
         // “9:25开始”“11点开始”等
@@ -30,16 +34,52 @@ function parseQz(lines) {
             const hh = String(t[1]).padStart(2, '0');
             const mm = t[2] ? t[2] : '00';
             currentTimeKey = `${hh}:${mm}`;
-            if (!qz[currentTimeKey]) qz[currentTimeKey] = {};
+            if (!qz[currentTimeKey]) {
+                qz[currentTimeKey] = {};
+                timeOrder.push(currentTimeKey);
+            }
             continue;
         }
 
         // 渠道行：渠道名 + 数字
         const m = line.match(/(.*?)\s*(\d+(?:\.\d+)?)$/);
-        if (m) {
-            qz[currentTimeKey][m[1]] = formatRateValue(m[2]);
-        }
+        if (m && currentTimeKey) qz[currentTimeKey][m[1]] = formatRateValue(m[2]);
     }
+
+    // 收集所有出现过的渠道，以及每个渠道首次出现的时间段索引
+    const allChannels = new Set();
+    // 键：渠道名，值：首次出现的时间索引（在timeOrder中）
+    const firstOccurrence = {};
+    timeOrder.forEach((time, index) => {
+        const channels = Object.keys(qz[time]);
+        channels.forEach(channel => {
+            allChannels.add(channel);
+            if (firstOccurrence[channel] === undefined) {
+                // 记录首次出现的时间索引
+                firstOccurrence[channel] = index;
+            }
+        });
+    });
+    const allChannelsArr = Array.from(allChannels);
+
+    // 回溯补全：新增渠道在首次出现前的所有时间段折扣均设置为1
+    timeOrder.forEach((time, timeIndex) => {
+        allChannelsArr.forEach(channel => {
+            // 如果当前时间在渠道首次出现之前，折扣设置为1
+            if (timeIndex < firstOccurrence[channel]) qz[time][channel] = 1;
+        });
+    });
+
+    // 顺序补全：后续时间段缺失的渠道，延用上一时间段的折扣
+    for (let i = 1; i < timeOrder.length; i++) {
+        const prevTime = timeOrder[i - 1];
+        const currentTime = timeOrder[i];
+        allChannelsArr.forEach(channel => {
+            // 如果当前时间段没有该渠道，延用上一时间段的折扣
+            if (!qz[currentTime].hasOwnProperty(channel)) qz[currentTime][channel] = qz[prevTime][channel];
+        });
+    }
+
     return qz;
 }
 
@@ -110,10 +150,7 @@ async function parseGbo(lines, request) {
     return gbo;
 }
 
-export async function onRequest(context) {
-    // context 提供 request, env, params, waitUntil, next 等信息
-    const {request, params, waitUntil} = context;
-
+export async function onRequest({request}) {
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
