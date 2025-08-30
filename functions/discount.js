@@ -48,7 +48,7 @@ async function parseGbo(lines, request) {
     const gbo = {};
 
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
-    const channelConfig = resp.json().channelConfig;
+    const channelConfig = await resp.json().channelConfig;
 
     // 解析所有折扣项（正确值）
     const discountItems = [];
