@@ -14,8 +14,7 @@ function formatRateValue(value) {
 }
 
 export async function onRequest() {
-    // 你也可以直接用相对路径 fetch(new URL('/price.txt', request.url))
-    const resp = await fetch('https://iiifox.me/price.txt');
+    const resp = await fetch('/price.txt');
     if (!resp.ok) {
         return new Response(JSON.stringify({error: 'price.txt 获取失败'}), {
             status: 502,
