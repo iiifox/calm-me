@@ -48,6 +48,7 @@ async function parseGbo(lines, request) {
     const gbo = {};
 
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
+    if (!resp.ok) throw new Error('Failed to fetch gbo.json');
     const channelConfig = await resp.json().channelConfig;
 
     // 解析所有折扣项（正确值）
@@ -149,7 +150,9 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines, request);
+    const gbo = await parseGbo(gboLines, request);
+
+    console.log('gbo:', gbo);  // 打印 gbo，看看是否为空
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
