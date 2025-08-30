@@ -150,9 +150,9 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines, request);
+    // const gbo = parseGbo(gboLines, request);
 
-    const out = {yesterdayPage, date, qz, gbo};
+    const out = {yesterdayPage, date, qz};
     return new Response(JSON.stringify(out, null, 2), {
         headers: {'Content-Type': 'application/json'}
     });
