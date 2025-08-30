@@ -152,9 +152,9 @@ export async function onRequest(context) {
     const qz = parseQz(qzLines);
     // const gbo = await parseGbo(gboLines, new URL('/config/gbo.json', new URL(request.url).origin));
 
-    console.log(new URL('/config/gbo.json', new URL(request.url).origin));
+    u = new URL('/config/gbo.json', new URL(request.url).origin);
 
-    const out = {yesterdayPage, date, qz};
+    const out = {yesterdayPage, date, qz, "url": u};
     return new Response(JSON.stringify(out, null, 2), {
         headers: {'Content-Type': 'application/json'}
     });
