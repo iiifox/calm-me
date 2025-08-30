@@ -103,7 +103,7 @@ export async function onRequest(context) {
     const {request, params, waitUntil} = context;
 
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
-    const gbo_resp = await fetch(new URL('/gbo.json', new URL(request.url).origin));
+    const gbo_resp = await fetch(new URL('/config/config.json', new URL(request.url).origin));
     if (!resp.ok || !gbo_resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
