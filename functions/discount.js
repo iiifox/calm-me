@@ -44,8 +44,61 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-function parseGbo(text) {
+async function parseGbo(lines, request) {
     const gbo = {};
+
+    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
+    const channelConfig = resp.json().channelConfig;
+
+    // 解析所有折扣项（正确值）
+    const discountItems = [];
+
+    for (const line of lines) {
+        // 格式处理
+        const cleanLine = line.replace(/^(.*\d).*/, '$1')
+            .replace(/(综合、端游|端游、综合)\s*/g, "点券")
+            .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
+        // 有些个数处理后变为了空值（比如全中文）
+        if (!cleanLine) return;
+
+        // 首先提取整行最后的折扣部分
+        const discountMatch = cleanLine.match(/(\d+(?:\.\d+)?)$/);
+        if (discountMatch) {
+            const discount = formatRateValue(parseFloat(discountMatch[1]));
+            // 移除折扣部分，保留前面的渠道部分
+            const prefixPart = cleanLine.substring(0, discountMatch.index).trim();
+            // 拆分前缀渠道部分
+            const separatorPattern = /[、,，]/
+            const channels = separatorPattern.test(prefixPart)
+                ? prefixPart.split(separatorPattern).map(p => p.trim())
+                : [prefixPart]
+            // 为每个渠道创建折扣
+            channels.forEach(channel => {
+                if (channel) discountItems.push({channel, discount});
+            });
+        }
+    }
+
+    // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
+    discountItems.forEach(item => {
+        item.newChannel = channelConfig.nameMap[item.channel] || item.channel;
+        item.tooltip = channelConfig.channelMap[item.newChannel] || '';
+    });
+
+    // 获取顺序（直接使用 channelMap 的键）
+    const order = Object.keys(channelConfig.channelMap);
+
+    // 精确匹配自定义渠道顺序
+    order.forEach(channel => {
+        const index = discountItems.findIndex(item => item.newChannel === channel);
+        if (index !== -1) {
+            gbo.push(discountItems[index]);
+            discountItems.splice(index, 1);
+        }
+    });
+    // 剩余项（没有被精确匹配的渠道名）
+    gbo.push(...discountItems);
+    
     return gbo;
 }
 
@@ -95,7 +148,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseQz(gboLines);
+    const gbo = parseGbo(gboLines, request);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
