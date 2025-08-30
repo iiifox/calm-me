@@ -13,8 +13,11 @@ function formatRateValue(value) {
     return +(num / 1000).toFixed(3);
 }
 
-export async function onRequest() {
-    const resp = await fetch(`${window.location.origin}/price.txt`)
+export async function onRequest(context) {
+    // context 提供 request, env 等信息
+    const {request, env, params} = context
+
+    const resp = await fetch(new URL('/price.txt', new URL(request.url).origin))
     if (!resp.ok) {
         return new Response(JSON.stringify({error: 'price.txt 获取失败'}), {
             status: 502,
