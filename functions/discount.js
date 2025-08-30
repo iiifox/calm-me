@@ -45,7 +45,6 @@ function parseQz(lines) {
 
 // 解析gbo折扣
 async function parseGbo(lines, request) {
-    console.log(lines)
     const gbo = {};
 
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
@@ -125,7 +124,6 @@ export async function onRequest(context) {
 
     let currentSystem = "qz";
     for (const line of lines) {
-        console.log(line)
         // 昨日费率页面
         if (/^https:\/\/[\w-]+(\.[\w-]+)+(?:\/[^\s?#]*)?(?:\?[^#\s]*)?(?:#\S*)?/i.test(line)) {
             yesterdayPage = line;
@@ -151,7 +149,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines, request);
+    const gbo = await parseGbo(gboLines, request);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
