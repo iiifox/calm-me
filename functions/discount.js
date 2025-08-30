@@ -44,16 +44,11 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-async function parseGbo(lines) {
+function parseGbo(lines, channelConfig) {
     const gbo = {};
 
-    const resp = await fetch('https://iiifox.me/config/gbo.json');
-    if (!resp.ok) throw new Error('Failed to fetch gbo.json');
-    const channelConfig = await resp.json().channelConfig;
-
-    // 解析所有折扣项（正确值）
+    // 解析所有折扣项（精确匹配自定义渠道名）
     const discountItems = [];
-
     for (const line of lines) {
         // 格式处理
         const cleanLine = line.replace(/^(.*\d).*/, '$1')
@@ -108,13 +103,15 @@ export async function onRequest(context) {
     const {request, params, waitUntil} = context
 
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin))
-    if (!resp.ok) {
+    const gbo_resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
+    if (!resp.ok || !gbo_resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
             headers: {'Content-Type': 'application/json'}
         });
     }
     const text = await resp.text();
+    const channelConfig = await resp.json().channelConfig;
 
     const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
 
@@ -150,9 +147,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    // const gbo = await parseGbo(gboLines);
-
-    const resp = await fetch('https://iiifox.me/config/gbo.json');
+    const gbo = parseGbo(gboLines, channelConfig);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
