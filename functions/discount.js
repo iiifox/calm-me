@@ -44,8 +44,17 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-function parseGbo(lines, channelConfig) {
+async function parseGbo(lines, request) {
     const gbo = {};
+
+    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
+    if (!resp.ok) {
+        return new Response(JSON.stringify({error: '数据源获取失败'}), {
+            status: 502,
+            headers: {'Content-Type': 'application/json'}
+        });
+    }
+    const channelConfig = await resp.json().channelConfig;
 
     // 解析所有折扣项（精确匹配自定义渠道名）
     const discountItems = [];
@@ -103,15 +112,13 @@ export async function onRequest(context) {
     const {request, params, waitUntil} = context;
 
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
-    const gbo_resp = await fetch(new URL('/config/config.json', new URL(request.url).origin));
-    if (!resp.ok || !gbo_resp.ok) {
+    if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
             headers: {'Content-Type': 'application/json'}
         });
     }
     const text = await resp.text();
-    const gbo_json = await resp.json();
 
     const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
 
@@ -147,7 +154,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines, gbo_json.channelConfig);
+    const gbo = parseGbo(gboLines, request);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
