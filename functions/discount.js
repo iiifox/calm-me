@@ -47,7 +47,7 @@ function parseQz(lines) {
 async function parseGbo(lines, request) {
     const gbo = {};
 
-    const resp = await fetch(new URL('/gbo.json', new URL(request.url).origin));
+    const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
