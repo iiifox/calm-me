@@ -2,8 +2,6 @@
 // 将 /price.txt 解析为 JSON：{ yesterday_page, date, qz, gbo}
 
 
-import gboConfig from '../config/gbo.json' assert { type: 'json' };
-
 // 辅助函数：格式化费率值 映射到区间 {0}∪[0.2,2)
 function formatRateValue(value) {
     const num = Number(value);
@@ -46,9 +44,17 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-function parseGbo(lines) {
+async function parseGbo(lines, request) {
     const gbo = {};
-    const channelConfig = gboConfig.channelConfig;
+
+    const resp = await fetch(new URL('/gbo.json', new URL(request.url).origin));
+    if (!resp.ok) {
+        return new Response(JSON.stringify({error: '数据源获取失败'}), {
+            status: 502,
+            headers: {'Content-Type': 'application/json'}
+        });
+    }
+    const channelConfig = await resp.json().channelConfig;
 
     // 解析所有折扣项（精确匹配自定义渠道名）
     const discountItems = [];
@@ -148,7 +154,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines);
+    const gbo = parseGbo(gboLines, request);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
