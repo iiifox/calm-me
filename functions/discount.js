@@ -87,7 +87,7 @@ async function parseGbo(lines, request) {
     const channelConfig = gboJson.channelConfig;
     // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
     discountItems.forEach(item => {
-        item.newChannel = channelConfig.nameMap[item.channel] || item.channel;
+        item.channel = channelConfig.nameMap[item.channel] || item.channel;
         item.tooltip = channelConfig.channelMap[item.newChannel] || '';
     });
 
@@ -96,14 +96,16 @@ async function parseGbo(lines, request) {
 
     // 精确匹配自定义渠道顺序
     order.forEach(channel => {
-        const index = discountItems.findIndex(item => item.newChannel === channel);
+        const index = discountItems.findIndex(item => item.channel === channel);
         if (index !== -1) {
-            gbo.push(discountItems[index]);
+            gbo[channel] = discountItems[index].discount;
             discountItems.splice(index, 1);
         }
     });
     // 剩余项（没有被精确匹配的渠道名）
-    gbo.push(...discountItems);
+    for (const item of discountItems) {
+        gbo[item.channel] = item.discount;
+    }
 
     return gbo;
 }
