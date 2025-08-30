@@ -154,7 +154,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines, request);
+    const gbo = await parseGbo(gboLines, request);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
