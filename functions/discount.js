@@ -54,7 +54,7 @@ async function parseGbo(lines, request) {
             headers: {'Content-Type': 'application/json'}
         });
     }
-    const channelConfig = await resp.json().channelConfig;
+    const gboJson = await resp.json();
 
     // 解析所有折扣项（精确匹配自定义渠道名）
     const discountItems = [];
@@ -84,6 +84,7 @@ async function parseGbo(lines, request) {
         }
     }
 
+    channelConfig = gboJson.channelConfig;
     // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
     discountItems.forEach(item => {
         item.newChannel = channelConfig.nameMap[item.channel] || item.channel;
