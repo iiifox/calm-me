@@ -45,6 +45,7 @@ function parseQz(lines) {
 
 // 解析gbo折扣
 async function parseGbo(lines, request) {
+    console.log(lines)
     const gbo = {};
 
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
@@ -98,7 +99,7 @@ async function parseGbo(lines, request) {
     });
     // 剩余项（没有被精确匹配的渠道名）
     gbo.push(...discountItems);
-    
+
     return gbo;
 }
 
@@ -142,6 +143,7 @@ export async function onRequest(context) {
                 continue;
             }
             qzLines.push(line);
+            continue;
         }
         // gbo
         gboLines.push(line);
