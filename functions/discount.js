@@ -100,10 +100,10 @@ function parseGbo(lines, channelConfig) {
 
 export async function onRequest(context) {
     // context 提供 request, env, params, waitUntil, next 等信息
-    const {request, params, waitUntil} = context
+    const {request, params, waitUntil} = context;
 
-    const resp = await fetch(new URL('/price.txt', new URL(request.url).origin))
-    const gbo_resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin))
+    const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
+    const gbo_resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
     if (!resp.ok || !gbo_resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
             status: 502,
@@ -111,7 +111,7 @@ export async function onRequest(context) {
         });
     }
     const text = await resp.text();
-    const channelConfig = await resp.json().channelConfig;
+    const gbo_json = await resp.json();
 
     const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
 
@@ -147,7 +147,7 @@ export async function onRequest(context) {
     }
 
     const qz = parseQz(qzLines);
-    const gbo = parseGbo(gboLines, channelConfig);
+    const gbo = parseGbo(gboLines, gbo_json.channelConfig);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
