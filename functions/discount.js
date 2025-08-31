@@ -80,6 +80,18 @@ function parseQz(lines) {
         });
     }
 
+    // 生成template
+    const templateItems = [];
+    // 按渠道分组，每个渠道下按时间顺序生成条目
+    allChannelsArr.forEach(channel => {
+        timeOrder.forEach(time => {
+            const discount = qz[time][channel];
+            templateItems.push(`${channel}${time}/${discount}`);
+        });
+    });
+    // 将所有条目拼接为多行字符串，作为qz的template属性
+    qz.template = templateItems.join('\n');
+
     return qz;
 }
 
