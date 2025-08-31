@@ -80,18 +80,6 @@ function parseQz(lines) {
         });
     }
 
-    // 生成template
-    const templateItems = [];
-    // 按渠道分组，每个渠道下按时间顺序生成
-    allChannelsArr.forEach(channel => {
-        timeOrder.forEach(time => {
-            const discount = qz[time][channel];
-            templateItems.push(`${channel}${time}/${discount}`);
-        });
-    });
-    // 将所有条目拼接为多行字符串，作为qz的template属性
-    qz.template = templateItems.join('\n');
-
     return qz;
 }
 
@@ -116,7 +104,7 @@ async function parseGbo(lines, request) {
             .replace(/(综合、端游|端游、综合)\s*/g, "点券")
             .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
         // 有些个数处理后变为了空值（比如全中文）
-        if (!cleanLine) return;
+        if (!cleanLine) continue;
 
         // 首先提取整行最后的折扣部分
         const discountMatch = cleanLine.match(/(\d+(?:\.\d+)?)$/);
@@ -140,7 +128,8 @@ async function parseGbo(lines, request) {
     // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
     discountItems.forEach(item => {
         item.channel = channelConfig.nameMap[item.channel] || item.channel;
-        item.tooltip = channelConfig.channelMap[item.newChannel] || '';
+        const tooltip = channelConfig.channelMap[item.channel] || '';
+        item.paths = tooltip ? tooltip.split('\n') : [];
     });
 
     // 获取顺序（直接使用 channelMap 的键）
@@ -150,13 +139,20 @@ async function parseGbo(lines, request) {
     order.forEach(channel => {
         const index = discountItems.findIndex(item => item.channel === channel);
         if (index !== -1) {
-            gbo[channel] = discountItems[index].discount;
+            const item = discountItems[index];
+            gbo[channel] = {
+                price: item.discount,
+                paths: item.paths
+            };
             discountItems.splice(index, 1);
         }
     });
     // 剩余项（没有被精确匹配的渠道名）
     for (const item of discountItems) {
-        gbo[item.channel] = item.discount;
+        gbo[item.channel] = {
+            price: item.discount,
+            paths: item.paths
+        };
     }
 
     return gbo;
