@@ -43,59 +43,34 @@ function renderqzCards(data) {
     });
 }
 
-// 渲染微信折扣区（适配/discount接口返回的gbo数据，依赖后端处理的配置映射）
-function renderGbo(gbo, channelConfig) {
+// 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
+function renderGbo(gbo) {
     const container = document.getElementById('gboGrid');
     container.innerHTML = '';
 
-    if (!gbo || Object.keys(gbo).length === 0) {
+    // 校验数据是否存在
+    if (!gbo || typeof gbo !== 'object' || Object.keys(gbo).length === 0) {
         container.innerHTML = '<p>暂无微信报价</p>';
         return;
     }
 
-    const discountItems = Object.entries(gbo).map(([channel, value]) => ({
-        channel: channel,
-        value: value,
-        tooltip: channelConfig.channelMap[channel] || ''
-    }));
+    // 按渠道名排序（保持展示一致性）
+    const sortedChannels = Object.keys(gbo).sort((a, b) => a.localeCompare(b));
 
-    const order = Object.keys(channelConfig.channelMap);
-
-    const sortedDiscounts = [];
-    const otherDiscounts = [];
-
-    order.forEach(orderedChannel => {
-        const index = discountItems.findIndex(item => item.channel === orderedChannel);
-        if (index !== -1) {
-            sortedDiscounts.push(discountItems[index]);
-            discountItems.splice(index, 1);
-        }
-    });
-
-    otherDiscounts.push(...discountItems);
-
-    sortedDiscounts.forEach(item => {
+    // 渲染每个渠道项
+    sortedChannels.forEach(channel => {
+        const { price, paths } = gbo[channel];
+        // 容错处理：确保 paths 是数组
+        const validPaths = Array.isArray(paths) ? paths : [];
+        
         const gboItem = document.createElement('div');
         gboItem.className = 'gbo-item';
-        gboItem.setAttribute('data-tooltip', item.tooltip);
-        gboItem.innerHTML = `${item.channel} <strong>${item.value}</strong>`;
+        // 悬停提示使用 paths 数组（换行分隔）
+        gboItem.setAttribute('data-tooltip', validPaths.join('\n'));
+        // 显示渠道名和价格
+        gboItem.innerHTML = `${channel} <strong>${price}</strong>`;
         container.appendChild(gboItem);
     });
-
-    if (otherDiscounts.length > 0) {
-        const separator = document.createElement('div');
-        separator.className = 'gbo-separator';
-        separator.textContent = '其他折扣';
-        container.appendChild(separator);
-
-        otherDiscounts.forEach(item => {
-            const gboItem = document.createElement('div');
-            gboItem.className = 'gbo-item extra';
-            gboItem.setAttribute('data-tooltip', item.tooltip);
-            gboItem.innerHTML = `${item.channel} <strong>${item.value}</strong>`;
-            container.appendChild(gboItem);
-        });
-    }
 }
 
 // 显示错误信息
@@ -110,7 +85,7 @@ function showError(message) {
     `;
 }
 
-// 新增：显示通知提示
+// 显示通知提示
 function showNotification(message, isError = false) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
@@ -120,7 +95,7 @@ function showNotification(message, isError = false) {
     setTimeout(() => notification.classList.remove('show'), 3000);
 }
 
-// 新增：初始化复制按钮功能
+// 初始化复制按钮功能
 function initCopyButton(templateData) {
     const copyBtn = document.getElementById('copyRatesBtn');
     if (!copyBtn) return;
@@ -175,11 +150,7 @@ async function loadData() {
 
         // 处理新返利数据（gbo）
         const gbo = discountData.gbo || {};
-        const gboConfigResp = await fetch('/config/gbo.json');
-        if (!gboConfigResp.ok) throw new Error('gbo配置获取失败');
-        const gboConfig = await gboConfigResp.json();
-
-        renderGbo(gbo, gboConfig.channelConfig);
+        renderGbo(gbo);
 
         // 新增：初始化复制按钮（传入qz.template数据）
         initCopyButton(discountData.qz?.template);
