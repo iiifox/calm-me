@@ -155,12 +155,13 @@ async function loadData() {
             document.getElementById('yesterday').href = discountData.yesterdayPage;
         }
 
-        // 处理旧返利数据（qz）
+        // 处理旧返利数据（qz）- 核心修改：过滤掉template字段
         const qzData = discountData.qz || {};
-        const timeKeys = Object.keys(qzData);
-
+        // 获取qz中所有键，但排除'template'（避免被当作时间块渲染）
+        const timeKeys = Object.keys(qzData).filter(key => key !== 'template');
+        // 转换为时间块格式
         const timeBlocks = timeKeys.map(time => ({
-            time: time,
+            time: time, // 直接使用接口返回的标准时间
             rates: Object.entries(qzData[time]).map(([channel, value]) => ({
                 channel,
                 value
