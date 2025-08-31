@@ -1,12 +1,19 @@
 // 渲染返利平台调价卡片
-function renderQz(data) {
+function renderqzCards(data) {
     const container = document.getElementById('qzContainer');
+
     if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
         return;
-    } 
+    }
+
+    // 更新页面上的时间
+    if (data.updateTime) {
+        document.getElementById('updateTime').textContent = data.updateTime;
+    }
 
     container.innerHTML = '';
+
     // 渲染每个时间块（直接使用接口返回的标准时间）
     data.timeBlocks.forEach(block => {
         const card = document.createElement('div');
@@ -106,10 +113,11 @@ function showError(message) {
 // 主数据加载逻辑（移除fetchConfig相关逻辑）
 async function loadData() {
     try {
-        // 获取折扣数据
+        // 获取折扣数据（已包含所有必要配置处理）
         const discountResp = await fetch('/discount');
         if (!discountResp.ok) throw new Error('折扣数据接口请求失败');
         const discountData = await discountResp.json();
+        
         if (discountData.error) throw new Error(discountData.error);
 
         // 设置昨日费率链接
@@ -119,7 +127,8 @@ async function loadData() {
 
         // 处理旧返利数据（qz）
         const qzData = discountData.qz || {};
-        const timeKeys = Object.keys(qzData);
+        const timeKeys = Object.keys(qzData); // 后端已排序
+
         // 转换为时间块格式
         const timeBlocks = timeKeys.map(time => ({
             time: time, // 直接使用接口返回的标准时间
@@ -128,16 +137,13 @@ async function loadData() {
                 value
             }))
         }));
-        // 渲染旧返利
-        renderQz({ timeBlocks, updateTime });
-        
+
         // 计算更新时间
         const lastTime = timeKeys[timeKeys.length - 1] || '00:00';
         const updateTime = `${discountData.date || ''} ${lastTime}`;
-        // 更新页面上的时间
-        if (data.updateTime) {
-            document.getElementById('updateTime').textContent = data.updateTime;
-        }
+
+        // 渲染旧返利卡片
+        renderqzCards({ timeBlocks, updateTime });
 
         // 处理新返利数据（gbo）- 从/discount接口获取已处理的gbo和配置
         const gbo = discountData.gbo || {};
