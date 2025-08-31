@@ -54,11 +54,10 @@ function renderGbo(gbo) {
         return;
     }
 
-    // 按渠道名排序（保持展示一致性）
-    const sortedChannels = Object.keys(gbo).sort((a, b) => a.localeCompare(b));
+    const channels = Object.keys(gbo);
 
     // 渲染每个渠道项
-    sortedChannels.forEach(channel => {
+    channels.forEach(channel => {
         const { price, paths } = gbo[channel];
         // 容错处理：确保 paths 是数组
         const validPaths = Array.isArray(paths) ? paths : [];
