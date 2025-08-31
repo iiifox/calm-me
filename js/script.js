@@ -110,10 +110,40 @@ function showError(message) {
     `;
 }
 
-// 主数据加载逻辑（移除fetchConfig相关逻辑）
+// 新增：显示通知提示
+function showNotification(message, isError = false) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = 'notification'; // 重置样式
+    if (isError) notification.classList.add('error');
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 3000);
+}
+
+// 新增：初始化复制按钮功能
+function initCopyButton(templateData) {
+    const copyBtn = document.getElementById('copyRatesBtn');
+    if (!copyBtn) return;
+
+    copyBtn.addEventListener('click', () => {
+        if (!templateData) {
+            showNotification('无可用费率数据（qz.template不存在）', true);
+            return;
+        }
+
+        // 复制qz.template内容到剪贴板
+        navigator.clipboard.writeText(templateData)
+            .then(() => showNotification('费率已复制到剪贴板'))
+            .catch(err => {
+                showNotification('复制失败，请手动复制', true);
+                console.error('复制失败:', err);
+            });
+    });
+}
+
+// 修改主数据加载逻辑，添加复制按钮初始化
 async function loadData() {
     try {
-        // 获取折扣数据（已包含所有必要配置处理）
         const discountResp = await fetch('/discount');
         if (!discountResp.ok) throw new Error('折扣数据接口请求失败');
         const discountData = await discountResp.json();
@@ -127,33 +157,31 @@ async function loadData() {
 
         // 处理旧返利数据（qz）
         const qzData = discountData.qz || {};
-        const timeKeys = Object.keys(qzData); // 后端已排序
+        const timeKeys = Object.keys(qzData);
 
-        // 转换为时间块格式
         const timeBlocks = timeKeys.map(time => ({
-            time: time, // 直接使用接口返回的标准时间
+            time: time,
             rates: Object.entries(qzData[time]).map(([channel, value]) => ({
                 channel,
                 value
             }))
         }));
 
-        // 计算更新时间
         const lastTime = timeKeys[timeKeys.length - 1] || '00:00';
         const updateTime = `${discountData.date || ''} ${lastTime}`;
 
-        // 渲染旧返利卡片
         renderqzCards({ timeBlocks, updateTime });
 
-        // 处理新返利数据（gbo）- 从/discount接口获取已处理的gbo和配置
+        // 处理新返利数据（gbo）
         const gbo = discountData.gbo || {};
-        // 从gbo.json获取渠道配置（后端已处理映射，前端直接使用）
         const gboConfigResp = await fetch('/config/gbo.json');
         if (!gboConfigResp.ok) throw new Error('gbo配置获取失败');
         const gboConfig = await gboConfigResp.json();
 
-        // 渲染新返利折扣
         renderGbo(gbo, gboConfig.channelConfig);
+
+        // 新增：初始化复制按钮（传入qz.template数据）
+        initCopyButton(discountData.qz?.template);
 
     } catch (error) {
         showError('数据加载失败: ' + error.message);
