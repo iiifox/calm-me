@@ -14,7 +14,7 @@ function formatRateValue(value) {
 }
 
 // 解析qz折扣
-function parseQz(lines) {
+function parseQz(lines, profit) {
     const qz = {};
     let timeOrder = [];
     let currentTimeKey = ""
@@ -43,7 +43,7 @@ function parseQz(lines) {
 
         // 渠道行：渠道名 + 数字
         const m = line.match(/(.*?)\s*(\d+(?:\.\d+)?)$/);
-        if (m && currentTimeKey) qz[currentTimeKey][m[1]] = formatRateValue(m[2]);
+        if (m && currentTimeKey) qz[currentTimeKey][m[1]] = formatRateValue(m[2]) + profit;
     }
 
     // 收集所有出现过的渠道，以及每个渠道首次出现的时间段索引
@@ -96,7 +96,7 @@ function parseQz(lines) {
 }
 
 // 解析gbo折扣
-async function parseGbo(lines, request) {
+async function parseGbo(lines, request, profit) {
     const gbo = {};
 
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
@@ -153,7 +153,7 @@ async function parseGbo(lines, request) {
         if (index !== -1) {
             const item = discountItems[index];
             gbo[channel] = {
-                price: item.discount,
+                price: item.discount + profit,
                 paths: item.paths
             };
             discountItems.splice(index, 1);
@@ -162,7 +162,7 @@ async function parseGbo(lines, request) {
     // 剩余项（没有被精确匹配的渠道名）
     for (const item of discountItems) {
         gbo[item.channel] = {
-            price: item.discount,
+            price: item.discount + profit,
             paths: item.paths
         };
     }
@@ -171,6 +171,7 @@ async function parseGbo(lines, request) {
 }
 
 export async function onRequest({request}) {
+    const profit = new URL(request.url).searchParams.get("profit")
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
@@ -213,8 +214,8 @@ export async function onRequest({request}) {
         gboLines.push(line);
     }
 
-    const qz = parseQz(qzLines);
-    const gbo = await parseGbo(gboLines, request);
+    const qz = parseQz(qzLines, profit);
+    const gbo = await parseGbo(gboLines, request, profit);
 
     const out = {yesterdayPage, date, qz, gbo};
     return new Response(JSON.stringify(out, null, 2), {
