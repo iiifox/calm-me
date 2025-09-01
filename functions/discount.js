@@ -171,7 +171,7 @@ async function parseGbo(lines, request, profit) {
 }
 
 export async function onRequest({request}) {
-    const profit = new URL(request.url).searchParams.get("profit")
+    const profit = Number(new URL(request.url).searchParams.get("profit") || 0);
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
