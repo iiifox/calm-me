@@ -61,32 +61,27 @@ function parseQz(lines, profit) {
         });
     });
     const allChannelsArr = Array.from(allChannels);
-
-    // 回溯补全：新增渠道在首次出现前的所有时间段折扣均设置为1
-    timeOrder.forEach((time, timeIndex) => {
-        allChannelsArr.forEach(channel => {
-            // 如果当前时间在渠道首次出现之前，折扣设置为1
-            if (timeIndex < firstOccurrence[channel]) qz[time][channel] = 1;
-        });
-    });
-
-    // 顺序补全：后续时间段缺失的渠道，延用上一时间段的折扣
-    for (let i = 1; i < timeOrder.length; i++) {
-        const prevTime = timeOrder[i - 1];
-        const currentTime = timeOrder[i];
-        allChannelsArr.forEach(channel => {
-            // 如果当前时间段没有该渠道，延用上一时间段的折扣
-            if (!qz[currentTime].hasOwnProperty(channel)) qz[currentTime][channel] = qz[prevTime][channel];
-        });
-    }
-
-    // 生成template
+    
+    // template补全（按规则生成：首次出现前补1，首次出现后延用折扣）
     const templateItems = [];
     // 按渠道分组，每个渠道下按时间顺序生成条目
     allChannelsArr.forEach(channel => {
-        timeOrder.forEach(time => {
-            const discount = qz[time][channel];
-            templateItems.push(`${channel}${time}/${discount}`);
+        // 记录上一时间段的折扣，用于后续时间段补全
+        let lastDiscount;
+        timeOrder.forEach((time, timeIndex) => {
+            // 渠道首次出现前的时间段 → template补折扣1
+            if (timeIndex < firstOccurrence[channel]) {
+                templateItems.push(`${channel}${time}/1`);
+            }
+            // 若当前时间段有该渠道，取当前折扣并更新lastDiscount
+            if (qz[time].hasOwnProperty(channel)) {
+                lastDiscount = qz[time][channel];
+                templateItems.push(`${channel}${time}/${lastDiscount}`);
+            }
+            // 若当前时间段无该渠道，延用上一时间段折扣（补全）
+            else if (lastDiscount !== undefined) {
+                templateItems.push(`${channel}${time}/${lastDiscount}`);
+            }
         });
     });
     // 将所有条目拼接为多行字符串，作为qz的template属性
