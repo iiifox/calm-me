@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         gbo自动启用
 // @namespace    https://iiifox.me/js/enableAccountExceptIds.js
-// @version      1.2.9
+// @version      0.0.1
 // @description  自动检测并每3分钟启用一次被异常停用的账号
 // @author       iiifox
 // @match        *://hxmm.vdvg82xr.top/*
@@ -140,3 +140,4 @@
         }, 2000);
     });
 })();
+
