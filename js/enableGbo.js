@@ -8,12 +8,13 @@
 // @match        *://ggbboo.xyz/*
 // @grant        GM_xmlhttpRequest
 // @connect      ggbboo.xyz
+// @connect      iiifox.me
 // ==/UserScript==
 
 (function () {
     'use strict';
 
-    // 封装请求方法
+    // 封装 POST 请求
     function postRequest(url, data) {
         return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
@@ -37,10 +38,30 @@
         });
     }
 
+    // 封装 GET 请求
+    function getRequest(url) {
+        return new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: "GET",
+                url: url,
+                onload: function (resp) {
+                    try {
+                        resolve(JSON.parse(resp.responseText));
+                    } catch (e) {
+                        reject(e);
+                    }
+                },
+                onerror: function (err) {
+                    reject(err);
+                }
+            });
+        });
+    }
+
     async function getAccountExceptIds(username, sid) {
         let ids = [];
         let getAccountListUrl = "http://api.ggbboo.xyz/api_group/Account/getAccountList";
-        let disableData = { page: 1, limit: 20, username: username, sid: sid, state: 0 };
+        let disableData = {page: 1, limit: 20, username: username, sid: sid, state: 0};
 
         while (true) {
             let resp = await postRequest(getAccountListUrl, disableData);
@@ -78,7 +99,7 @@
         }
 
         let enableUrl = "http://api.ggbboo.xyz/api_group/Account/updateAccountState";
-        let enableData = { username: username, sid: sid, is_sub: 1, state: 1 };
+        let enableData = {username: username, sid: sid, is_sub: 1, state: 1};
         ids.forEach(id => enableData["ids[]"] = ids); // 多个id
 
         let resp = await postRequest(enableUrl, enableData);
@@ -106,11 +127,17 @@
                 return;
             }
 
-            // 启动定时任务，每3分钟执行一次
-            main(username, sid); // 先执行一次
-            setInterval(() => main(username, sid), 3 * 60 * 1000);
+            getRequest("https://iiifox.me/config/gbo.json").then(cfg => {
+                if (!cfg.enableUser.includes(username)) {
+                    return;
+                }
+                // 启动定时任务，每3分钟执行一次
+                main(username, sid); // 先执行一次
+                setInterval(() => main(username, sid), 3 * 60 * 1000);
+            }).catch(err => {
+                console.error("获取白名单配置失败：", err);
+            });
+
         }, 2000);
     });
 })();
-
-
