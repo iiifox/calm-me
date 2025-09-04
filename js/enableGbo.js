@@ -115,45 +115,9 @@
         await enableAccount(username, sid, ids);
     }
 
-    // 创建配置面板
-    function createConfigPanel() {
-        const panel = document.createElement("div");
-        panel.style.position = "fixed";
-        panel.style.bottom = "20px";
-        panel.style.right = "20px";
-        panel.style.padding = "10px";
-        panel.style.background = "rgba(0,0,0,0.7)";
-        panel.style.color = "#fff";
-        panel.style.borderRadius = "8px";
-        panel.style.zIndex = 9999;
-        panel.style.fontSize = "14px";
-        panel.innerHTML = `
-            <label>执行间隔(分钟): </label>
-            <input id="intervalInput" type="number" min="1" style="width:50px;" />
-            <button id="saveInterval">保存</button>
-        `;
-        document.body.appendChild(panel);
-
-        const input = panel.querySelector("#intervalInput");
-        input.value = GM_getValue("intervalMinutes", 3); // 默认 3 分钟
-
-        panel.querySelector("#saveInterval").onclick = () => {
-            const val = parseInt(input.value);
-            if (val > 0) {
-                GM_setValue("intervalMinutes", val);
-                alert("保存成功，脚本将按新间隔执行！");
-            } else {
-                alert("请输入大于0的数字！");
-            }
-        };
-    }
-
     // 页面加载后执行
     window.addEventListener("load", () => {
         setTimeout(() => {
-            // 页面加载后显示配置面板
-            createConfigPanel();
-
             let username = localStorage.getItem("username");
             let sid = localStorage.getItem("sid");
 
@@ -176,4 +140,3 @@
         }, 2000);
     });
 })();
-
