@@ -76,6 +76,11 @@ function parseQz(lines, profit) {
             // 若当前时间段有该渠道，取当前折扣并更新lastDiscount
             if (qz[time].hasOwnProperty(channel)) {
                 lastDiscount = qz[time][channel];
+                // 如果和上一次折扣一样 → 不存储
+                if (lastDiscount === currentDiscount) {
+                    // 删除当前时间点的 qz[channel]
+                    delete qz[time][channel];
+                }
                 templateItems.push(`${channel}${time}/${lastDiscount}`);
             }
             // 若当前时间段无该渠道，延用上一时间段折扣（补全）
