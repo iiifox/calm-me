@@ -13,6 +13,13 @@ function formatRateValue(value) {
     return +(num / 1000).toFixed(3);
 }
 
+// 四舍五入函数：自动去除末尾多余的零
+function roundToFixed(num, decimalPlaces = 3) {
+    const factor = Math.pow(10, decimalPlaces);
+    // 先四舍五入到指定位数，再转换为Number自动去除末尾零
+    return Number(Math.round(num * factor) / factor);
+}
+
 // 解析qz折扣
 function parseQz(lines, profit) {
     const qz = {};
@@ -43,7 +50,7 @@ function parseQz(lines, profit) {
 
         // 渠道行：渠道名 + 数字
         const m = line.match(/(.*?)\s*(\d+(?:\.\d+)?)$/);
-        if (m && currentTimeKey) qz[currentTimeKey][m[1]] = formatRateValue(m[2]) + profit;
+        if (m && currentTimeKey) qz[currentTimeKey][m[1]] = roundToFixed(formatRateValue(m[2]) + profit);
     }
 
     // 收集所有出现过的渠道，以及每个渠道首次出现的时间段索引
@@ -154,7 +161,7 @@ async function parseGbo(lines, request, profit) {
         if (index !== -1) {
             const item = discountItems[index];
             gbo[channel] = {
-                price: item.discount + profit,
+                price: roundToFixed(item.discount + profit),
                 paths: item.paths
             };
             discountItems.splice(index, 1);
@@ -163,7 +170,7 @@ async function parseGbo(lines, request, profit) {
     // 剩余项（没有被精确匹配的渠道名）
     for (const item of discountItems) {
         gbo[item.channel] = {
-            price: item.discount + profit,
+            price: roundToFixed(item.discount + profit),
             paths: item.paths
         };
     }
