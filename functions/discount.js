@@ -14,7 +14,7 @@ function formatRateValue(value) {
 }
 
 // 四舍五入函数：自动去除末尾多余的零
-function roundToFixed(num, decimalPlaces = 3) {
+function roundToFixed(num, decimalPlaces = 4) {
     const factor = Math.pow(10, decimalPlaces);
     // 先四舍五入到指定位数，再转换为Number自动去除末尾零
     return Number(Math.round(num * factor) / factor);
