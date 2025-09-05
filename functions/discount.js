@@ -81,7 +81,7 @@ function parseQz(lines, profit) {
                     // 删除当前时间点的 qz[channel]
                     delete qz[time][channel];
                 }
-lastDiscount = currentDiscount
+                lastDiscount = currentDiscount
                 templateItems.push(`${channel}${time}/${lastDiscount}`);
             }
             // 若当前时间段无该渠道，延用上一时间段折扣（补全）
