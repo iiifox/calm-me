@@ -84,19 +84,19 @@ function renderqzCards(data) {
         const group = document.createElement('div');
         group.className = 'rebate-group';
 
-        const typeSpan = document.createElement('span');
-        typeSpan.className = 'channel-type';
-        typeSpan.textContent = type.label;
-        group.appendChild(typeSpan);
+        const channelSpan = document.createElement('span');
+        channelSpan.className = 'channel';
+        channelSpan.textContent = type.label;
+        group.appendChild(channelSpan);
 
         const channelList = document.createElement('div');
         channelList.className = 'channel-list';
 
-        (block.rates[channelGroup[type.key]] || []).forEach(channel => {
-            const channelSpan = document.createElement('span');
-            channelSpan.className = 'charge-type';
-            channelSpan.textContent = channel.channel;
-            channelList.appendChild(channelSpan);
+        channelData.forEach(channel => {
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'charge-type';
+            nameSpan.textContent = channel.channel;
+            channelList.appendChild(nameSpan);
 
             const valueSpan = document.createElement('span');
             valueSpan.className = 'charge-value';
