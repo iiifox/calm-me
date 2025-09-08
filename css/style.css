@@ -383,3 +383,41 @@ h1 {
 body {
     padding-top: 65px; /* 调高点，避免内容被遮住 */
 }
+
+/* 狐狸 */
+.rebate-system {
+  display: flex;
+  gap: 24px;
+}
+
+.rebate-group {
+  background: #f7f8fa;
+  border-radius: 8px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-size: 1rem;
+}
+
+.channel {
+  font-weight: bold;
+  color: #4b7bf5;
+  margin-right: 6px;
+}
+
+.charge-type {
+  font-size: 0.95em;
+  color: #888;
+  margin-left: 8px;
+}
+
+.charge-value {
+  background: #e9ecef;
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: #222;
+  font-weight: 500;
+  margin-right: 6px;
+}
