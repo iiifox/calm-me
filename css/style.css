@@ -447,7 +447,7 @@ body {
 /* 旧返利渠道项容器 - 参考新返利的 gbo-grid 布局 */
 .channel-list {
     display: grid;
-    grid-template-columns: repeat(6, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, 160px);
     gap: 15px; /* 与新返利项目间距一致 */
     flex: 1; /* 确保占满剩余空间 */
 }
