@@ -1,76 +1,20 @@
-// // 渲染返利平台调价卡片
-// function renderqzCards(data) {
-//     const container = document.getElementById('qzContainer');
-
-//     if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
-//         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
-//         return;
-//     }
-
-//     // 更新页面上的时间
-//     if (data.updateTime) {
-//         document.getElementById('updateTime').textContent = data.updateTime;
-//     }
-
-//     container.innerHTML = '';
-
-//     // 渲染每个时间块（直接使用接口返回的标准时间）
-//     data.timeBlocks.forEach(block => {
-//         const card = document.createElement('div');
-//         card.className = 'qz-card';
-
-//         const header = document.createElement('div');
-//         header.className = 'card-header';
-//         header.textContent = `${block.time}`;
-
-//         const content = document.createElement('div');
-//         content.className = 'card-content';
-
-//         // 添加费率项
-//         block.rates.forEach(rate => {
-//             const item = document.createElement('div');
-//             item.className = 'qz-item';
-//             item.innerHTML = `
-//                 <span class="channel">${rate.channel}</span>
-//                 <span class="value">${rate.value}</span>
-//             `;
-//             content.appendChild(item);
-//         });
-
-//         card.appendChild(header);
-//         card.appendChild(content);
-//         container.appendChild(card);
-//     });
-// }
-
-// 渲染qz折扣
 function renderqzCards(data) {
     const container = document.getElementById('qz-rebate-system');
+    const tabsContainer = document.querySelector('.time-tabs');
 
-    console.log(data.timeBlocks)
+    // 清空容器
+    container.innerHTML = '';
+    tabsContainer.innerHTML = '';
 
     if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
         return;
     }
 
-    // 更新页面上的时间
     if (data.updateTime) {
         document.getElementById('updateTime').textContent = data.updateTime;
     }
 
-    // 只渲染当前选中的时间块
-    const block = data.timeBlocks[0];
-
-    container.innerHTML = '';
-
-    // 标题显示当前时间段
-    const timeTitle = document.createElement('div');
-    timeTitle.className = 'rebate-title';
-    timeTitle.textContent = `旧返利折扣（${block.time}）`;
-    container.appendChild(timeTitle);
-
-    // 分组渲染
     const types = [
         {key: 'qianbao', label: '钱包'},
         {key: 'teshu', label: '特殊'},
@@ -83,34 +27,87 @@ function renderqzCards(data) {
         "weixin": ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
     }
 
-    types.forEach(type => {
-        const group = document.createElement('div');
-        group.className = 'rebate-group';
+    // 为每个时间块创建滑动面板
+    data.timeBlocks.forEach((block, index) => {
+        // 创建时间块面板
+        const slide = document.createElement('div');
+        slide.className = 'qz-slide';
+        slide.dataset.time = block.time;
 
-        const channelSpan = document.createElement('span');
-        channelSpan.className = 'channel';
-        channelSpan.textContent = type.label;
-        group.appendChild(channelSpan);
+        const timeTitle = document.createElement('div');
+        timeTitle.className = 'rebate-title';
+        timeTitle.textContent = `旧返利折扣（${block.time}开始）`;
+        slide.appendChild(timeTitle);
 
-        const channelList = document.createElement('div');
-        channelList.className = 'channel-list';
-        Object.values(block.rates).forEach(item => {
-            if (channelGroup[type.key].includes(item.channel)) {
-                const channelSpan = document.createElement('span');
-                channelSpan.className = 'charge-type';
-                channelSpan.textContent = item.channel;
-                channelList.appendChild(channelSpan);
+        // 渲染该时间块的所有渠道数据
+        types.forEach(type => {
+            const group = document.createElement('div');
+            group.className = 'rebate-group';
 
-                const valueSpan = document.createElement('span');
-                valueSpan.className = 'charge-value';
-                valueSpan.textContent = item.value;
-                channelList.appendChild(valueSpan);
-            }
+            const channelSpan = document.createElement('span');
+            channelSpan.className = 'channel';
+            channelSpan.textContent = type.label;
+            group.appendChild(channelSpan);
+
+            const channelList = document.createElement('div');
+            channelList.className = 'channel-list';
+
+            Object.values(block.rates).forEach(item => {
+                if (channelGroup[type.key].includes(item.channel)) {
+                    const channelSpan = document.createElement('span');
+                    channelSpan.className = 'charge-type';
+                    channelSpan.textContent = item.channel;
+                    channelList.appendChild(channelSpan);
+
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'charge-value';
+                    valueSpan.textContent = item.value;
+                    channelList.appendChild(valueSpan);
+                }
+            });
+
+            group.appendChild(channelList);
+            slide.appendChild(group);
         });
 
-        group.appendChild(channelList);
-        container.appendChild(group);
+        container.appendChild(slide);
+
+        // 创建时间标签
+        const tab = document.createElement('div');
+        tab.className = `time-tab ${index === data.timeBlocks.length - 1 ? 'active' : ''}`;
+        tab.textContent = block.time;
+        tab.addEventListener('click', () => {
+            // 切换到对应时间块
+            slide.scrollIntoView({behavior: 'smooth'});
+            // 更新活跃标签
+            document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+        tabsContainer.appendChild(tab);
     });
+
+    // 监听滚动事件，更新活跃标签
+    container.addEventListener('scroll', () => {
+        const slides = document.querySelectorAll('.qz-slide');
+        const tabs = document.querySelectorAll('.time-tab');
+
+        slides.forEach((slide, index) => {
+            const rect = slide.getBoundingClientRect();
+            // 检查当前slide是否在可视区域
+            if (rect.left >= 0 && rect.right <= window.innerWidth) {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabs[index].classList.add('active');
+            }
+        });
+    });
+
+    // 默认滚动到最后一个时间块
+    setTimeout(() => {
+        const lastSlide = document.querySelector('.qz-slide:last-child');
+        if (lastSlide) {
+            lastSlide.scrollIntoView({behavior: 'smooth'});
+        }
+    }, 100);
 }
 
 // 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
