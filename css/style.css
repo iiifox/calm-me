@@ -418,3 +418,123 @@ body {
     scrollbar-width: none;
 }
 
+/* 调整组名与渠道项在同一行 */
+.rebate-group {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 组名与渠道项之间的间距 */
+    margin-bottom: 12px;
+    flex-wrap: wrap; /* 确保在小屏幕上自动换行 */
+}
+
+/* 组名样式调整 */
+.rebate-group .channel {
+    min-width: 60px; /* 固定组名宽度，确保对齐 */
+    flex-shrink: 0; /* 防止组名被压缩 */
+}
+
+.qz-item .channel-name {
+    color: #34495e;
+    font-weight: 500;
+}
+
+.qz-item .channel-value {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+/* 统一新旧返利渠道项的宽度和样式 */
+/* 旧返利渠道项容器 - 参考新返利的 gbo-grid 布局 */
+.channel-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 与新返利保持一致的最小宽度 */
+    gap: 15px; /* 与新返利项目间距一致 */
+    flex: 1; /* 确保占满剩余空间 */
+}
+
+/* 旧返利单个渠道项 - 完全对齐新返利的 gbo-item 样式 */
+.qz-item {
+    background: #f8f9fa;
+    padding: 15px; /* 与新返利项目内边距一致 */
+    border-radius: 8px; /* 与新返利圆角一致 */
+    border-left: 4px solid #3498db; /* 与新返利左侧边框一致 */
+    transition: transform 0.2s ease; /* 与新返利悬停动画一致 */
+    display: flex;
+    justify-content: space-between; /* 渠道名和值两端对齐 */
+    align-items: center;
+}
+
+/* 旧返利渠道项悬停效果 - 与新返利保持一致 */
+.qz-item:hover {
+    transform: translateX(5px); /* 与新返利悬停位移一致 */
+}
+
+/* 调整组容器样式，确保组名与渠道项在同一行且不换行 */
+.rebate-group {
+    display: flex;
+    align-items: flex-start; /* 顶部对齐，避免组名与项目基线错位 */
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px 0;
+    flex-wrap: nowrap; /* 防止组名和渠道项换行 */
+}
+
+/* 固定组名宽度，确保所有组对齐 */
+.rebate-group .channel {
+    min-width: 60px;
+    flex-shrink: 0; /* 不压缩组名宽度 */
+    padding-top: 15px; /* 与渠道项内边距顶部对齐 */
+}
+
+
+/* 狐狸安卓Q 样式 */
+.fox-android-q .channel {
+    font-weight: bold;
+    color: #4b7bf5;
+    min-width: auto;
+    padding-top: 0;
+}
+
+.fox-android-q .charge-type {
+    color: #888;
+    font-size: 0.95em;
+}
+
+.fox-android-q .charge-value {
+    background: #e9ecef;
+    border-radius: 4px;
+    padding: 2px 10px;
+    color: #222;
+    font-weight: 500;
+}
+
+/* 确保不继承其他返利项的网格布局 */
+.fox-android-q .channel-list {
+    display: inline;
+    flex: none;
+    grid-template-columns: none;
+}
+
+/* 狐狸安卓Q 一行两列布局 */
+.fox-android-q .rebate-content {
+    display: flex;
+    justify-content: space-between; /* 左右分布 */
+    gap: 20px; /* 中间间距 */
+}
+
+.fox-android-q .rebate-group {
+    flex: 1; /* 各占一半宽度 */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0; /* 取消底部间距 */
+    padding: 10px 15px;
+    background: #f8f9fa; /* 轻微背景色区分区块 */
+    border-radius: 6px;
+}
+
+/* 确保标题与内容正确对齐 */
+.fox-android-q .rebate-title {
+    margin-bottom: 10px;
+}
