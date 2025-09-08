@@ -56,34 +56,44 @@ function renderqzCards(data) {
         document.getElementById('updateTime').textContent = data.updateTime;
     }
 
+        // 只渲染当前选中的时间块
+    const block = data.timeBlocks[0];
+    if (!block || !block.channelType) {
+        container.innerHTML = '<div class="error">无效的时间块数据</div>';
+        return;
+    }
+
     container.innerHTML = '';
 
-    const channelData = data.timeBlocks[0];
-    
-    // 类别配置
+    // 标题显示当前时间段
+    const timeTitle = document.createElement('div');
+    timeTitle.className = 'rebate-title';
+    timeTitle.textContent = `旧返利折扣（${block.time}）`;
+    container.appendChild(timeTitle);
+
+    // 分组渲染
     const types = [
         { key: 'qianbao', label: '钱包' },
         { key: 'teshu', label: '特殊' },
         { key: 'weixin', label: '微信' }
     ];
 
-    // 循环类别
     types.forEach(type => {
         const group = document.createElement('div');
         group.className = 'rebate-group';
 
-        const channelSpan = document.createElement('span');
-        channelSpan.className = 'channel';
-        channelSpan.textContent = type.label;
-        group.appendChild(channelSpan);
+        const typeSpan = document.createElement('span');
+        typeSpan.className = 'channel-type';
+        typeSpan.textContent = type.label;
+        group.appendChild(typeSpan);
 
         const channelList = document.createElement('div');
         channelList.className = 'channel-list';
 
-        channelData.forEach(channel => {
+        (block.channelType[type.key] || []).forEach(channel => {
             const nameSpan = document.createElement('span');
             nameSpan.className = 'charge-type';
-            nameSpan.textContent = channel.channel;
+            nameSpan.textContent = channel.name;
             channelList.appendChild(nameSpan);
 
             const valueSpan = document.createElement('span');
