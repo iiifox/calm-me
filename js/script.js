@@ -58,7 +58,7 @@ function renderqzCards(data) {
 
     container.innerHTML = '';
 
-    const channelData = data.timeBlocks.find(block => block.time === "00:00");
+    const channelData = data.timeBlocks[0];
     
     // 类别配置
     const types = [
