@@ -40,29 +40,39 @@ function renderqzCards(data) {
         slide.appendChild(timeTitle);
 
         // 渲染该时间块的所有渠道数据
+        // 修改types.forEach循环内的代码
         types.forEach(type => {
             const group = document.createElement('div');
             group.className = 'rebate-group';
 
             const channelSpan = document.createElement('span');
             channelSpan.className = 'channel';
-            channelSpan.textContent = type.label;
+            channelSpan.textContent = type.label; // 这是"钱包"、"特殊"、"微信"等组名
             group.appendChild(channelSpan);
 
             const channelList = document.createElement('div');
             channelList.className = 'channel-list';
 
+            // 在 renderqzCards 函数的循环中，替换原有 channelList 内部渲染逻辑
             Object.values(block.rates).forEach(item => {
                 if (channelGroup[type.key].includes(item.channel)) {
-                    const channelSpan = document.createElement('span');
-                    channelSpan.className = 'charge-type';
-                    channelSpan.textContent = item.channel;
-                    channelList.appendChild(channelSpan);
+                    // 创建独立的渠道项div（使用 qz-item 类）
+                    const channelItem = document.createElement('div');
+                    channelItem.className = 'qz-item'; // 应用统一样式
 
+                    // 渠道名称
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'channel-name';
+                    nameSpan.textContent = item.channel;
+
+                    // 渠道值
                     const valueSpan = document.createElement('span');
-                    valueSpan.className = 'charge-value';
+                    valueSpan.className = 'channel-value';
                     valueSpan.textContent = item.value;
-                    channelList.appendChild(valueSpan);
+
+                    channelItem.appendChild(nameSpan);
+                    channelItem.appendChild(valueSpan);
+                    channelList.appendChild(channelItem);
                 }
             });
 
