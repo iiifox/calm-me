@@ -1,9 +1,25 @@
 {
-  "channelType": [
-    "qianbao": ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道H"],
-    "teshu": ["渠道TA", "渠道TB"],
-    "weixin": ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
-  ],
+  "channelType": {
+    "qianbao": [
+      "渠道A",
+      "渠道B",
+      "渠道C",
+      "渠道D",
+      "渠道E",
+      "渠道H"
+    ],
+    "teshu": [
+      "渠道TA",
+      "渠道TB"
+    ],
+    "weixin": [
+      "渠道VA",
+      "VB微信10起",
+      "VC微信50",
+      "VD100",
+      "VE200"
+    ]
+  },
   "enableUser": [
     "落尘", "mrjz521",
     "糖", "饼饼大王", "伊念", "兔子", "梦寐点券", "hoang666", "大圣晴天980", "wanyi888", "子林7", "labourers",
