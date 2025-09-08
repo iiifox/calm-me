@@ -68,7 +68,7 @@ function parseQz(lines, profit) {
         });
     });
     const allChannelsArr = Array.from(allChannels);
-    
+
     // template补全（按规则生成：首次出现前补1，首次出现后延用折扣）
     const templateItems = [];
     // 按渠道分组，每个渠道下按时间顺序生成条目
@@ -78,21 +78,17 @@ function parseQz(lines, profit) {
         timeOrder.forEach((time, timeIndex) => {
             // 渠道首次出现前的时间段 → template补折扣1
             if (timeIndex < firstOccurrence[channel]) {
+                qz[time][channel] = 1
                 templateItems.push(`${channel}${time}/1`);
             }
-            // 若当前时间段有该渠道，取当前折扣并更新lastDiscount
-            if (qz[time].hasOwnProperty(channel)) {
-                const currentDiscount = qz[time][channel];
-                // 如果和上一次折扣一样 → 不存储
-                if (lastDiscount === currentDiscount) {
-                    // 删除当前时间点的 qz[channel]
-                    delete qz[time][channel];
-                }
-                lastDiscount = currentDiscount
+            // 若当前时间段有该渠道，使用当前折扣并更新lastDiscount
+            else if (qz[time].hasOwnProperty(channel)) {
+                const lastDiscount = qz[time][channel];
                 templateItems.push(`${channel}${time}/${lastDiscount}`);
             }
             // 若当前时间段无该渠道，延用上一时间段折扣（补全）
             else if (lastDiscount !== undefined) {
+                qz[time][channel] = lastDiscount;
                 templateItems.push(`${channel}${time}/${lastDiscount}`);
             }
         });
