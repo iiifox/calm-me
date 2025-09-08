@@ -1,6 +1,50 @@
-// 渲染返利平台调价卡片
+// // 渲染返利平台调价卡片
+// function renderqzCards(data) {
+//     const container = document.getElementById('qzContainer');
+
+//     if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
+//         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
+//         return;
+//     }
+
+//     // 更新页面上的时间
+//     if (data.updateTime) {
+//         document.getElementById('updateTime').textContent = data.updateTime;
+//     }
+
+//     container.innerHTML = '';
+
+//     // 渲染每个时间块（直接使用接口返回的标准时间）
+//     data.timeBlocks.forEach(block => {
+//         const card = document.createElement('div');
+//         card.className = 'qz-card';
+
+//         const header = document.createElement('div');
+//         header.className = 'card-header';
+//         header.textContent = `${block.time}`;
+
+//         const content = document.createElement('div');
+//         content.className = 'card-content';
+
+//         // 添加费率项
+//         block.rates.forEach(rate => {
+//             const item = document.createElement('div');
+//             item.className = 'qz-item';
+//             item.innerHTML = `
+//                 <span class="channel">${rate.channel}</span>
+//                 <span class="value">${rate.value}</span>
+//             `;
+//             content.appendChild(item);
+//         });
+
+//         card.appendChild(header);
+//         card.appendChild(content);
+//         container.appendChild(card);
+//     });
+// }
+
 function renderqzCards(data) {
-    const container = document.getElementById('qzContainer');
+    const container = document.getElementById('qz-rebate-system');
 
     if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
@@ -14,93 +58,44 @@ function renderqzCards(data) {
 
     container.innerHTML = '';
 
-    // 渲染每个时间块（直接使用接口返回的标准时间）
-    data.timeBlocks.forEach(block => {
-        const card = document.createElement('div');
-        card.className = 'qz-card';
+    const channelData = data.timeBlocks.find(block => block.time === "00:00");
+    
+    // 类别配置
+    const types = [
+        { key: 'qianbao', label: '钱包' },
+        { key: 'teshu', label: '特殊' },
+        { key: 'weixin', label: '微信' }
+    ];
 
-        const header = document.createElement('div');
-        header.className = 'card-header';
-        header.textContent = `${block.time}`;
+    // 循环类别
+    types.forEach(type => {
+        const group = document.createElement('div');
+        group.className = 'rebate-group';
 
-        const content = document.createElement('div');
-        content.className = 'card-content';
+        const channelSpan = document.createElement('span');
+        channelSpan.className = 'channel';
+        channelSpan.textContent = type.label;
+        group.appendChild(channelSpan);
 
-        // 添加费率项
-        block.rates.forEach(rate => {
-            const item = document.createElement('div');
-            item.className = 'qz-item';
-            item.innerHTML = `
-                <span class="channel">${rate.channel}</span>
-                <span class="value">${rate.value}</span>
-            `;
-            content.appendChild(item);
+        const channelList = document.createElement('div');
+        channelList.className = 'channel-list';
+
+        channelData.forEach(channel => {
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'charge-type';
+            nameSpan.textContent = channel.channel;
+            channelList.appendChild(nameSpan);
+
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'charge-value';
+            valueSpan.textContent = channel.value;
+            channelList.appendChild(valueSpan);
         });
 
-        card.appendChild(header);
-        card.appendChild(content);
-        container.appendChild(card);
+        group.appendChild(channelList);
+        container.appendChild(group);
     });
 }
-
-// function renderqzCards(data) {
-//     const container = document.getElementById('qzContainer');
-
-//     // 如果数据异常
-//     if (!data || !data.channelType) {
-//         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
-//         return;
-//     }
-
-//     container.innerHTML = '';
-
-//     // 类别配置
-//     const types = [
-//         { key: 'qianbao', label: '钱包' },
-//         { key: 'teshu', label: '特殊' },
-//         { key: 'weixin', label: '微信' }
-//     ];
-
-//     // 创建统一卡片
-//     const card = document.createElement('div');
-//     card.className = 'rebate-system'; // 用统一宽度样式
-
-//     const title = document.createElement('div');
-//     title.className = 'rebate-title';
-//     title.textContent = '旧返利折扣';
-//     card.appendChild(title);
-
-//     // 循环类别
-//     types.forEach(type => {
-//         const group = document.createElement('div');
-//         group.className = 'rebate-group';
-
-//         const typeSpan = document.createElement('span');
-//         typeSpan.className = 'channel-type';
-//         typeSpan.textContent = type.label;
-//         group.appendChild(typeSpan);
-
-//         const channelList = document.createElement('div');
-//         channelList.className = 'channel-list';
-
-//         (data.channelType[type.key] || []).forEach(channel => {
-//             const nameSpan = document.createElement('span');
-//             nameSpan.className = 'charge-type';
-//             nameSpan.textContent = channel.name;
-//             channelList.appendChild(nameSpan);
-
-//             const valueSpan = document.createElement('span');
-//             valueSpan.className = 'charge-value';
-//             valueSpan.textContent = channel.value;
-//             channelList.appendChild(valueSpan);
-//         });
-
-//         group.appendChild(channelList);
-//         card.appendChild(group);
-//     });
-
-//     container.appendChild(card);
-// }
 
 // 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
 function renderGbo(gbo) {
