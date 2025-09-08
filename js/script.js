@@ -92,7 +92,8 @@ function renderqzCards(data) {
         const channelList = document.createElement('div');
         channelList.className = 'channel-list';
 
-        channelData.forEach(channel => {
+        (block.rates || channelGroup[type]).forEach(channel => {
+            if (channel)
             const nameSpan = document.createElement('span');
             nameSpan.className = 'charge-type';
             nameSpan.textContent = channel.channel;
