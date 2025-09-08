@@ -74,6 +74,12 @@ function renderqzCards(data) {
         { key: 'weixin', label: '微信' }
     ];
 
+    const channelGroup = {
+        "qianbao": ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道H"],
+        "teshu": ["渠道TA", "渠道TB"],
+        "weixin": ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
+      }
+
     types.forEach(type => {
         const group = document.createElement('div');
         group.className = 'rebate-group';
@@ -86,11 +92,11 @@ function renderqzCards(data) {
         const channelList = document.createElement('div');
         channelList.className = 'channel-list';
 
-        (block.channelType[type.key] || []).forEach(channel => {
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'charge-type';
-            nameSpan.textContent = channel.name;
-            channelList.appendChild(nameSpan);
+        (block.rates[channelGroup[type.key]] || []).forEach(channel => {
+            const channelSpan = document.createElement('span');
+            channelSpan.className = 'charge-type';
+            channelSpan.textContent = channel.channel;
+            channelList.appendChild(channelSpan);
 
             const valueSpan = document.createElement('span');
             valueSpan.className = 'charge-value';
