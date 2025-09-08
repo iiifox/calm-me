@@ -385,7 +385,7 @@ body {
 }
 
 /* 狐狸 */
-.rebate-system {
+/* .rebate-system {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fff;
@@ -425,4 +425,64 @@ body {
   padding: 2px 10px;
   color: #222;
   font-weight: 500;
+} */
+
+.rebate-system {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  padding: 18px 24px;
+  max-width: 640px; /* 统一宽度 */
+  margin: 0 auto 24px auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.rebate-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ff6600;
+  margin-bottom: 12px;
+}
+
+.rebate-group {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.channel-type {
+  font-weight: bold;
+  color: #4b7bf5;
+  min-width: 48px;
+  margin-right: 16px;
+  display: inline-block;
+  font-size: 1.05em;
+}
+
+.channel-list {
+  display: flex;
+  flex-wrap: wrap; /* 渠道多时自动换行 */
+  gap: 12px;
+}
+
+.charge-type {
+  color: #888;
+  font-size: 0.95em;
+  background: #f1f3f6;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.charge-value {
+  background: #e9ecef;
+  border-radius: 4px;
+  padding: 2px 10px;
+  color: #222;
+  font-weight: 500;
+}
+
+.channel {
+  font-weight: bold;
+  color: #4b7bf5;
+  margin-right: 8px;
 }
