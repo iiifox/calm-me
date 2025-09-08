@@ -58,10 +58,6 @@ function renderqzCards(data) {
 
         // 只渲染当前选中的时间块
     const block = data.timeBlocks[0];
-    if (!block || !block.channelType) {
-        container.innerHTML = '<div class="error">无效的时间块数据</div>';
-        return;
-    }
 
     container.innerHTML = '';
 
