@@ -6,7 +6,7 @@ function renderqzCards(timeBlocks) {
     container.innerHTML = '';
     tabsContainer.innerHTML = '';
 
-    if (timeBlocks || timeBlocks.length === 0) {
+    if (!timeBlocks || timeBlocks.length === 0) {
         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
         return;
     }
