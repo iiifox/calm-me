@@ -317,13 +317,13 @@ body {
 
 /* 返利系统样式设置 */
 .rebate-system {
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    background: #fff;
     padding: 18px 24px;
     width: 100%;
     margin: 0 auto 24px auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    background: #f6f8fb; /* 更温和的灰蓝底色 */
+    border: 1px solid #e0e5ea;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(100, 150, 220, 0.06);
 }
 
 .rebate-title {
@@ -391,17 +391,18 @@ body {
 
 .time-tab {
     padding: 6px 12px;
-    background: #f1f5f9;
     border-radius: 16px;
     font-size: 0.9em;
     cursor: pointer;
+    background: #e8edf7;
+    color: #4062a9;
     transition: all 0.2s;
 }
 
 .time-tab.active {
-    background: #4b7bf5;
-    color: white;
     font-weight: 500;
+    background: #4062a9;
+    color: #fff;
 }
 
 .time-tab:hover {
@@ -467,11 +468,12 @@ body {
 /* 调整组容器样式，确保组名与渠道项在同一行且不换行 */
 .rebate-group {
     display: flex;
-    align-items: flex-start; /* 顶部对齐，避免组名与项目基线错位 */
-    gap: 15px;
-    margin-bottom: 15px;
-    padding: 10px 0;
     flex-wrap: nowrap; /* 防止组名和渠道项换行 */
+    margin-bottom: 4px !important; /* 原12px/15px → 4px，更紧凑 */
+    padding: 8px 0 !important; /* 适度缩减内边距 */
+    gap: 10px !important; /* 原12/15 → 10px，内容更紧凑 */
+    min-height: 42px !important; /* 与渠道块高度一致 */
+    align-items: center !important; /* 垂直居中内容 */
 }
 
 /* 固定组名宽度，确保所有组对齐 */
@@ -533,40 +535,8 @@ body {
     margin-bottom: 10px;
 }
 
-/* rebate-system主区块整体配色优化 */
-.rebate-system {
-    background: #f6f8fb; /* 更温和的灰蓝底色 */
-    border: 1px solid #e0e5ea;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(100, 150, 220, 0.06);
-}
-
-/* 时间标签配色统一优化 */
-.time-tab {
-    background: #e8edf7;
-    color: #4062a9;
-    border-radius: 16px;
-    transition: all 0.2s;
-}
-
-.time-tab.active {
-    background: #4062a9;
-    color: #fff;
-}
-
 /* 返利值颜色柔和些 */
 .channel-value {
     color: #fa9841; /* 柔和橙色 */
     font-weight: 600;
 }
-
-/* 缩小返利分组之间的间距（钱包/特殊/微信三组之间） */
-.rebate-group {
-    margin-bottom: 4px !important; /* 原12px/15px → 4px，更紧凑 */
-    padding: 8px 0 !important; /* 适度缩减内边距 */
-    gap: 10px !important; /* 原12/15 → 10px，内容更紧凑 */
-    min-height: 42px !important; /* 与渠道块高度一致 */
-    display: flex;
-    align-items: center !important; /* 垂直居中内容 */
-}
-
