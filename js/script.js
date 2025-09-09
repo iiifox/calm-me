@@ -214,7 +214,6 @@ async function loadData() {
                 value
             }))
         }));
-
         renderqzCards(timeBlocks);
 
         // 处理新返利数据（gbo）
