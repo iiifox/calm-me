@@ -1,4 +1,4 @@
-function renderqzCards(data) {
+function renderqzCards(timeBlocks) {
     const container = document.getElementById('qz-rebate-system');
     const tabsContainer = document.querySelector('.time-tabs');
 
@@ -6,13 +6,9 @@ function renderqzCards(data) {
     container.innerHTML = '';
     tabsContainer.innerHTML = '';
 
-    if (!data || !data.timeBlocks || data.timeBlocks.length === 0) {
+    if (timeBlocks || timeBlocks.length === 0) {
         container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
         return;
-    }
-
-    if (data.updateTime) {
-        document.getElementById('updateTime').textContent = data.updateTime;
     }
 
     const types = [
@@ -28,7 +24,7 @@ function renderqzCards(data) {
     }
 
     // 为每个时间块创建滑动面板
-    data.timeBlocks.forEach((block, index) => {
+    timeBlocks.forEach((block, index) => {
         // 创建时间块面板
         const slide = document.createElement('div');
         slide.className = 'qz-slide';
@@ -84,7 +80,7 @@ function renderqzCards(data) {
 
         // 创建时间标签
         const tab = document.createElement('div');
-        tab.className = `time-tab ${index === data.timeBlocks.length - 1 ? 'active' : ''}`;
+        tab.className = `time-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
         tab.textContent = block.time;
         tab.addEventListener('click', () => {
             // 切换到对应时间块
@@ -219,16 +215,13 @@ async function loadData() {
             }))
         }));
 
-        const lastTime = timeKeys[timeKeys.length - 1] || '00:00';
-        const updateTime = `${discountData.date || ''} ${lastTime}`;
-
-        renderqzCards({ timeBlocks, updateTime });
+        renderqzCards(timeBlocks);
 
         // 处理新返利数据（gbo）
         const gbo = discountData.gbo || {};
         renderGbo(gbo);
 
-        // 新增：初始化复制按钮（传入qz.template数据）
+        // 初始化复制按钮（传入qz.template数据）
         initCopyButton(discountData.qz?.template);
 
     } catch (error) {
