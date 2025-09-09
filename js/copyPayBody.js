@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         提取QQ支付请求参数
+// @name         提取QQ支付响应Body
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  在腾讯充值中心页面中，监听 mobile_save 接口，提取响应 body 并复制到剪贴板（支持 http/https）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -47,7 +47,7 @@
         try {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 await navigator.clipboard.writeText(text);
-                showToast('支付请求已复制');
+                showToast('支付响应Body已复制');
                 return;
             }
             throw new Error('navigator.clipboard 不可用');
@@ -64,7 +64,7 @@
             document.body.removeChild(textarea);
 
             if (ok) {
-                showToast('支付请求已复制');
+                showToast('支付响应Body已复制');
             } else {
                 prompt('复制失败，请手动复制：', text);
             }
@@ -77,7 +77,7 @@
 
         const btn = document.createElement('button');
         btn.id = 'df-pay-btn';
-        btn.textContent = '复制支付请求';
+        btn.textContent = '复制支付响应Body';
         Object.assign(btn.style, {
             position: 'fixed',
             top: '20px',
@@ -96,7 +96,7 @@
 
         btn.addEventListener('click', () => {
             if (!latestBody) {
-                showToast('暂无可复制的支付请求');
+                showToast('暂无可复制的支付响应Body');
                 return;
             }
             copyTextSafe(latestBody);
