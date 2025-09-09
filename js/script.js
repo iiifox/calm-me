@@ -202,6 +202,14 @@ async function loadData() {
             document.getElementById('yesterday').href = discountData.yesterdayPage;
         }
 
+        // 动态设置费率展示标题
+        if (discountData.date) {
+            const rateTitleEl = document.getElementById('rate-title');
+            if (rateTitleEl) {
+                rateTitleEl.textContent = `${discountData.date} 费率展示`;
+            }
+        }
+
         // 处理旧返利数据（qz）- 核心修改：过滤掉template字段
         const qzData = discountData.qz || {};
         // 获取qz中所有键，但排除'template'（避免被当作时间块渲染）
