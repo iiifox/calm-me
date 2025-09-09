@@ -519,7 +519,7 @@ body {
 .fox-android-q .rebate-content {
     display: flex;
     justify-content: space-between; /* 左右分布 */
-    gap: 10px; /* 中间间距 */
+    gap: 20px; /* 中间间距 */
 }
 
 .fox-android-q .rebate-group {
