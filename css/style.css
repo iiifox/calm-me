@@ -427,12 +427,6 @@ body {
     flex-wrap: wrap; /* 确保在小屏幕上自动换行 */
 }
 
-/* 组名样式调整 */
-.rebate-group .channel {
-    min-width: 60px; /* 固定组名宽度，确保对齐 */
-    flex-shrink: 0; /* 防止组名被压缩 */
-}
-
 .qz-item .channel-name {
     color: #34495e;
     font-weight: 500;
@@ -454,14 +448,15 @@ body {
 
 /* 旧返利单个渠道项 - 完全对齐新返利的 gbo-item 样式 */
 .qz-item {
-    background: #f8f9fa;
-    padding: 15px; /* 与新返利项目内边距一致 */
-    border-radius: 8px; /* 与新返利圆角一致 */
     border-left: 4px solid #3498db; /* 与新返利左侧边框一致 */
     transition: transform 0.2s ease; /* 与新返利悬停动画一致 */
     display: flex;
     justify-content: space-between; /* 渠道名和值两端对齐 */
     align-items: center;
+    background: #ffffff; /* 更纯净 */
+    border-left: 4px solid #4b7bf5; /* 主蓝色略深 */
+    border-radius: 10px;
+    padding: 10px 14px;
 }
 
 /* 旧返利渠道项悬停效果 - 与新返利保持一致 */
@@ -483,7 +478,6 @@ body {
 .rebate-group .channel {
     min-width: 60px;
     flex-shrink: 0; /* 不压缩组名宽度 */
-    padding-top: 15px; /* 与渠道项内边距顶部对齐 */
 }
 
 
@@ -538,3 +532,41 @@ body {
 .fox-android-q .rebate-title {
     margin-bottom: 10px;
 }
+
+/* rebate-system主区块整体配色优化 */
+.rebate-system {
+    background: #f6f8fb; /* 更温和的灰蓝底色 */
+    border: 1px solid #e0e5ea;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(100, 150, 220, 0.06);
+}
+
+/* 时间标签配色统一优化 */
+.time-tab {
+    background: #e8edf7;
+    color: #4062a9;
+    border-radius: 16px;
+    transition: all 0.2s;
+}
+
+.time-tab.active {
+    background: #4062a9;
+    color: #fff;
+}
+
+/* 返利值颜色柔和些 */
+.channel-value {
+    color: #fa9841; /* 柔和橙色 */
+    font-weight: 600;
+}
+
+/* 缩小返利分组之间的间距（钱包/特殊/微信三组之间） */
+.rebate-group {
+    margin-bottom: 4px !important; /* 原12px/15px → 4px，更紧凑 */
+    padding: 8px 0 !important; /* 适度缩减内边距 */
+    gap: 10px !important; /* 原12/15 → 10px，内容更紧凑 */
+    min-height: 42px !important; /* 与渠道块高度一致 */
+    display: flex;
+    align-items: center !important; /* 垂直居中内容 */
+}
+
