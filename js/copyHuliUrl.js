@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         提取狐狸代付链接
 // @namespace    http://tampermonkey.net/
-// @version      0.2
-// @description  打开狐狸直冲链接时，捕获代付链接并提供按钮点击复制功能，支持 http 环境，带 Toast 提示，避免假复制问题。
+// @version      0.3
+// @description  打开狐狸直冲链接时，捕获代付链接并提供按钮点击复制功能，支持 http 环境，带 Toast 提示（右下角），避免假复制问题。
 // @author       iiifox
 // @match        *://104.143.42.32/*
 // @grant        none
 // @run-at       document-start
+// @updateURL    https://iiifox.me/js/copyHuliUrl.js
+// @downloadURL  https://iiifox.me/js/copyHuliUrl.js
 // ==/UserScript==
 
 (function() {
@@ -105,18 +107,38 @@
     }
 
     // ================== 提取代付链接 ==================
-    function extractPayUrl(responseText, contentType) {
-        if (contentType && contentType.indexOf('application/json') !== -1) {
+    function extractPayUrl(responseText) {
+        let dataObj = null;
+        // 去掉首尾空格
+        responseText = responseText.trim();
+
+        try {
+            // 尝试解析一次
+            dataObj = JSON.parse(responseText);
+        } catch (e1) {
             try {
-                const data = JSON.parse(responseText);
-                if (data && data.Device_PayUrl) return data.Device_PayUrl;
-            } catch (e) {
+                // 兜底：如果外层多了一层引号，先去掉再解析
+                dataObj = JSON.parse(JSON.parse(responseText));
+            } catch (e2) {
                 console.warn('JSON 解析失败，回退正则提取');
+                dataObj = null;
             }
         }
+
+        if (dataObj && dataObj.data) {
+            const data = dataObj.data;
+            if (Array.isArray(data) && data.length > 0) {
+                return data[0].Device_PayUrl || null;
+            } else if (typeof data === 'object') {
+                return data.Device_PayUrl || null;
+            }
+        }
+
+        // JSON 解析失败，回退正则
         const match = responseText.match(/"Device_PayUrl":"(https:\/\/pay\.qq\.com\/[^"]+)"/);
         return match ? match[1] : null;
     }
+
 
     // ================== 响应处理 ==================
     function handleResponse(type, responseText, contentType) {
