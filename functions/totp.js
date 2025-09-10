@@ -51,7 +51,7 @@ async function generateTOTP(secret) {
 
     // 计算当前时间步长
     const timestamp = Date.now();
-    const timeStep = Math.floor(timestamp / 1000 / period);
+    let timeStep = Math.floor(timestamp / 1000 / period);
 
     // 将时间步长转换为8字节的Uint8Array (大端序)
     const timeBuffer = new Uint8Array(8);
