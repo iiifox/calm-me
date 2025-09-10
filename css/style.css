@@ -74,12 +74,8 @@ h1 {
     color: #e74c3c;
 }
 
-.action-section {
-    text-align: center;
-    padding: 20px;
-}
-
 .copy-btn {
+    text-align: center;
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
@@ -121,7 +117,7 @@ h1 {
 
 .notification {
     position: fixed;
-    top: 20px;
+    top: 60px; /* 原为20px，向下移 */
     right: 20px;
     background: #2ecc71;
     color: white;
@@ -539,4 +535,24 @@ body {
 .channel-value {
     color: #fa9841; /* 柔和橙色 */
     font-weight: 600;
+}
+
+
+/* 复制按钮定位到旧返利折扣时间条右上角 */
+.rebate-group {
+    position: relative;
+}
+
+/* 绝对定位右上角，按钮本身内容居中 */
+.rebate-group .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 20;
+    padding: 6px 18px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
