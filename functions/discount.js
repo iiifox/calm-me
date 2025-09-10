@@ -83,7 +83,7 @@ function parseQz(lines, profit) {
             }
             // 若当前时间段有该渠道，使用当前折扣并更新lastDiscount
             else if (qz[time].hasOwnProperty(channel)) {
-                const lastDiscount = qz[time][channel];
+                lastDiscount = qz[time][channel];
                 templateItems.push(`${channel}${time}/${lastDiscount}`);
             }
             // 若当前时间段无该渠道，延用上一时间段折扣（补全）
