@@ -556,3 +556,16 @@ body {
     justify-content: center;
     text-align: center;
 }
+
+/* copy-btn */
+.qz-slider-container {
+    position: relative;
+}
+
+#copyRatesBtn {
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    z-index: 10;
+}
