@@ -67,35 +67,47 @@ function parseQz(lines, profit) {
             }
         });
     });
-    const allChannelsArr = Array.from(allChannels);
 
-    // template补全（按规则生成：首次出现前补1，首次出现后延用折扣）
-    const templateItems = [];
-    // 按渠道分组，每个渠道下按时间顺序生成条目
-    allChannelsArr.forEach(channel => {
-        // 记录上一时间段的折扣，用于后续时间段补全
-        let lastDiscount;
-        timeOrder.forEach((time, timeIndex) => {
-            // 渠道首次出现前的时间段 → template补折扣1
-            if (timeIndex < firstOccurrence[channel]) {
-                qz[time][channel] = 1
-                templateItems.push(`${channel}${time}/1`);
-            }
-            // 若当前时间段有该渠道，使用当前折扣并更新lastDiscount
-            else if (qz[time].hasOwnProperty(channel)) {
-                lastDiscount = qz[time][channel];
-                templateItems.push(`${channel}${time}/${lastDiscount}`);
-            }
-            // 若当前时间段无该渠道，延用上一时间段折扣（补全）
-            else if (lastDiscount !== undefined) {
-                qz[time][channel] = lastDiscount;
-                templateItems.push(`${channel}${time}/${lastDiscount}`);
+    // 收集全局渠道首次出现顺序
+    const channelsFirstOrder = [];
+    const seen = new Set();
+    timeOrder.forEach(time => {
+        Object.keys(qz[time]).forEach(channel => {
+            if (!seen.has(channel)) {
+                seen.add(channel);
+                channelsFirstOrder.push(channel);
             }
         });
     });
-    // 将所有条目拼接为多行字符串，作为qz的template属性
-    qz.template = templateItems.join('\n');
 
+    // 补全
+    const templateItems = [];
+    channelsFirstOrder.forEach(channel => {
+        let lastDiscount;
+        timeOrder.forEach((time, timeIndex) => {
+            if (timeIndex < firstOccurrence[channel]) {
+                qz[time][channel] = 1;
+            } else if (qz[time].hasOwnProperty(channel)) {
+                lastDiscount = qz[time][channel];
+            } else if (lastDiscount !== undefined) {
+                qz[time][channel] = lastDiscount;
+            }
+        });
+    });
+
+    // 重建对象，确保输出顺序一致
+    timeOrder.forEach(time => {
+        const newObj = {};
+        channelsFirstOrder.forEach(channel => {
+            if (qz[time].hasOwnProperty(channel)) {
+                newObj[channel] = qz[time][channel];
+                templateItems.push(`${channel}${time}/${qz[time][channel]}`);
+            }
+        });
+        qz[time] = newObj;
+    });
+    qz.template = templateItems.join('\n');
+    
     return qz;
 }
 
