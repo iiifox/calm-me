@@ -8,6 +8,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
+// @updateURL    https://iiifox.me/js/huli/loginTotp.js
+// @downloadURL  https://iiifox.me/js/huli/loginTotp.js
 // ==/UserScript==
 
 (function() {
