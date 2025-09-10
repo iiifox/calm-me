@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Amazon TOTP Autofill (186)
 // @namespace    https://iiifox.me/js/solowit186.js
-// @version      1.5
+// @version      1.6
 // @description  自动填充 Amazon SellerCentral 登录页面二步验证码
 // @author       iiifox
 // @include      https://sellercentral*.amazon.*/ap/mfa*
 // @run-at       document-idle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_registerMenuCommand
 // ==/UserScript==
 
 
@@ -25,6 +26,20 @@
     }
     // ================== GM 存储秘钥 ==================
     let MY_BASE32_SECRET = await GM_getValue('TOTP_SECRET', null);
+
+    // 注册「重置密钥」菜单命令（核心新增）
+    GM_registerMenuCommand('重置 Amazon TOTP 密钥', async () => {
+        const newSecret = prompt("请输入新的 Google Authenticator TOTP Secret (Base32):", "");
+        if (newSecret && newSecret.trim() !== "") {
+            await GM_setValue('TOTP_SECRET', newSecret.trim()); // 更新存储的密钥
+            MY_BASE32_SECRET = newSecret.trim(); // 即时更新当前脚本的密钥变量（无需刷新）
+            alert("TOTP 密钥已重置并保存！");
+            fillOnce(); // 用新密钥立即重新填充验证码
+        } else if (newSecret === "") {
+            alert("密钥不能为空，重置已取消");
+        }
+    });
+
     if(!MY_BASE32_SECRET) {
         MY_BASE32_SECRET = prompt("请输入你的 Google Authenticator TOTP Secret (Base32):");
         if(MY_BASE32_SECRET) {
