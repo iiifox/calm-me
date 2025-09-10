@@ -191,7 +191,13 @@ function initCopyButton(templateData) {
 // 修改主数据加载逻辑，添加复制按钮初始化
 async function loadData() {
     try {
-        const discountResp = await fetch('/discount');
+        const params = new URLSearchParams(window.location.search);
+        const profit = params.get('profit');
+        let discountUrl = '/discount';
+        if (profit) {
+            discountUrl += `?profit=${encodeURIComponent(profit)}`;
+        }
+        const discountResp = await fetch(discountUrl);
         if (!discountResp.ok) throw new Error('折扣数据接口请求失败');
         const discountData = await discountResp.json();
         
