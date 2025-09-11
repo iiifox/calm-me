@@ -1,6 +1,4 @@
-// functions/discount.js
-// 将 /price.txt 解析为 JSON：{ yesterday_page, date, qz, gbo}
-
+// /discount
 
 // 辅助函数：格式化费率值 映射到区间 {0}∪[0.2,2)
 function formatRateValue(value) {
