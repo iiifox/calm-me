@@ -1,5 +1,5 @@
-function renderqzCards(timeBlocks) {
-    const container = document.getElementById('qz-rebate-system');
+function renderXdCards(timeBlocks) {
+    const container = document.getElementById('xd-rebate-system');
     const tabsContainer = document.querySelector('.time-tabs');
 
     // 清空容器
@@ -23,11 +23,16 @@ function renderqzCards(timeBlocks) {
         "weixin": ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
     }
 
+    // 构造渠道顺序，用于折扣颜色计算
+    const allChannels = [...channelGroup.qianbao, ...channelGroup.teshu, ...channelGroup.weixin];
+    // 存储每个渠道上一次的折扣值
+    const lastDiscountByChannel = {};
+
     // 为每个时间块创建滑动面板
     timeBlocks.forEach((block, index) => {
         // 创建时间块面板
         const slide = document.createElement('div');
-        slide.className = 'qz-slide';
+        slide.className = 'xd-slide';
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('div');
@@ -36,40 +41,60 @@ function renderqzCards(timeBlocks) {
         slide.appendChild(timeTitle);
 
         // 渲染该时间块的所有渠道数据
-        // 修改types.forEach循环内的代码
         types.forEach(type => {
             const group = document.createElement('div');
             group.className = 'rebate-group';
 
             const channelSpan = document.createElement('span');
             channelSpan.className = 'channel';
-            channelSpan.textContent = type.label; // 这是"钱包"、"特殊"、"微信"等组名
+            // 这是"钱包"、"特殊"、"微信"等组名
+            channelSpan.textContent = type.label;
             group.appendChild(channelSpan);
 
             const channelList = document.createElement('div');
             channelList.className = 'channel-list';
 
-            // 在 renderqzCards 函数的循环中，替换原有 channelList 内部渲染逻辑
-            Object.values(block.rates).forEach(item => {
-                if (channelGroup[type.key].includes(item.channel)) {
-                    // 创建独立的渠道项div（使用 qz-item 类）
-                    const channelItem = document.createElement('div');
-                    channelItem.className = 'qz-item'; // 应用统一样式
+            // 渲染渠道项
+            channelGroup[type.key].forEach(channelName => {
+                // 找到当前时间块的渠道
+                const item = Object.values(block.rates).find(i => i.channel === channelName);
+                if (!item) return;
 
-                    // 渠道名称
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'channel-name';
-                    nameSpan.textContent = item.channel;
-
-                    // 渠道值
-                    const valueSpan = document.createElement('span');
-                    valueSpan.className = 'channel-value';
-                    valueSpan.textContent = item.value;
-
-                    channelItem.appendChild(nameSpan);
-                    channelItem.appendChild(valueSpan);
-                    channelList.appendChild(channelItem);
+                // 颜色判定
+                let color = 'black';
+                if (index === 0) {
+                    // 00:00时间块全部黑色
+                    color = 'black';
+                } else {
+                    const last = lastDiscountByChannel[channelName];
+                    if (last !== undefined) {
+                        if (item.value === last) color = 'black';
+                        else if (item.value > last) color = 'red';
+                        else if (item.value < last) color = 'green';
+                    }
                 }
+
+                // 创建独立的渠道项div
+                const channelItem = document.createElement('div');
+                channelItem.className = 'xd-item';
+
+                // 渠道名称
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'channel-name';
+                nameSpan.textContent = channelName;
+
+                // 渠道值
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'channel-value';
+                valueSpan.textContent = item.value;
+                valueSpan.style.color = color; // 设置颜色
+
+                channelItem.appendChild(nameSpan);
+                channelItem.appendChild(valueSpan);
+                channelList.appendChild(channelItem);
+
+                // 更新当前渠道的last value
+                lastDiscountByChannel[channelName] = item.value;
             });
 
             group.appendChild(channelList);
@@ -94,9 +119,8 @@ function renderqzCards(timeBlocks) {
 
     // 监听滚动事件，更新活跃标签
     container.addEventListener('scroll', () => {
-        const slides = document.querySelectorAll('.qz-slide');
+        const slides = document.querySelectorAll('.xd-slide');
         const tabs = document.querySelectorAll('.time-tab');
-
         slides.forEach((slide, index) => {
             const rect = slide.getBoundingClientRect();
             // 检查当前slide是否在可视区域
@@ -109,7 +133,7 @@ function renderqzCards(timeBlocks) {
 
     // 默认滚动到最后一个时间块
     setTimeout(() => {
-        const lastSlide = document.querySelector('.qz-slide:last-child');
+        const lastSlide = document.querySelector('.xd-slide:last-child');
         if (lastSlide) {
             lastSlide.scrollIntoView({behavior: 'smooth'});
         }
@@ -147,7 +171,7 @@ function renderGbo(gbo) {
 
 // 显示错误信息
 function showError(message) {
-    const container = document.getElementById('qzContainer');
+    const container = document.getElementById('xdContainer');
     container.innerHTML = `
         <div class="error">
             <p>${message}</p>
@@ -174,11 +198,11 @@ function initCopyButton(templateData) {
 
     copyBtn.addEventListener('click', () => {
         if (!templateData) {
-            showNotification('无可用费率数据（qz.template不存在）', true);
+            showNotification('无可用费率数据（xd.template不存在）', true);
             return;
         }
 
-        // 复制qz.template内容到剪贴板
+        // 复制xd.template内容到剪贴板
         navigator.clipboard.writeText(templateData)
             .then(() => showNotification('费率已复制到剪贴板'))
             .catch(err => {
@@ -216,26 +240,26 @@ async function loadData() {
             }
         }
 
-        // 处理旧返利数据（qz）- 核心修改：过滤掉template字段
-        const qzData = discountData.qz || {};
-        // 获取qz中所有键，但排除'template'（避免被当作时间块渲染）
-        const timeKeys = Object.keys(qzData).filter(key => key !== 'template');
+        // 处理旧返利数据（xd）- 核心修改：过滤掉template字段
+        const xdData = discountData.xd || {};
+        // 获取xd中所有键，但排除'template'（避免被当作时间块渲染）
+        const timeKeys = Object.keys(xdData).filter(key => key !== 'template');
         // 转换为时间块格式
         const timeBlocks = timeKeys.map(time => ({
             time: time, // 直接使用接口返回的标准时间
-            rates: Object.entries(qzData[time]).map(([channel, value]) => ({
+            rates: Object.entries(xdData[time]).map(([channel, value]) => ({
                 channel,
                 value
             }))
         }));
-        renderqzCards(timeBlocks);
+        renderXdCards(timeBlocks);
 
         // 处理新返利数据（gbo）
         const gbo = discountData.gbo || {};
         renderGbo(gbo);
 
-        // 初始化复制按钮（传入qz.template数据）
-        initCopyButton(discountData.qz?.template);
+        // 初始化复制按钮（传入xd.template数据）
+        initCopyButton(discountData.xd?.template);
 
     } catch (error) {
         showError('数据加载失败: ' + error.message);
