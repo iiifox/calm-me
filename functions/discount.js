@@ -101,10 +101,17 @@ function parseQz(lines, profit) {
         channelsFirstOrder.forEach(channel => {
             if (qz[time].hasOwnProperty(channel)) {
                 newObj[channel] = qz[time][channel];
-                templateItems.push(`${channel}${time}/${qz[time][channel]}`);
             }
         });
         qz[time] = newObj;
+    });
+
+    // === 新的 template 生成逻辑 ===
+    const templateItems = [];
+    channelsFirstOrder.forEach(channel => {
+        timeOrder.forEach(time => {
+            templateItems.push(`${channel}${time}/${qz[time][channel]}`);
+        });
     });
     qz.template = templateItems.join('\n');
     
