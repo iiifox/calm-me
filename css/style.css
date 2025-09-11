@@ -510,8 +510,9 @@ body {
 /* 狐狸安卓Q 一行两列布局 */
 .fox-android-q .rebate-content {
     display: flex;
-    justify-content: space-between; /* 左右分布 */
-    gap: 20px; /* 中间间距 */
+    flex-direction: column;
+/*     justify-content: space-between; */
+/*     gap: 20px; */
 }
 
 .fox-android-q .rebate-group {
