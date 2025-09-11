@@ -18,17 +18,17 @@ function roundToFixed(num, decimalPlaces = 4) {
     return Number(Math.round(num * factor) / factor);
 }
 
-// 解析qz折扣
-function parseQz(lines, profit) {
-    const qz = {};
+// 解析xd折扣
+function parseXd(lines, profit) {
+    const xd = {};
     let timeOrder = [];
     let currentTimeKey = ""
     for (const line of lines) {
         // “30号过点” 视为 00:00
         if (line.includes('过点')) {
             currentTimeKey = '00:00';
-            if (!qz[currentTimeKey]) {
-                qz[currentTimeKey] = {};
+            if (!xd[currentTimeKey]) {
+                xd[currentTimeKey] = {};
                 timeOrder.push(currentTimeKey);
             }
             continue;
@@ -39,8 +39,8 @@ function parseQz(lines, profit) {
             const hh = String(t[1]).padStart(2, '0');
             const mm = t[2] ? t[2] : '00';
             currentTimeKey = `${hh}:${mm}`;
-            if (!qz[currentTimeKey]) {
-                qz[currentTimeKey] = {};
+            if (!xd[currentTimeKey]) {
+                xd[currentTimeKey] = {};
                 timeOrder.push(currentTimeKey);
             }
             continue;
@@ -48,7 +48,7 @@ function parseQz(lines, profit) {
 
         // 渠道行：渠道名 + 数字
         const m = line.match(/(.*?)\s*(\d+(?:\.\d+)?)$/);
-        if (m && currentTimeKey) qz[currentTimeKey][m[1]] = roundToFixed(formatRateValue(m[2]) + profit);
+        if (m && currentTimeKey) xd[currentTimeKey][m[1]] = roundToFixed(formatRateValue(m[2]) + profit);
     }
 
     // 收集所有出现过的渠道，以及每个渠道首次出现的时间段索引
@@ -56,7 +56,7 @@ function parseQz(lines, profit) {
     // 键：渠道名，值：首次出现的时间索引（在timeOrder中）
     const firstOccurrence = {};
     timeOrder.forEach((time, index) => {
-        const channels = Object.keys(qz[time]);
+        const channels = Object.keys(xd[time]);
         channels.forEach(channel => {
             allChannels.add(channel);
             if (firstOccurrence[channel] === undefined) {
@@ -70,7 +70,7 @@ function parseQz(lines, profit) {
     const channelsFirstOrder = [];
     const seen = new Set();
     timeOrder.forEach(time => {
-        Object.keys(qz[time]).forEach(channel => {
+        Object.keys(xd[time]).forEach(channel => {
             if (!seen.has(channel)) {
                 seen.add(channel);
                 channelsFirstOrder.push(channel);
@@ -83,11 +83,11 @@ function parseQz(lines, profit) {
         let lastDiscount;
         timeOrder.forEach((time, timeIndex) => {
             if (timeIndex < firstOccurrence[channel]) {
-                qz[time][channel] = 1;
-            } else if (qz[time].hasOwnProperty(channel)) {
-                lastDiscount = qz[time][channel];
+                xd[time][channel] = 1;
+            } else if (xd[time].hasOwnProperty(channel)) {
+                lastDiscount = xd[time][channel];
             } else if (lastDiscount !== undefined) {
-                qz[time][channel] = lastDiscount;
+                xd[time][channel] = lastDiscount;
             }
         });
     });
@@ -96,23 +96,23 @@ function parseQz(lines, profit) {
     timeOrder.forEach(time => {
         const newObj = {};
         channelsFirstOrder.forEach(channel => {
-            if (qz[time].hasOwnProperty(channel)) {
-                newObj[channel] = qz[time][channel];
+            if (xd[time].hasOwnProperty(channel)) {
+                newObj[channel] = xd[time][channel];
             }
         });
-        qz[time] = newObj;
+        xd[time] = newObj;
     });
 
     // === 新的 template 生成逻辑 ===
     const templateItems = [];
     channelsFirstOrder.forEach(channel => {
         timeOrder.forEach(time => {
-            templateItems.push(`${channel}${time}/${qz[time][channel]}`);
+            templateItems.push(`${channel}${time}/${xd[time][channel]}`);
         });
     });
-    qz.template = templateItems.join('\n');
+    xd.template = templateItems.join('\n');
     
-    return qz;
+    return xd;
 }
 
 // 解析gbo折扣
@@ -205,10 +205,10 @@ export async function onRequest({request}) {
 
     let yesterdayPage = '';
     let date = '';
-    let qzLines = [];
+    let xdLines = [];
     let gboLines = [];
 
-    let currentSystem = "qz";
+    let currentSystem = "xd";
     for (const line of lines) {
         // 昨日费率页面
         if (/^https:\/\/[\w-]+(\.[\w-]+)+(?:\/[^\s?#]*)?(?:\?[^#\s]*)?(?:#\S*)?/i.test(line)) {
@@ -221,23 +221,23 @@ export async function onRequest({request}) {
             continue;
         }
 
-        // qz
-        if (currentSystem === "qz") {
+        // xd
+        if (currentSystem === "xd") {
             if (line.startsWith('微信')) {
                 currentSystem = "gbo";
                 continue;
             }
-            qzLines.push(line);
+            xdLines.push(line);
             continue;
         }
         // gbo
         gboLines.push(line);
     }
 
-    const qz = parseQz(qzLines, profit);
+    const xd = parseXd(xdLines, profit);
     const gbo = await parseGbo(gboLines, request, profit);
 
-    const out = {yesterdayPage, date, qz, gbo};
+    const out = {yesterdayPage, date, xd, gbo};
     return new Response(JSON.stringify(out, null, 2), {
         headers: {'Content-Type': 'application/json'}
     });
