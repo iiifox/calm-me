@@ -79,7 +79,6 @@ function parseQz(lines, profit) {
     });
 
     // 补全
-    const templateItems = [];
     channelsFirstOrder.forEach(channel => {
         let lastDiscount;
         timeOrder.forEach((time, timeIndex) => {
