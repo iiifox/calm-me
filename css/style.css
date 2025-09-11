@@ -356,13 +356,13 @@ body {
 
 /* 轻舟 */
 /* 在style.css中添加以下样式 */
-.qz-slider-container {
+.xd-slider-container {
     position: relative;
     overflow: hidden;
     padding-bottom: 30px;
 }
 
-.qz-slides {
+.xd-slides {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -372,7 +372,7 @@ body {
     padding-bottom: 10px;
 }
 
-.qz-slide {
+.xd-slide {
     min-width: 100%;
     scroll-snap-align: start;
 }
@@ -406,11 +406,11 @@ body {
 }
 
 /* 隐藏滚动条但保留功能 */
-.qz-slides::-webkit-scrollbar {
+.xd-slides::-webkit-scrollbar {
     display: none;
 }
 
-.qz-slides {
+.xd-slides {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -424,12 +424,12 @@ body {
     flex-wrap: wrap; /* 确保在小屏幕上自动换行 */
 }
 
-.qz-item .channel-name {
+.xd-item .channel-name {
     color: #34495e;
     font-weight: 500;
 }
 
-.qz-item .channel-value {
+.xd-item .channel-value {
     color: #e74c3c;
     font-weight: 600;
 }
@@ -444,7 +444,7 @@ body {
 }
 
 /* 旧返利单个渠道项 - 完全对齐新返利的 gbo-item 样式 */
-.qz-item {
+.xd-item {
     border-left: 4px solid #3498db; /* 与新返利左侧边框一致 */
     transition: transform 0.2s ease; /* 与新返利悬停动画一致 */
     display: flex;
@@ -457,7 +457,7 @@ body {
 }
 
 /* 旧返利渠道项悬停效果 - 与新返利保持一致 */
-.qz-item:hover {
+.xd-item:hover {
     transform: translateX(5px); /* 与新返利悬停位移一致 */
 }
 
@@ -558,7 +558,7 @@ body {
 }
 
 /* copy-btn */
-.qz-slider-container {
+.xd-slider-container {
     position: relative;
 }
 
