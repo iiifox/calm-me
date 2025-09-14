@@ -47,8 +47,13 @@ function parseXd(lines, profit) {
         }
 
         // 渠道行：渠道名 + 数字
-        const m = line.match(/(.*?)\s*(\d+(?:\.\d+)?)$/);
-        if (m && currentTimeKey) xd[currentTimeKey][m[1]] = roundToFixed(formatRateValue(m[2]) + profit);
+        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)，/);
+        if (m && currentTimeKey) {
+            let channel = m[1];
+            // 替换规则
+            channel = channel.replace(/^(VB|VC)/, "$1微信");
+            xd[currentTimeKey][channel] = roundToFixed(formatRateValue(m[2]) + profit);
+        }
     }
 
     // 收集所有出现过的渠道，以及每个渠道首次出现的时间段索引
