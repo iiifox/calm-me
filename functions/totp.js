@@ -16,9 +16,8 @@ export async function onRequestGet(context) {
     }
 
     try {
-        // 改动点：返回 code + remaining
+        // 返回 code + remaining
         const {code, remaining} = await generateTOTP(secret);
-
         return new Response(JSON.stringify({code, remaining}), {
             headers: {
                 'Content-Type': 'application/json',
@@ -50,8 +49,7 @@ async function generateTOTP(secret) {
 
     const timestamp = Date.now();
     let timeStep = Math.floor(timestamp / 1000 / period);
-
-    // 改动点：新增剩余秒数
+    // 剩余秒数
     const remaining = period - (Math.floor(timestamp / 1000) % period);
 
     // 时间步转8字节大端序
@@ -60,13 +58,12 @@ async function generateTOTP(secret) {
         timeBuffer[i] = timeStep & 0xff;
         timeStep >>>= 8;
     }
-
     const keyBuffer = base32ToUint8Array(secret);
     const hmacBuffer = await hmac(keyBuffer, timeBuffer, algorithm);
     const otpValue = truncate(hmacBuffer);
-
     const otp = (otpValue % (10 ** digits)).toString().padStart(digits, '0');
-    return {code: otp, remaining}; // 改动点：返回对象
+    
+    return {code: otp, remaining};
 }
 
 function base32ToUint8Array(base32) {
