@@ -47,7 +47,7 @@ function parseXd(lines, profit) {
         }
 
         // 渠道行：渠道名 + 数字
-        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)，/);
+        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)(?:，|$)/);
         if (m && currentTimeKey) {
             let channel = m[1];
             // 小写转大写
