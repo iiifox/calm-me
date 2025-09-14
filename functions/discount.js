@@ -50,8 +50,12 @@ function parseXd(lines, profit) {
         const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)，/);
         if (m && currentTimeKey) {
             let channel = m[1];
-            // 替换规则
-            channel = channel.replace(/^(VB|VC)/, "$1微信");
+            // 小写转大写
+            channel = channel.replace(/[a-z]/g, c => c.toUpperCase());
+            // 只有以 VB 或 VC 开头才插入 "微信"
+            if (/^(VB|VC)/.test(prefix)) {
+                channel = channel.replace(/^(VB|VC)/, "$1微信");
+            }
             xd[currentTimeKey][channel] = roundToFixed(formatRateValue(m[2]) + profit);
         }
     }
