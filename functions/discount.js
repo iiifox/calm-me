@@ -53,7 +53,7 @@ function parseXd(lines, profit) {
             // 小写转大写
             channel = channel.replace(/[a-z]/g, c => c.toUpperCase());
             // 只有以 VB 或 VC 开头才插入 "微信"
-            if (/^(VB|VC)/.test(prefix)) {
+            if (/^(VB|VC)/.test(channel)) {
                 channel = channel.replace(/^(VB|VC)/, "$1微信");
             }
             xd[currentTimeKey][channel] = roundToFixed(formatRateValue(m[2]) + profit);
