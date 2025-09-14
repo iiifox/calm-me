@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         狐狸登录页注入TOTP验证码
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  狐狸登录页面注入谷歌验证码
 // @author       iiifox
 // @match        http://116.62.60.127:8369/WebLogin.aspx
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
+// @grant        GM_xmlhttpRequest
 // @updateURL    https://iiifox.me/js/huli/loginTotp.js
 // @downloadURL  https://iiifox.me/js/huli/loginTotp.js
 // ==/UserScript==
@@ -288,16 +289,59 @@
         }
     }
 
-    // 启动倒计时
-    function startCountdown(countdownElement) {
-        let seconds = 30;
-        function updateCountdown() {
-            seconds--;
-            countdownElement.textContent = `${seconds}秒后更新`;
-            if (seconds <= 0) seconds = 30;
+    // 启动与 TOTP 实际时间步长对齐的倒计时与刷新调度
+    function startTotpPanel(displayElements, secret) {
+        const countdownEl = displayElements.countdown;
+        let remaining = 0;
+
+        async function refreshTotp() {
+            try {
+                const resp = await fetch(`${TOTP_API_URL}?secret=${encodeURIComponent(secret)}`, { cache: 'no-store' });
+                const data = await resp.json();
+                if (data.code) {
+                    displayElements.codeDisplay.textContent = data.code;
+                    remaining = data.remaining || 30;
+
+                    // 自动填充输入框
+                    const possibleInputs = [
+                        'input[name*="code"]',
+                        'input[name*="otp"]',
+                        'input[name*="verification"]',
+                        'input[id*="code"]',
+                        'input[id*="otp"]',
+                        'input[id*="verification"]'
+                    ];
+                    possibleInputs.some(selector => {
+                        const input = document.querySelector(selector);
+                        if (input) {
+                            input.value = data.code;
+                            return true;
+                        }
+                        return false;
+                    });
+                } else {
+                    displayElements.codeDisplay.textContent = '获取失败';
+                    remaining = 30;
+                }
+            } catch (e) {
+                console.error('获取验证码失败:', e);
+                displayElements.codeDisplay.textContent = '获取失败';
+                remaining = 30;
+            }
         }
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
+
+        async function tick() {
+            if (remaining <= 0) {
+                await refreshTotp(); // 剩余 0 时刷新
+            }
+            countdownEl.textContent = `${remaining}秒后更新`;
+            remaining--;
+        }
+
+        // 初次刷新
+        refreshTotp();
+        // 每秒倒计时
+        setInterval(tick, 1000);
     }
 
     // 主函数
@@ -311,11 +355,7 @@
         if (!secret) return;
 
         const displayElements = createTotpPanel();
-        if (displayElements) {
-            startCountdown(displayElements.countdown);
-            updateTotpCode(displayElements, secret);
-            setInterval(() => updateTotpCode(displayElements, secret), 30000);
-        }
+        startTotpPanel(displayElements, secret);
     }
 
     // 确保页面完全加载后执行
