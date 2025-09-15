@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸登录页注入TOTP验证码
-// @namespace    http://tampermonkey.net/
-// @version      0.3
+// @namespace    https://iiifox.me/
+// @version      0.4
 // @description  狐狸登录页面注入谷歌验证码
 // @author       iiifox
 // @match        http://116.62.60.127:8369/WebLogin.aspx
@@ -122,10 +122,10 @@
             text-align: center;
             margin-bottom: 10px;
         `;
-        countdown.textContent = '30秒后更新';
+        countdown.textContent = '';
         panel.appendChild(countdown);
 
-        // 复制按钮（修复核心：兼容HTTP的复制逻辑）
+        // 复制按钮（兼容HTTP的复制逻辑）
         const copyBtn = document.createElement('button');
         copyBtn.style.cssText = `
             width: 100%;
@@ -139,7 +139,7 @@
         `;
         copyBtn.textContent = '复制验证码';
         copyBtn.addEventListener('click', () => {
-            // 1. 获取验证码文本
+            // 获取验证码文本
             const codeElement = document.getElementById('totp-code');
             const code = codeElement?.textContent?.trim();
             if (!code || code === '获取中...' || code === '获取失败' || code === '解析失败') {
@@ -147,7 +147,7 @@
                 return;
             }
 
-            // 2. 兼容方案：优先试Clipboard API，失败则用隐藏输入框
+            // 兼容方案：优先试Clipboard API，失败则用隐藏输入框
             const originalBtnText = copyBtn.textContent;
             try {
                 // 方案1：尝试Clipboard API（少数HTTP场景可能支持）
@@ -228,67 +228,6 @@
         }
     }
 
-    // 获取并更新TOTP验证码
-    function updateTotpCode(displayElements, secret) {
-        if (!secret) return;
-
-        if (typeof GM_xmlhttpRequest !== 'undefined') {
-            GM_xmlhttpRequest({
-                method: 'GET',
-                url: `${TOTP_API_URL}?secret=${encodeURIComponent(secret)}`,
-                onload: function(response) {
-                    try {
-                        const data = JSON.parse(response.responseText);
-                        if (data.code) {
-                            displayElements.codeDisplay.textContent = data.code;
-
-                            // 尝试自动填充验证码输入框
-                            const possibleInputs = [
-                                'input[name*="code"]',
-                                'input[name*="otp"]',
-                                'input[name*="verification"]',
-                                'input[id*="code"]',
-                                'input[id*="otp"]',
-                                'input[id*="verification"]'
-                            ];
-
-                            possibleInputs.some(selector => {
-                                const input = document.querySelector(selector);
-                                if (input) {
-                                    input.value = data.code;
-                                    return true;
-                                }
-                                return false;
-                            });
-                        }
-                    } catch (e) {
-                        console.error('解析验证码失败:', e);
-                        displayElements.codeDisplay.textContent = '解析失败';
-                    }
-                },
-                onerror: function(error) {
-                    console.error('获取验证码失败:', error);
-                    displayElements.codeDisplay.textContent = '获取失败';
-                }
-            });
-        } else {
-            fetch(`${TOTP_API_URL}?secret=${encodeURIComponent(secret)}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('获取验证码失败');
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.code) {
-                        displayElements.codeDisplay.textContent = data.code;
-                    }
-                })
-                .catch(error => {
-                    console.error('TOTP错误:', error);
-                    displayElements.codeDisplay.textContent = '获取失败';
-                });
-        }
-    }
-
     // 启动与 TOTP 实际时间步长对齐的倒计时与刷新调度
     function startTotpPanel(displayElements, secret) {
         const countdownEl = displayElements.countdown;
@@ -331,17 +270,28 @@
         }
 
         async function tick() {
+            // 如果 remaining <= 0，立即刷新
             if (remaining <= 0) {
-                await refreshTotp(); // 剩余 0 时刷新
+                await refreshTotp();
             }
+
+            // 倒计时显示
             countdownEl.textContent = `${remaining}秒后更新`;
+
+            // 倒计时 3 秒以内变红闪烁
+            if (remaining <= 3) {
+                countdownEl.style.color = 'red';
+            } else {
+                countdownEl.style.color = '';
+            }
+
             remaining--;
+            setTimeout(tick, 1000);
         }
 
         // 初次刷新
         refreshTotp();
-        // 每秒倒计时
-        setInterval(tick, 1000);
+        tick();
     }
 
     // 主函数
