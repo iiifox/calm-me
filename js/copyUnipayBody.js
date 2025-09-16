@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         提取QQ钱包支付响应Body
-// @namespace    http://tampermonkey.net/
+// @namespace    https://iiifox.me/
 // @version      0.5
 // @description  在腾讯充值中心页面中，监听 mobile_save 接口，提取正常出码的响应 body 并复制到剪贴板
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        none
 // @run-at       document-start
-// @updateURL    https://iiifox.me/js/copyPayBody.js
-// @downloadURL  https://iiifox.me/js/copyPayBody.js
+// @updateURL    https://iiifox.me/js/copyUnipayBody.js
+// @downloadURL  https://iiifox.me/js/copyUnipayBody.js
 // ==/UserScript==
 
 (function() {
