@@ -9,8 +9,8 @@
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_xmlhttpRequest
-// @updateURL    https://iiifox.me/js/huli/loginTotp.js
-// @downloadURL  https://iiifox.me/js/huli/loginTotp.js
+// @updateURL    https://iiifox.me/js/huli/login.js
+// @downloadURL  https://iiifox.me/js/huli/login.js
 // ==/UserScript==
 
 (function() {
