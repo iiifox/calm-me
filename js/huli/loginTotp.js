@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         狐狸登录页注入TOTP验证码
+// @name         狐狸登录页注入
 // @namespace    https://iiifox.me/
-// @version      0.4
-// @description  狐狸登录页面注入谷歌验证码
+// @version      0.5
+// @description  狐狸登录页面注入iiifox账号密码谷歌验证码
 // @author       iiifox
 // @match        http://116.62.60.127:8369/WebLogin.aspx
 // @grant        GM_setValue
@@ -242,22 +242,8 @@
                     remaining = data.remaining || 30;
 
                     // 自动填充输入框
-                    const possibleInputs = [
-                        'input[name*="code"]',
-                        'input[name*="otp"]',
-                        'input[name*="verification"]',
-                        'input[id*="code"]',
-                        'input[id*="otp"]',
-                        'input[id*="verification"]'
-                    ];
-                    possibleInputs.some(selector => {
-                        const input = document.querySelector(selector);
-                        if (input) {
-                            input.value = data.code;
-                            return true;
-                        }
-                        return false;
-                    });
+                    const codeInput = document.querySelector('input[id*="code"]');
+                    if (codeInput) codeInput.value = data.code;
                 } else {
                     displayElements.codeDisplay.textContent = '获取失败';
                     remaining = 30;
@@ -305,6 +291,13 @@
         if (!secret) return;
 
         const displayElements = createTotpPanel();
+
+        const userInput = document.querySelector('input[id*="user"]');
+        if (userInput) userInput.value = "iiifox";
+
+        const passInput = document.querySelector('input[id*="pass"]');
+        if (passInput) passInput.value = "123456";
+
         startTotpPanel(displayElements, secret);
     }
 
