@@ -279,11 +279,6 @@ h1 {
     }
 }
 
-/* 避免被导航栏遮挡 */
-body {
-    padding-top: 65px; /* 调高点，避免内容被遮住 */
-}
-
 /* 返利系统样式设置 */
 .rebate-system {
     padding: 18px 24px;
