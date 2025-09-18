@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="top-bar">
+<!-- <div class="top-bar">
     <a id="yesterday" target="_blank" rel="noopener noreferrer">📅 昨日费率页面</a>
     <a href="/教程" target="_blank">📘 简易教程</a>
     <a href="/software/suanzhang.zip" target="_blank">💾 算账软件下载</a>
-</div>
+</div> -->
 <div class="container">
     <header>
         <h1 id="rate-title">费率展示</h1>
@@ -60,6 +60,14 @@
 </div>
 
 <div class="notification" id="notification">费率已复制到剪贴板</div>
+
+<!-- 悬浮按钮入口 -->
+<a class="fab" id="yesterday" target="_blank" rel="noopener noreferrer">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="12" fill="#1976d2"/>
+    <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12" font-family="Arial">昨</text>
+  </svg>
+</a>
 
 <script src="js/script.js"></script>
 </body>
