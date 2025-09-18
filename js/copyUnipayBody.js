@@ -159,7 +159,7 @@
         window.fetch = async function (input, init) {
             const url = typeof input === 'string' ? input : input.url;
             const response = await originalFetch(input, init);
-            // fetch 响应是流 → clone 一份给 handleResponse
+            // fetch 响应是流 → clone 一份给 handleResponseWrapper
             if (isTargetUrl(url)) {
                 const cloned = response.clone();
                 const text = await cloned.text();
