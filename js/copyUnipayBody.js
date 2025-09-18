@@ -17,6 +17,7 @@
     // 用于监听的目标接口，可扩展
     const TARGET_PATHS = ["/web_save", "/mobile_save"];
     let latestBody = null;
+    let bodyBtn = null;
 
     // 判断 URL 是否是目标接口
     function isTargetUrl(url) {
@@ -48,17 +49,20 @@
         }, 2000);
     }
 
-    // 复制函数
-    async function copyTextSafe(text) {
-        try {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
+    // 复制文本的通用函数
+    async function copyTextUniversal(text) {
+        // 优先尝试 Clipboard API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            try {
                 await navigator.clipboard.writeText(text);
                 showToast('支付响应Body已复制');
                 return;
+            } catch (err) {
+                console.warn('Clipboard API 复制失败，尝试回退:', err);
             }
-            throw new Error('navigator.clipboard 不可用');
-        } catch (err) {
-            console.warn('使用 execCommand 复制:', err);
+        }
+        // 回退到 execCommand
+        try {
             const textarea = document.createElement('textarea');
             textarea.value = text;
             textarea.style.position = 'fixed';
@@ -68,23 +72,25 @@
             textarea.select();
             const ok = document.execCommand('copy');
             document.body.removeChild(textarea);
-
             if (ok) {
                 showToast('支付响应Body已复制');
-            } else {
-                prompt('复制失败，请手动复制：', text);
+                return;
             }
+        } catch (err) {
+            console.warn('execCommand 复制失败:', err);
         }
+        // 最后兜底，手动复制
+        prompt('复制失败，请手动复制：', text);
     }
 
     // 创建浮动按钮
     function createFloatButton() {
-        if (document.getElementById('df-pay-btn')) return;
+        if (bodyBtn) return;
 
-        const btn = document.createElement('button');
-        btn.id = 'df-pay-btn';
-        btn.textContent = '复制支付响应Body';
-        Object.assign(btn.style, {
+        bodyBtn = document.createElement('button');
+        bodyBtn.id = 'df-pay-btn';
+        bodyBtn.textContent = '复制支付响应Body';
+        Object.assign(bodyBtn.style, {
             position: 'fixed',
             top: '20px',
             right: '20px',
@@ -100,24 +106,23 @@
             display: 'none'
         });
 
-        btn.addEventListener('click', () => {
+        bodyBtn.addEventListener('click', () => {
             if (!latestBody) {
                 showToast('暂无可复制的支付响应Body');
                 return;
             }
-            copyTextSafe(latestBody);
-            btn.style.display = 'none';
+            void copyTextUniversal(latestBody);
+            bodyBtn.style.display = 'none';
         });
-        
-        document.body.appendChild(btn);
+
+        document.body.appendChild(bodyBtn);
     }
 
     // 处理响应
     function handleResponse(responseJSON) {
         latestBody = responseJSON;
         createFloatButton();
-        const btn = document.getElementById('df-pay-btn');
-        btn.style.display = 'block';
+        bodyBtn.style.display = 'block';
     }
 
     // 双拦截器：XHR + fetch
