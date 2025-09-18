@@ -108,7 +108,7 @@
             copyTextSafe(latestBody);
             btn.style.display = 'none';
         });
-
+        
         document.body.appendChild(btn);
     }
 
@@ -124,7 +124,6 @@
     (function () {
         // 统一处理响应的函数
         function handleResponseWrapper(type, responseText) {
-            // 这里可以判断 URL / 处理数据
             try {
                 const resp = JSON.parse(responseText);
                 if (resp.ret === 0) {
