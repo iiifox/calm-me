@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         提取QQ钱包支付响应Body
 // @namespace    https://iiifox.me/
-// @version      0.5
-// @description  在腾讯充值中心页面中，监听 mobile_save 接口，提取正常出码的响应 body 并复制到剪贴板
+// @version      0.6
+// @description  在腾讯充值中心页面中，监听钱包支付接口，提取正常出码的响应 body 并复制到剪贴板
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        none
@@ -11,11 +11,17 @@
 // @downloadURL  https://iiifox.me/js/copyUnipayBody.js
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
-    const TARGET_API = 'https://api.unipay.qq.com/v1/r/1450002258/mobile_save';
+    // 用于监听的目标接口，可扩展
+    const TARGET_PATHS = ["/web_save", "/mobile_save"];
     let latestBody = null;
+
+    // 判断 URL 是否是目标接口
+    function isTargetUrl(url) {
+        return TARGET_PATHS.some(path => url.includes(path));
+    }
 
     // Toast 提示
     function showToast(msg) {
@@ -107,55 +113,56 @@
     }
 
     // 处理响应
-    function handleResponse(type, responseText) {
-        try {
-            const data = JSON.parse(responseText);
-            if (data.ret === 0) {
-                latestBody = responseText.trim();
-                createFloatButton();
-                const btn = document.getElementById('df-pay-btn');
-                btn.style.display = 'block';
-            } else {
-                console.log(`【${type}】响应不符合条件，跳过复制`);
-            }
-        } catch (err) {
-            console.error(`【${type}】解析失败：${err.message}`);
-        }
+    function handleResponse(responseJSON) {
+        latestBody = responseJSON;
+        createFloatButton();
+        const btn = document.getElementById('df-pay-btn');
+        btn.style.display = 'block';
     }
 
-    // XHR 拦截
-    (function() {
-        const _open = XMLHttpRequest.prototype.open;
-        const _send = XMLHttpRequest.prototype.send;
+    // 双拦截器：XHR + fetch
+    (function () {
+        // 统一处理响应的函数
+        function handleResponseWrapper(type, responseText) {
+            // 这里可以判断 URL / 处理数据
+            try {
+                const resp = JSON.parse(responseText);
+                if (resp.ret === 0) {
+                    handleResponse(responseText);
+                } else {
+                    console.log(`【${type}】响应不符合条件，跳过复制`);
+                }
+            } catch (err) {
+                console.error(`【${type}】解析失败：${err.message}`);
+            }
+        }
 
-        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-            this._targetUrl = url;
-            return _open.apply(this, [method, url, ...rest]);
-        };
-
-        XMLHttpRequest.prototype.send = function(...args) {
+        // ----------- XHR 拦截 -----------
+        const originalSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function (...args) {
+            // 给每个请求绑定 load 事件
             this.addEventListener('load', () => {
-                if (this.readyState === 4 && this.responseURL.startsWith(TARGET_API)) {
-                    handleResponse('XMLHttpRequest', this.responseText);
+                if (this.readyState === 4 && this.status === 200 && isTargetUrl(this.responseURL)) {
+                    handleResponseWrapper('XMLHttpRequest', this.responseText);
                 }
             });
-            return _send.apply(this, args);
+            // 发起原始请求
+            return originalSend.apply(this, args);
         };
-    })();
 
-    // fetch 拦截
-    (function() {
+        // ----------- fetch 拦截 -----------
         const originalFetch = window.fetch;
-        window.fetch = async function(input, init) {
+        window.fetch = async function (input, init) {
             const url = typeof input === 'string' ? input : input.url;
-            if (url.startsWith(TARGET_API)) {
-                const response = await originalFetch(input, init);
+            const response = await originalFetch(input, init);
+            // fetch 响应是流 → clone 一份给 handleResponse
+            if (isTargetUrl(url)) {
                 const cloned = response.clone();
                 const text = await cloned.text();
-                handleResponse('fetch', text);
-                return response;
+                handleResponseWrapper('fetch', text);
             }
-            return originalFetch(input, init);
+            // 返回原始响应给网页
+            return response;
         };
     })();
 
