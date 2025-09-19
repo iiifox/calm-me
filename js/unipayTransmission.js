@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         自动传码小脚本
+// @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.1
+// @version      0.2
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -39,33 +39,35 @@
     // 处理响应
     function handleResponse(responseJSON) {
         const config = getConfig();
-        if (!config) {
-            console.warn("handleResponse: 配置未填写，停止发送请求");
-            return; // 未配置则不发送
-        }
+        // 未配置则不发送
+        if (!config) return;
         const {length, url} = config;
+        if (!url) return;
 
-        if (!url) {
-            console.error("handleResponse: URL 为空，无法发送请求");
-            return;
-        }
-
-        Array.from({length}).forEach(() => {
-            const item = structuredClone(responseJSON);
-            item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
-            const encodedData = Base64.encode(JSON.stringify(item));
-            GM_xmlhttpRequest({
-                method: 'POST',
-                url,
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                data: encodedData,
-                onload: xhr => {
-                    console.log("请求 响应:", xhr.responseText);
-                },
-                onerror: err => {
-                    console.error("请求 出错:", err);
-                }
+        let successCount = 0;
+        const requests = Array.from({ length }).map(() => {
+            return new Promise(resolve => {
+                const item = structuredClone(responseJSON);
+                item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
+                const encodedData = Base64.encode(JSON.stringify(item));
+                GM_xmlhttpRequest({
+                    method: 'POST',
+                    url,
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    data: encodedData,
+                    onload: xhr => {
+                        successCount++;
+                        resolve();
+                    },
+                    onerror: err => {
+                        resolve();
+                    }
+                });
             });
+        });
+        
+        Promise.all(requests).then(() => {
+            alert(`传码完成：成功 ${successCount} 次`);
         });
     }
 
@@ -169,3 +171,4 @@
 
 
 })();
+
