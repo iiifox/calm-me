@@ -7,7 +7,7 @@
 // @match        *://pay.qq.com/*
 // @grant        none
 // @run-at       document-start
-// @updateURL    https://iiifox.me/js/tencent/copyUnipayBody.js
+// @updateURL    https://iiifox.me/js/pay/copyUnipayBody.js
 // ==/UserScript==
 
 (function () {
