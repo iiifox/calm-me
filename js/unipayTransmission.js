@@ -152,9 +152,13 @@
             const panel = doc.getElementById('configPanel');
             if (panel.style.display === 'none') {
                 panel.style.display = 'block';
+                // 显示可点击
+                iframeNode.style.pointerEvents = 'auto'; 
                 doc.getElementById('showConfigBtn').innerText = '隐藏配置窗口';
             } else {
                 panel.style.display = 'none';
+                // 隐藏不挡事件
+                iframeNode.style.pointerEvents = 'none'; 
                 doc.getElementById('showConfigBtn').innerText = '显示配置窗口';
             }
         });
@@ -168,9 +172,5 @@
             alert('保存成功');
         });
     };
-
-
 })();
-
-
 
