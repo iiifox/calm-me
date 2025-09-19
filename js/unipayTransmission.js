@@ -24,7 +24,7 @@
     }
 
     function getConfig() {
-        const length = GM_getValue('arrayLength', '3');
+        const length = Number(GM_getValue('arrayLength', 3));
         const url = GM_getValue('requestUrl', '');
         // 如果没有输入就返回 null
         if (!length || !url) return null;
@@ -171,5 +171,6 @@
 
 
 })();
+
 
 
