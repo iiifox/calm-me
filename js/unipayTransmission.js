@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.3
+// @version      0.2
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -132,29 +132,26 @@
     <button id="showConfigBtn" style="position:fixed;top:10px;left:10px;z-index:99999;">显示配置窗口</button>
     `;
 
-    const iframeNode = document.createElement('iframe');
-    iframeNode.id = 'iframeNode';
-    iframeNode.srcdoc = html;
-    iframeNode.style.position = 'fixed';
-    iframeNode.style.top = '10px';
-    iframeNode.style.left = '10px';
-    iframeNode.style.width = '320px';
-    iframeNode.style.height = '120px';
-    iframeNode.style.border = 'none';
-    iframeNode.style.zIndex = 99999;
-    document.body.appendChild(iframeNode);
+    // 只在顶层页面创建一次
+    if (window.top === window.self) {
+        const iframeNode = document.createElement('iframe');
+        iframeNode.id = 'iframeNode';
+        iframeNode.srcdoc = html;
+        iframeNode.style.position = 'fixed';
+        iframeNode.style.top = '10px';
+        iframeNode.style.left = '10px';
+        iframeNode.style.width = '320px';
+        iframeNode.style.height = '120px';
+        iframeNode.style.border = 'none';
+        iframeNode.style.zIndex = 99999;
+        document.body.appendChild(iframeNode);
+    }
 
     iframeNode.onload = () => {
         const doc = iframeNode.contentDocument;
-        
-        const panel = doc.getElementById('configPanel');
-        const showBtn = doc.getElementById('showConfigBtn');
-        // 初始隐藏，pointer-events 不挡事件
-        panel.style.display = 'none';
-        iframeNode.style.pointerEvents = 'none';
 
         // 显示 隐藏按钮
-        showBtn.addEventListener('click', () => {
+        doc.getElementById('showConfigBtn').addEventListener('click', () => {
             const panel = doc.getElementById('configPanel');
             if (panel.style.display === 'none') {
                 panel.style.display = 'block';
@@ -179,5 +176,6 @@
         });
     };
 })();
+
 
 
