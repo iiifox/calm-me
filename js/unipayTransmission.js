@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.2
+// @version      0.3
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -146,9 +146,15 @@
 
     iframeNode.onload = () => {
         const doc = iframeNode.contentDocument;
+        
+        const panel = doc.getElementById('configPanel');
+        const showBtn = doc.getElementById('showConfigBtn');
+        // 初始隐藏，pointer-events 不挡事件
+        panel.style.display = 'none';
+        iframeNode.style.pointerEvents = 'none';
 
-        // 显示/隐藏按钮
-        doc.getElementById('showConfigBtn').addEventListener('click', () => {
+        // 显示 隐藏按钮
+        showBtn.addEventListener('click', () => {
             const panel = doc.getElementById('configPanel');
             if (panel.style.display === 'none') {
                 panel.style.display = 'block';
@@ -173,4 +179,5 @@
         });
     };
 })();
+
 
