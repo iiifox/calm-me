@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.2
+// @version      0.3
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -150,18 +150,27 @@
     iframeNode.onload = () => {
         const doc = iframeNode.contentDocument;
 
-        // 显示 隐藏按钮
+        // 阻止右键菜单
+        doc.addEventListener('contextmenu', e => e.preventDefault());
+    
+        // 阻止 Ctrl+A 被捕获
+        doc.addEventListener('keydown', e => {
+            // Ctrl+A / Cmd+A
+            if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                e.stopPropagation(); // 阻止冒泡
+                // 默认行为仍允许全选
+            }
+        }, true);
+    
+        const panel = doc.getElementById('configPanel');
+    
+        // 显示/隐藏按钮
         doc.getElementById('showConfigBtn').addEventListener('click', () => {
-            const panel = doc.getElementById('configPanel');
             if (panel.style.display === 'none') {
                 panel.style.display = 'block';
-                // 显示可点击
-                iframeNode.style.pointerEvents = 'auto'; 
                 doc.getElementById('showConfigBtn').innerText = '隐藏配置窗口';
             } else {
                 panel.style.display = 'none';
-                // 隐藏不挡事件
-                iframeNode.style.pointerEvents = 'none'; 
                 doc.getElementById('showConfigBtn').innerText = '显示配置窗口';
             }
         });
@@ -176,6 +185,7 @@
         });
     };
 })();
+
 
 
 
