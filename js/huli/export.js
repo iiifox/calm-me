@@ -1,49 +1,18 @@
 // ==UserScript==
-// @name         导出代理统计 XLSX
+// @name         狐狸导出代理统计
 // @namespace    https://iiifox.me/
-// @version      0.4
-// @description  从 iframe 的 F_STATE 提取数据并导出 XLSX，中文不乱码，总额可求和，折扣和入预付为公式
-// @match        *://116.62.60.127:8369/*
-// @grant        none
-// @run-at       document-idle
-// @updateURL    https://iiifox.me/js/huli/export.js
+// @version      0.3
+// @description  监听 dltj.aspx 响应，提取表格数据，带折扣和入预付公式
+// @match        *://116.62.60.127:8369/dltj.aspx*
+// @grant        GM_xmlhttpRequest
+// @require      https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js
 // ==/UserScript==
 
 (function () {
     'use strict';
-    if (window.top !== window.self) return;
 
-    const BTN_ID = 'export-dltj-xlsx';
-    if (!document.getElementById(BTN_ID)) {
-        const btn = document.createElement("button");
-        btn.id = BTN_ID;
-        btn.textContent = "导出代理统计(XLSX)";
-        Object.assign(btn.style, {
-            position: "fixed",
-            top: "80px",
-            right: "20px",
-            zIndex: 99999,
-            padding: "8px 12px",
-            background: "#2e8b57",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer"
-        });
-        document.body.appendChild(btn);
-        btn.addEventListener("click", exportXLSX);
-    }
-
-    const XLSX_URL = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
-    function loadXLSX() {
-        return new Promise((resolve, reject) => {
-            if (window.XLSX) return resolve(window.XLSX);
-            const s = document.createElement("script");
-            s.src = XLSX_URL;
-            s.onload = () => resolve(window.XLSX);
-            s.onerror = reject;
-            document.head.appendChild(s);
-        });
+    function isTargetUrl(url) {
+        return url.includes("dltj.aspx");
     }
 
     function base64UrlDecode(input) {
@@ -53,35 +22,30 @@
     }
 
     function fixChinese(str) {
-        try {
-            return decodeURIComponent(escape(str));
-        } catch (e) {
-            return str;
-        }
+        try { return decodeURIComponent(escape(str)); }
+        catch (e) { return str; }
     }
 
-    function getFState() {
-        const iframe = document.querySelector("iframe[src*='dltj']");
-        if (!iframe) { alert("未找到 dltj 的 iframe"); return null; }
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        if (!doc) { alert("无法访问 iframe 内容"); return null; }
-        const stateEl = doc.querySelector("#F_STATE");
-        if (!stateEl) { alert("iframe 内没有找到 F_STATE"); return null; }
+    // 解析响应中的表格数据
+    function parseResponseText(text) {
+        if (!text.includes('"Text":"')) return null;
 
-        let decoded, json;
+        // 简单匹配 Text 和 F_Rows
+        const dateMatch = text.match(/"Text":"(\d{4}-\d{2}-\d{2})"/);
+        const dateStr = dateMatch ? dateMatch[1] : "未知日期";
+
+        const rowsMatch = text.match(/"F_Rows":(\[.*?\])\}/s);
+        if (!rowsMatch) return null;
+
+        let rows;
         try {
-            decoded = base64UrlDecode(stateEl.value);
-            json = JSON.parse(decoded);
-        } catch(e){
-            alert("F_STATE 解析失败: " + e);
-            console.log("F_STATE 内容前300字符:", stateEl.value.slice(0,300));
+            rows = JSON.parse(rowsMatch[1]);
+        } catch(e) {
+            console.error("解析 F_Rows 失败", e);
             return null;
         }
 
-        if (!json.Grid1 || !json.Grid1.F_Rows){ alert("F_STATE 中没有 Grid1.F_Rows"); return null; }
-
-        // 保留原来的数据处理逻辑
-        const data = json.Grid1.F_Rows.map(r => {
+        const data = rows.map(r => {
             const f0 = r.f0;
             return [
                 fixChinese(String(f0[1])), // 用户
@@ -90,47 +54,65 @@
             ];
         });
 
-        return data;
+        return { dateStr, data };
     }
 
-    function exportXLSX() {
-        const data = getFState();
-        if (!data) return;
-
+    // 导出 XLSX
+    function exportXLSX(dateStr, data) {
         const aoa = [["用户","业务","总额","折扣","入预付"], ...data];
 
-        loadXLSX().then(XLSX=>{
-            const ws = XLSX.utils.aoa_to_sheet(aoa);
-
-            // 在已有数据基础上写入公式列
-            data.forEach((row, index) => {
-                const rowNum = index + 2; // Excel 行号从1开始，表头在第1行
-
-                // 折扣公式
-                ws[`D${rowNum}`] = {
-                    f: `IF(B${rowNum}="秒拉",0.095,IF(ISNUMBER(SEARCH("特价",B${rowNum})),-0.835,-0.86))`
-                };
-
-                // 入预付公式
-                ws[`E${rowNum}`] = {
-                    f: `C${rowNum}*D${rowNum}`
-                };
-            });
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "代理统计");
-
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "代理统计.xlsx";
-            a.click();
-            URL.revokeObjectURL(url);
-        }).catch(err=>{
-            alert("加载 XLSX 失败: " + err);
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        data.forEach((row,index)=>{
+            const rowNum = index + 2;
+            ws[`D${rowNum}`] = { f: `IF(B${rowNum}="秒拉",0.095,IF(ISNUMBER(SEARCH("特价",B${rowNum})),-0.835,-0.86))` };
+            ws[`E${rowNum}`] = { f: `C${rowNum}*D${rowNum}` };
         });
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "代理统计");
+
+        const wbout = XLSX.write(wb,{bookType:'xlsx',type:'array'});
+        const blob = new Blob([wbout],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `${dateStr}代理统计.xlsx`;
+        a.click();
     }
+
+    // 拦截 XHR
+    (function(){
+        const originalSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function(...args){
+            this.addEventListener('load',()=>{
+                if(this.readyState===4 && this.status===200 && isTargetUrl(this.responseURL)){
+                    const parsed = parseResponseText(this.responseText);
+                    if(parsed){
+                        console.log("检测到代理统计数据，自动导出:", parsed);
+                        exportXLSX(parsed.dateStr, parsed.data);
+                    }
+                }
+            });
+            return originalSend.apply(this,args);
+        };
+    })();
+
+    // 拦截 fetch
+    (function(){
+        const originalFetch = window.fetch;
+        window.fetch = async function(input, init){
+            const url = typeof input === 'string' ? input : input.url;
+            const response = await originalFetch(input, init);
+            if(isTargetUrl(url)){
+                const cloned = response.clone();
+                const text = await cloned.text();
+                const parsed = parseResponseText(text);
+                if(parsed){
+                    console.log("检测到代理统计数据(fetch)，自动导出:", parsed);
+                    exportXLSX(parsed.dateStr, parsed.data);
+                }
+            }
+            return response;
+        };
+    })();
 
 })();
