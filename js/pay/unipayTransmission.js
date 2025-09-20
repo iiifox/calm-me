@@ -8,7 +8,7 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @updateURL    https://iiifox.me/js/unipayTransmission.js
+// @updateURL    https://iiifox.me/js/pay/unipayTransmission.js
 // @require      https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.js
 // ==/UserScript==
 
@@ -185,6 +185,7 @@
         });
     };
 })();
+
 
 
 
