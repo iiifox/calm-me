@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         狐狸导出代理统计
+// @name         狐狸导出代理统计（精确折扣+汇总）
 // @namespace    https://iiifox.me/
-// @version      0.4
-// @description  监听 dltj.aspx 响应，提取表格数据，可配置直冲、慢充、特价折扣
+// @version      0.5
+// @description  监听 dltj.aspx 响应，按渠道精确折扣导出代理统计，汇总同用户同业务
 // @match        *://116.62.60.127:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
 // @updateURL    https://iiifox.me/js/huli/export.js
@@ -11,6 +11,21 @@
 
 (function () {
     'use strict';
+
+    // ---------------- 折扣配置 ----------------
+    const discountMap = {
+        "直冲": { channels: ["秒拉"], value: 0.095 },
+        "慢充": { channels: [
+            "王者Q钱点卷(电商)",
+            "王者4笔Q钱点卷（电商）",
+            "王者点券Q钱电商单笔",
+            "王者点券Q钱电商四笔"
+        ], value: -0.86 },
+        "特价": { channels: [
+            "王者点券特价单笔",
+            "王者点券特价五笔"
+        ], value: -0.835 }
+    };
 
     // ---------------- 配置面板 ----------------
     function createDiscountPanel() {
@@ -30,9 +45,9 @@
 
         panel.innerHTML = `
             <strong>折扣配置</strong>
-            <div style="margin-top:5px;"><label>直冲折扣: <input id="dcDiscount" type="number" step="0.001" value="0.095" style="width:60px"></label></div>
-            <div><label>慢充折扣: <input id="mcDiscount" type="number" step="0.001" value="-0.86" style="width:60px"></label></div>
-            <div><label>特价折扣: <input id="tjDiscount" type="number" step="0.001" value="-0.835" style="width:60px"></label></div>
+            <div style="margin-top:5px;"><label>直冲折扣: <input id="dcDiscount" type="number" step="0.001" value="${discountMap["直冲"].value}" style="width:60px"></label></div>
+            <div><label>慢充折扣: <input id="mcDiscount" type="number" step="0.001" value="${discountMap["慢充"].value}" style="width:60px"></label></div>
+            <div><label>特价折扣: <input id="tjDiscount" type="number" step="0.001" value="${discountMap["特价"].value}" style="width:60px"></label></div>
         `;
 
         document.body.appendChild(panel);
@@ -79,20 +94,55 @@
         return { dateStr, data };
     }
 
-    function exportXLSX(dateStr, data) {
-        const aoa = [["用户","业务","总额","折扣","入预付"], ...data];
-        const ws = XLSX.utils.aoa_to_sheet(aoa);
+    // ---------------- 获取业务类型 ----------------
+    function getBusinessType(business) {
+        for (let key in discountMap) {
+            if (discountMap[key].channels.includes(business)) {
+                return key; // 返回“直冲”“慢充”“特价”
+            }
+        }
+        return "其他";
+    }
 
-        // 读取配置折扣
-        const dc = parseFloat(document.getElementById("dcDiscount").value);
-        const mc = parseFloat(document.getElementById("mcDiscount").value);
-        const tj = parseFloat(document.getElementById("tjDiscount").value);
+    // ---------------- 汇总数据 ----------------
+    function aggregateData(data) {
+        const map = {}; // { "用户名|业务类型": 总额 }
 
-        data.forEach((row,index)=>{
-            const rowNum = index + 2;
-            ws[`D${rowNum}`] = { f: `IF(B${rowNum}="秒拉",${dc},IF(ISNUMBER(SEARCH("特价",B${rowNum})),${tj},${mc}))` };
-            ws[`E${rowNum}`] = { f: `C${rowNum}*D${rowNum}` };
+        // 每次导出前更新折扣值
+        discountMap["直冲"].value = parseFloat(document.getElementById("dcDiscount").value);
+        discountMap["慢充"].value = parseFloat(document.getElementById("mcDiscount").value);
+        discountMap["特价"].value = parseFloat(document.getElementById("tjDiscount").value);
+
+        data.forEach(row => {
+            const user = row[0];
+            const type = getBusinessType(row[1]);
+            const key = `${user}|${type}`;
+            if (!map[key]) map[key] = 0;
+            map[key] += row[2];
         });
+
+        // 转成二维数组
+        const result = Object.entries(map).map(([key, total]) => {
+            const [user, type] = key.split("|");
+            const discount = discountMap[type]?.value || 0;
+            return [user, type, total, discount, total * discount];
+        });
+
+        // 按用户名升序，再按业务类型排序
+        result.sort((a, b) => {
+            if (a[0] === b[0]) return a[1].localeCompare(b[1]);
+            return a[0].localeCompare(b[0]);
+        });
+
+
+        return result;
+    }
+
+    // ---------------- 导出 Excel ----------------
+    function exportXLSX(dateStr, data) {
+        const aggregated = aggregateData(data);
+        const aoa = [["用户","业务","总额","折扣","入预付"], ...aggregated];
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
 
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "代理统计");
