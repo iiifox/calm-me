@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         导出代理统计 XLSX 
+// @name         导出代理统计 XLSX
 // @namespace    https://iiifox.me/
-// @version      0.2
-// @description  从 iframe 的 F_STATE 提取数据并导出 XLSX，中文不乱码，总额可求和
+// @version      0.4
+// @description  从 iframe 的 F_STATE 提取数据并导出 XLSX，中文不乱码，总额可求和，折扣和入预付为公式
 // @match        *://116.62.60.127:8369/*
 // @grant        none
 // @run-at       document-idle
@@ -80,12 +80,13 @@
 
         if (!json.Grid1 || !json.Grid1.F_Rows){ alert("F_STATE 中没有 Grid1.F_Rows"); return null; }
 
+        // 保留原来的数据处理逻辑
         const data = json.Grid1.F_Rows.map(r => {
             const f0 = r.f0;
             return [
                 fixChinese(String(f0[1])), // 用户
                 fixChinese(String(f0[2])), // 业务
-                Number(f0[3])              // 总额，保留数字类型
+                Number(f0[3])              // 总额
             ];
         });
 
@@ -96,10 +97,26 @@
         const data = getFState();
         if (!data) return;
 
-        const aoa = [["用户","业务","总额"], ...data];
+        const aoa = [["用户","业务","总额","折扣","入预付"], ...data];
 
         loadXLSX().then(XLSX=>{
             const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+            // 在已有数据基础上写入公式列
+            data.forEach((row, index) => {
+                const rowNum = index + 2; // Excel 行号从1开始，表头在第1行
+
+                // 折扣公式
+                ws[`D${rowNum}`] = {
+                    f: `IF(B${rowNum}="秒拉",0.095,IF(ISNUMBER(SEARCH("特价",B${rowNum})),-0.835,-0.86))`
+                };
+
+                // 入预付公式
+                ws[`E${rowNum}`] = {
+                    f: `C${rowNum}*D${rowNum}`
+                };
+            });
+
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "代理统计");
 
