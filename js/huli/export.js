@@ -5,6 +5,7 @@
 // @description  监听 dltj.aspx 响应，提取表格数据，带折扣和入预付公式
 // @match        *://116.62.60.127:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
+// @updateURL    https://iiifox.me/js/huli/export.js
 // @require      https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js
 // ==/UserScript==
 
