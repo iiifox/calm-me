@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸导出代理统计（精确折扣+汇总）
 // @namespace    https://iiifox.me/
-// @version      0.5
+// @version      0.6
 // @description  监听 dltj.aspx 响应，按渠道精确折扣导出代理统计，汇总同用户同业务
 // @match        *://116.62.60.127:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
@@ -142,11 +142,48 @@
     function exportXLSX(dateStr, data) {
         const aggregated = aggregateData(data);
         const aoa = [["用户","业务","总额","折扣","入预付"], ...aggregated];
-        const ws = XLSX.utils.aoa_to_sheet(aoa);
 
+        // 创建工作簿
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "代理统计");
 
+        // 1️⃣ 添加原始代理统计工作表
+        const wsMain = XLSX.utils.aoa_to_sheet(aoa);
+        XLSX.utils.book_append_sheet(wb, wsMain, "代理统计");
+
+        // 2️⃣ 给每个用户创建单独工作表
+        const usersMap = {}; // { 用户名: [[user,type,total,discount,入预付], ...] }
+        aggregated.forEach(row => {
+            const user = row[0];
+            if (!usersMap[user]) usersMap[user] = [];
+            usersMap[user].push(row);
+        });
+
+        Object.entries(usersMap).forEach(([user, rows]) => {
+            const wsUser = XLSX.utils.aoa_to_sheet([["用户","业务","总额","折扣","入预付"], ...rows]);
+
+            // 计算入预付总和
+            const totalSum = rows.reduce((sum,r) => sum + r[4], 0);
+
+            // 添加总计行（BCDE合并）
+            const lastRow = rows.length + 2; // 第一行是表头
+            wsUser[`A${lastRow}`] = { t: 's', v: '总计' };
+            wsUser[`B${lastRow}`] = { t: 'n', v: totalSum };
+            // 更新 !ref，让工作表范围包含最后一行
+            const range = XLSX.utils.decode_range(wsUser['!ref']);
+            // 注意索引从0开始，所以减1
+            range.e.r = lastRow - 1;
+            wsUser['!ref'] = XLSX.utils.encode_range(range);
+            // 合并 BCDE 四个单元格
+            wsUser['!merges'] = wsUser['!merges'] || [];
+            wsUser['!merges'].push({
+                s: { r: lastRow - 1, c: 1 }, // 起始单元格 B
+                e: { r: lastRow - 1, c: 4 }  // 结束单元格 E
+            });
+
+            XLSX.utils.book_append_sheet(wb, wsUser, user);
+        });
+
+        // 3️⃣ 导出文件
         const wbout = XLSX.write(wb,{bookType:'xlsx',type:'array'});
         const blob = new Blob([wbout],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"});
         const a = document.createElement("a");
@@ -154,6 +191,7 @@
         a.download = `${dateStr}代理统计.xlsx`;
         a.click();
     }
+
 
     // ---------------- 拦截 XHR ----------------
     (function(){
