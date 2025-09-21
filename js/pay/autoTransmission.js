@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.4
+// @version      0.5
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -46,7 +46,7 @@
         if (!url) return;
 
         let successCount = 0;
-        const requests = Array.from({ length }).map(() => {
+        const requests = Array.from({length}).map(() => {
             return new Promise(resolve => {
                 const item = structuredClone(responseJSON);
                 item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
@@ -54,7 +54,7 @@
                 GM_xmlhttpRequest({
                     method: 'POST',
                     url,
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
                     data: encodedData,
                     onload: xhr => {
                         successCount++;
@@ -66,7 +66,7 @@
                 });
             });
         });
-        
+
         Promise.all(requests).then(() => {
             alert(`传码完成：成功 ${successCount} 次`);
         });
@@ -119,10 +119,14 @@
 
     // ----------------- 配置窗口 -----------------
     const html = `
-    <div id="configPanel" style="display:none;background:white;padding:10px;border:1px solid #ccc;">
+<div style="background:white;padding:10px;border:1px solid #ccc;width:300px;">
+    <div style="margin-bottom:8px;">
+        <button id="showConfigBtn">显示配置窗口</button>
+    </div>
+    <div id="configPanel" style="display:none;">
         <div style="margin-bottom:5px;">
             <label>账号链接:</label>
-            <input type="text" id="requestUrlInput" value="${GM_getValue('requestUrl', '')}" style="width:200px;font-size:12px;">
+            <input type="text" id="requestUrlInput" value="${GM_getValue('requestUrl', '')}" style="width:200px; font-size:12px;">
         </div>
         <div style="margin-bottom:5px;">
             <label>传码次数:</label>
@@ -130,8 +134,8 @@
         </div>
         <button id="saveConfigBtn">保存</button>
     </div>
-    <button id="showConfigBtn" style="position:fixed;top:10px;left:10px;z-index:99999;">显示配置窗口</button>
-    `;
+</div>
+`;
 
     // 只在顶层页面创建一次
     if (window.top === window.self) {
@@ -141,8 +145,8 @@
         iframeNode.style.position = 'fixed';
         iframeNode.style.top = '10px';
         iframeNode.style.left = '10px';
-        iframeNode.style.width = '320px';
-        iframeNode.style.height = '120px';
+        iframeNode.style.width = '350px';
+        iframeNode.style.height = '160px';
         iframeNode.style.border = 'none';
         iframeNode.style.zIndex = 99999;
         document.body.appendChild(iframeNode);
@@ -153,7 +157,7 @@
 
         // 阻止右键菜单
         doc.addEventListener('contextmenu', e => e.preventDefault());
-    
+
         // 阻止 Ctrl+A 被捕获
         doc.addEventListener('keydown', e => {
             // Ctrl+A / Cmd+A
@@ -162,9 +166,9 @@
                 // 默认行为仍允许全选
             }
         }, true);
-    
+
         const panel = doc.getElementById('configPanel');
-    
+
         // 显示/隐藏按钮
         doc.getElementById('showConfigBtn').addEventListener('click', () => {
             if (panel.style.display === 'none') {
@@ -186,10 +190,3 @@
         });
     };
 })();
-
-
-
-
-
-
-
