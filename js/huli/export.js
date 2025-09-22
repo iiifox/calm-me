@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸导出代理统计（精确折扣+汇总）
 // @namespace    https://iiifox.me/
-// @version      0.6
+// @version      0.7
 // @description  监听 dltj.aspx 响应，按渠道精确折扣导出代理统计，汇总同用户同业务
 // @match        *://116.62.60.127:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
@@ -159,7 +159,7 @@
         });
 
         Object.entries(usersMap).forEach(([user, rows]) => {
-            const wsUser = XLSX.utils.aoa_to_sheet([["用户","业务","总额","折扣","入预付"], ...rows]);
+            const wsUser = XLSX.utils.aoa_to_sheet([[dateStr,"业务","总额","折扣","入预付"], ...rows]);
 
             // 计算入预付总和
             const totalSum = rows.reduce((sum,r) => sum + r[4], 0);
