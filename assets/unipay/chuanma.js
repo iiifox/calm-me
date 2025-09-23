@@ -8,7 +8,7 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @updateURL    https://iiifox.me/unipay/chuanma.js
+// @updateURL    https://iiifox.me/assets/unipay/chuanma.js
 // @require      https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.js
 // @connect      081w5a8cim.top
 // ==/UserScript==
