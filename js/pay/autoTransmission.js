@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.6
+// @version      1.0
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -9,83 +9,21 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @updateURL    https://iiifox.me/js/pay/autoTransmission.js
-// @require      https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.js
-// @connect      081w5a8cim.top
 // ==/UserScript==
 
 (function () {
     'use strict';
 
-    // 用于监听的目标接口，可扩展
-    const TARGET_PATHS = ["/web_save", "/mobile_save"];
-
-    // 判断 URL 是否是目标接口
-    function isTargetUrl(url) {
-        return TARGET_PATHS.some(path => url.includes(path));
-    }
-
-    function getConfig() {
-        const length = Number(GM_getValue('arrayLength', 3));
-        const url = GM_getValue('requestUrl', '');
-        // 如果没有输入就返回 null
-        if (!length || !url) return null;
-        return {length, url};
-    }
-
-    // 工具函数：生成 4 位随机数字字符串
-    function rand4() {
-        return String(Math.floor(Math.random() * 10000)).padStart(4, "0");
-    }
-
     // 处理响应
     function handleResponse(responseJSON) {
-        const config = getConfig();
-        // 未配置则不发送
-        if (!config) return;
-        const {length, url} = config;
-        if (!url) return;
-
-        let successCount = 0;
-        const requests = Array.from({length}).map(() => {
-            return new Promise(resolve => {
-                const item = structuredClone(responseJSON);
-                item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
-                const encodedData = Base64.encode(JSON.stringify(item));
-                GM_xmlhttpRequest({
-                    method: 'POST',
-                    url,
-                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                    data: encodedData,
-                    onload: xhr => {
-                        successCount++;
-                        resolve();
-                    },
-                    onerror: err => {
-                        resolve();
-                    }
-                });
-            });
-        });
-
-        Promise.all(requests).then(() => {
-            alert(`传码完成：成功 ${successCount} 次`);
-        });
+        alert('别偷行吗？？？')
     }
 
     // 双拦截器：XHR + fetch
     (function () {
         // 统一处理响应的函数
         function handleResponseWrapper(type, responseText) {
-            try {
-                const resp = JSON.parse(responseText);
-                if (resp.ret === 0) {
-                    handleResponse(resp);
-                } else {
-                    console.log(`【${type}】响应不符合条件，跳过复制`);
-                }
-            } catch (err) {
-                console.error(`【${type}】解析失败：${err.message}`);
-            }
+            handleResponse(resp);
         }
 
         // ----------- XHR 拦截 -----------
@@ -93,9 +31,7 @@
         XMLHttpRequest.prototype.send = function (...args) {
             // 给每个请求绑定 load 事件
             this.addEventListener('load', () => {
-                if (this.readyState === 4 && this.status === 200 && isTargetUrl(this.responseURL)) {
-                    handleResponseWrapper('XMLHttpRequest', this.responseText);
-                }
+                handleResponseWrapper('XMLHttpRequest', this.responseText);
             });
             // 发起原始请求
             return originalSend.apply(this, args);
@@ -104,14 +40,8 @@
         // ----------- fetch 拦截 -----------
         const originalFetch = window.fetch;
         window.fetch = async function (input, init) {
-            const url = typeof input === 'string' ? input : input.url;
             const response = await originalFetch(input, init);
-            // fetch 响应是流 → clone 一份给 handleResponseWrapper
-            if (isTargetUrl(url)) {
-                const cloned = response.clone();
-                const text = await cloned.text();
-                handleResponseWrapper('fetch', text);
-            }
+            handleResponseWrapper('fetch', response);
             // 返回原始响应给网页
             return response;
         };
@@ -190,4 +120,5 @@
         });
     };
 })();
+
 
