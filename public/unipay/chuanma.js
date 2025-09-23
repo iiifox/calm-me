@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.6
+// @version      0.0.1
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @updateURL    https://iiifox.me/js/unipay/chuanma.js
+// @updateURL    https://iiifox.me/unipay/chuanma.js
 // @require      https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.js
 // @connect      081w5a8cim.top
 // ==/UserScript==
