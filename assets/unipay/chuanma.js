@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      1.0.0
+// @version      1.1.0
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -9,7 +9,6 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @updateURL    https://iiifox.me/assets/unipay/chuanma.js
-// @require      https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.js
 // @connect      081w5a8cim.top
 // ==/UserScript==
 
@@ -37,6 +36,14 @@
         return String(Math.floor(Math.random() * 10000)).padStart(4, "0");
     }
 
+    function encodeItem(item) {
+        const str = JSON.stringify(item);
+        // 将 UTF-8 字符串转成可用 btoa 的 ASCII
+        const utf8Str = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+            (_, p1) => String.fromCharCode('0x' + p1));
+        return btoa(utf8Str);
+    }
+
     // 处理响应
     function handleResponse(responseJSON) {
         const config = getConfig();
@@ -50,7 +57,7 @@
             return new Promise(resolve => {
                 const item = structuredClone(responseJSON);
                 item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
-                const encodedData = Base64.encode(JSON.stringify(item));
+                const encodedData = encodeItem(item);
                 GM_xmlhttpRequest({
                     method: 'POST',
                     url,
