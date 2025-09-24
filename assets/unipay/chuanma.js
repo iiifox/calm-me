@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         自动传码
+// @name         自动传至饭票
 // @namespace    https://iiifox.me/
-// @version      1.1.1
+// @version      1.1.2
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -33,16 +33,13 @@
     }
 
     // 工具函数：生成 4 位随机数字字符串
-    function rand4() {
-        return String(Math.floor(Math.random() * 10000)).padStart(4, "0");
-    }
+    const rand4 = () => Math.floor(Math.random() * 10000).toString().padStart(4, '0');
 
     function encodeItem(item) {
         const str = JSON.stringify(item);
-        // 将 UTF-8 字符串转成可用 btoa 的 ASCII
-        const utf8Str = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
-            (_, p1) => String.fromCharCode('0x' + p1));
-        return btoa(utf8Str);
+        const utf8Bytes = new TextEncoder().encode(str);
+        let binary = String.fromCharCode(...utf8Bytes);
+        return btoa(binary);
     }
 
     // 处理响应
@@ -158,43 +155,31 @@
         iframeNode.style.border = 'none';
         iframeNode.style.zIndex = 99999;
         document.body.appendChild(iframeNode);
+
+        iframeNode.onload = () => {
+            const doc = iframeNode.contentDocument;
+
+            // 显示/隐藏按钮
+            doc.getElementById('showConfigBtn').addEventListener('click', () => {
+                const panel = doc.getElementById('configPanel');
+                if (panel.style.display === 'none') {
+                    panel.style.display = 'block';
+                    doc.getElementById('showConfigBtn').innerText = '隐藏配置窗口';
+                } else {
+                    panel.style.display = 'none';
+                    doc.getElementById('showConfigBtn').innerText = '显示配置窗口';
+                }
+            });
+
+            // 保存按钮
+            doc.getElementById('saveConfigBtn').addEventListener('click', () => {
+                const requestUrl = doc.getElementById('requestUrlInput').value;
+                const arrayLength = doc.getElementById('arrayLengthInput').value;
+                GM_setValue('requestUrl', requestUrl);
+                GM_setValue('arrayLength', arrayLength);
+                alert('保存成功');
+            });
+        };
     }
 
-    iframeNode.onload = () => {
-        const doc = iframeNode.contentDocument;
-
-        // 阻止右键菜单
-        doc.addEventListener('contextmenu', e => e.preventDefault());
-
-        // 阻止 Ctrl+A 被捕获
-        doc.addEventListener('keydown', e => {
-            // Ctrl+A / Cmd+A
-            if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-                e.stopPropagation(); // 阻止冒泡
-                // 默认行为仍允许全选
-            }
-        }, true);
-
-        const panel = doc.getElementById('configPanel');
-
-        // 显示/隐藏按钮
-        doc.getElementById('showConfigBtn').addEventListener('click', () => {
-            if (panel.style.display === 'none') {
-                panel.style.display = 'block';
-                doc.getElementById('showConfigBtn').innerText = '隐藏配置窗口';
-            } else {
-                panel.style.display = 'none';
-                doc.getElementById('showConfigBtn').innerText = '显示配置窗口';
-            }
-        });
-
-        // 保存按钮
-        doc.getElementById('saveConfigBtn').addEventListener('click', () => {
-            const requestUrl = doc.getElementById('requestUrlInput').value;
-            const arrayLength = doc.getElementById('arrayLengthInput').value;
-            GM_setValue('requestUrl', requestUrl);
-            GM_setValue('arrayLength', arrayLength);
-            alert('保存成功');
-        });
-    };
 })();
