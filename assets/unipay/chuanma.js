@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         自动传至饭票
+// @name         自动传码
 // @namespace    https://iiifox.me/
 // @version      1.1.2
 // @description  自动传码到饭票（需填写url与次数）
