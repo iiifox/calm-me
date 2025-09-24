@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      1.1.0
+// @version      1.1.1
 // @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -9,6 +9,7 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @updateURL    https://iiifox.me/assets/unipay/chuanma.js
+// @downloadURL  https://iiifox.me/assets/unipay/chuanma.js
 // @connect      081w5a8cim.top
 // ==/UserScript==
 
