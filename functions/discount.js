@@ -25,7 +25,7 @@ function parseXd(lines, profit) {
     let currentTimeKey = ""
     for (const line of lines) {
         // “30号过点” 视为 00:00
-        if (line.includes('过点')) {
+        if (line.includes('号')) {
             currentTimeKey = '00:00';
             if (!xd[currentTimeKey]) {
                 xd[currentTimeKey] = {};
