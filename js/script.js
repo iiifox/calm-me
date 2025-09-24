@@ -18,7 +18,7 @@ function renderXdCards(timeBlocks) {
     ];
 
     const channelGroup = {
-        "qianbao": ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道H"],
+        "qianbao": ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道F" "渠道H"],
         "teshu": ["渠道TA", "渠道TB"],
         "weixin": ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
     }
