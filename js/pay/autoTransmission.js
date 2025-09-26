@@ -14,38 +14,7 @@
 (function () {
     'use strict';
 
-    // 处理响应
-    function handleResponse(responseJSON) {
-        alert('别偷行吗？？？')
-    }
-
-    // 双拦截器：XHR + fetch
-    (function () {
-        // 统一处理响应的函数
-        function handleResponseWrapper(type, responseText) {
-            handleResponse(resp);
-        }
-
-        // ----------- XHR 拦截 -----------
-        const originalSend = XMLHttpRequest.prototype.send;
-        XMLHttpRequest.prototype.send = function (...args) {
-            // 给每个请求绑定 load 事件
-            this.addEventListener('load', () => {
-                handleResponseWrapper('XMLHttpRequest', this.responseText);
-            });
-            // 发起原始请求
-            return originalSend.apply(this, args);
-        };
-
-        // ----------- fetch 拦截 -----------
-        const originalFetch = window.fetch;
-        window.fetch = async function (input, init) {
-            const response = await originalFetch(input, init);
-            handleResponseWrapper('fetch', response);
-            // 返回原始响应给网页
-            return response;
-        };
-    })();
+    alert("请先找iiifox换新链接")
 
     // ----------------- 配置窗口 -----------------
     const html = `
@@ -120,6 +89,7 @@
         });
     };
 })();
+
 
 
 
