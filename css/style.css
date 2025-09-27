@@ -233,7 +233,7 @@ h1 {
 }
 /* 悬停效果 */
 .copy-btn:hover {
-    transform: translateY(-50%, -30px);
+    transform: translateY(-3px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
 /* 点击效果 */
@@ -256,15 +256,6 @@ h1 {
 .copy-btn:hover::after {
     transform: translateX(100%) rotate(30deg);
 }
-
-/* .copy-btn {
-    position: absolute;
-    left: 50%;
-    bottom: -5px;
-    transform: translateX(-50%);
-    z-index: 10;
-} */
-
 
 
 /* 狐狸安卓Q 样式 */
@@ -292,8 +283,6 @@ h1 {
 .fox-android-q .rebate-content {
     display: flex;
     flex-direction: column;
-    /*     justify-content: space-between; */
-    /*     gap: 20px; */
 }
 
 .fox-android-q .rebate-group {
