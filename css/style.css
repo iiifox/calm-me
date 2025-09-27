@@ -253,20 +253,6 @@ h1 {
     transform: translateX(100%) rotate(30deg);
 }
 
-/* 绝对定位右上角，按钮本身内容居中 */
-.rebate-group .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 20;
-    padding: 6px 18px;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
 .copy-btn {
     position: absolute;
     left: 50%;
