@@ -213,7 +213,7 @@ h1 {
 }
 
 /* 复制按钮基础样式 */
-.copy-btn {
+.xd-slider-container .copy-btn {
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
@@ -232,16 +232,16 @@ h1 {
     transition: all 0.3s ease;
 }
 /* 悬停效果 */
-.copy-btn:hover {
+.xd-slider-container .copy-btn:hover {
     transform: translateY(-1.5px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
 /* 点击效果 */
-.copy-btn:active {
+.xd-slider-container .copy-btn:active {
     transform: translateY(0);
 }
 /* 流光效果 */
-.copy-btn::after {
+.xd-slider-container .copy-btn::after {
     content: '';
     position: absolute;
     top: -50%;
