@@ -254,7 +254,7 @@ h1 {
 }
 
 .copy-btn:hover::after {
-    transform: translateX(500%) rotate(30deg);
+    transform: translateX(50%) rotate(30deg);
 }
 
 
