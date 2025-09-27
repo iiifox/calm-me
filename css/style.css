@@ -233,7 +233,7 @@ h1 {
 }
 /* 悬停效果 */
 .xd-slider-container .copy-btn:hover {
-    transform: translateY(-0.1px);
+    transform: translateY(-3px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
 /* 点击效果 */
@@ -254,7 +254,7 @@ h1 {
 }
 
 .copy-btn:hover::after {
-    transform: translateX(100%) rotate(30deg);
+    transform: translateX(500%) rotate(30deg);
 }
 
 
