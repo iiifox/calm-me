@@ -482,7 +482,14 @@ h1 {
     margin-bottom: 30px;
 }
 
-.gbo-section h2 {
+/* .gbo-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+} */
+
+.rebate-system h2 {
     color: #2c3e50;
     margin-bottom: 15px;
     padding-bottom: 10px;
