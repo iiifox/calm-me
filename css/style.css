@@ -116,9 +116,8 @@ h1 {
 }
 
 .rebate-system .channel-label {
-    font-weight: bold;
     color: #4b7bf5;
-    /* padding-top: 0; */
+    font-weight: bold;
     min-width: 60px;
     /* 不允许缩小，保持原始宽度 */
     flex-shrink: 0;
@@ -127,8 +126,8 @@ h1 {
 .rebate-system .channel-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, 180px);
-    gap: 15px;
-    flex: 1;
+    gap: 8px;
+    /* flex: 1; */
 }
 
 .xd-item {
