@@ -261,7 +261,7 @@ channel-label {
 
 
 /* 狐狸安卓Q 样式 */
-.fox-android-q .channel-label {
+.channel-label {
     font-weight: bold;
     color: #4b7bf5;
     min-width: auto;
