@@ -72,7 +72,7 @@ function renderXdCards(timeBlocks) {
                 }
 
                 const channelItem = document.createElement('div');
-                channelItem.className = 'xd-item';
+                channelItem.className = 'channel-item';
 
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'channel-name';
