@@ -253,9 +253,9 @@ h1 {
     transition: all 0.6s ease;
 }
 
-.copy-btn:hover::after {
+/* .copy-btn:hover::after {
     transform: translateX(50%) rotate(30deg);
-}
+} */
 
 
 /* 狐狸安卓Q 样式 */
