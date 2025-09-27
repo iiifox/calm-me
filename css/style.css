@@ -127,7 +127,7 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fill, 180px);
     gap: 8px;
-    /* flex: 1; */
+    flex: 1;
 }
 
 .xd-item {
