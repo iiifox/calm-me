@@ -213,7 +213,7 @@ h1 {
 }
 
 /* 复制按钮基础样式 */
-xd-slider-container .copy-btn {
+.copy-btn {
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
