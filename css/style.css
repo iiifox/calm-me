@@ -216,20 +216,6 @@ h1 {
     position: relative;
 }
 
-/* 绝对定位右上角，按钮本身内容居中 */
-.xd-slider-container .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 20;
-    padding: 6px 18px;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
 /* 复制按钮 */
 .copy-btn {
     text-align: center;
@@ -246,6 +232,22 @@ h1 {
     position: relative;
     overflow: hidden;
 }
+
+/* 绝对定位右上角，按钮本身内容居中 */
+.xd-slider-container .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 20;
+    padding: 6px 18px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
 
 .copy-btn:hover {
     transform: translateY(-3px);
