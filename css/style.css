@@ -238,7 +238,7 @@ h1 {
 }
 /* 点击效果 */
 .xd-slider-container .copy-btn:active {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 /* 流光效果 */
 .xd-slider-container .copy-btn::after {
