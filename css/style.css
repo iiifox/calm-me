@@ -138,7 +138,7 @@ h1 {
 .xd-slider-container {
     position: relative;
     overflow: hidden;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
 }
 
 .xd-slides {
@@ -211,6 +211,75 @@ h1 {
     font-weight: 600;
 }
 
+/* 复制按钮定位到旧返利折扣时间条右上角 */
+/* .rebate-group {
+    position: relative;
+} */
+
+/* 绝对定位右上角，按钮本身内容居中 */
+.xd-slider-container .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 20;
+    padding: 6px 18px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 复制按钮 */
+.copy-btn {
+    text-align: center;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.copy-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.copy-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.copy-btn:hover::after {
+    transform: translateX(100%) rotate(30deg);
+}
+
+#copyRatesBtn {
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
 
 /* 狐狸安卓Q 样式 */
 .fox-android-q .charge-type {
@@ -251,38 +320,6 @@ h1 {
     padding: 10px 15px;
     background: #f8f9fa; /* 轻微背景色区分区块 */
     border-radius: 6px;
-}
-
-/* 复制按钮定位到旧返利折扣时间条右上角 */
-.rebate-group {
-    position: relative;
-}
-
-/* 绝对定位右上角，按钮本身内容居中 */
-.rebate-group .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 20;
-    padding: 6px 18px;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-/* copy-btn */
-.xd-slider-container {
-    position: relative;
-}
-
-#copyRatesBtn {
-    position: absolute;
-    left: 50%;
-    bottom: -5px;
-    transform: translateX(-50%);
-    z-index: 10;
 }
 
 /* 悬浮按钮 */
@@ -395,49 +432,6 @@ h1 {
         left: 20px;
         transform: translateX(0);
     }
-}
-
-
-/* 复制按钮 */
-.copy-btn {
-    text-align: center;
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
-    color: white;
-    border: none;
-    padding: 14px 32px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-    font-weight: 600;
-    position: relative;
-    overflow: hidden;
-}
-
-.copy-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
-}
-
-.copy-btn:active {
-    transform: translateY(0);
-}
-
-.copy-btn::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(30deg);
-    transition: all 0.6s ease;
-}
-
-.copy-btn:hover::after {
-    transform: translateX(100%) rotate(30deg);
 }
 
 .notification {
