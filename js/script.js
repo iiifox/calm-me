@@ -11,20 +11,22 @@ function renderXdCards(timeBlocks) {
         return;
     }
 
-    const types = [
-        {key: 'qianbao', label: '钱包'},
-        {key: 'teshu', label: '特殊'},
-        {key: 'weixin', label: '微信'}
-    ];
+    // 合并后的结构
+    const groups = {
+        qianbao: {
+            label: '钱包',
+            channels: ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道F", "渠道H"]
+        },
+        teshu: {
+            label: '特殊',
+            channels: ["渠道TA", "渠道TB"]
+        },
+        weixin: {
+            label: '微信',
+            channels: ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
+        }
+    };
 
-    const channelGroup = {
-        "qianbao": ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道F", "渠道H"],
-        "teshu": ["渠道TA", "渠道TB"],
-        "weixin": ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
-    }
-
-    // 构造渠道顺序，用于折扣颜色计算
-    const allChannels = [...channelGroup.qianbao, ...channelGroup.teshu, ...channelGroup.weixin];
     // 存储每个渠道上一次的折扣值
     const lastDiscountByChannel = {};
 
@@ -39,32 +41,28 @@ function renderXdCards(timeBlocks) {
         timeTitle.textContent = `旧返利折扣（${block.time}开始）`;
         slide.appendChild(timeTitle);
 
-        // 渲染该时间块的所有渠道数据
-        types.forEach(type => {
+        // 渲染各个分组
+        Object.values(groups).forEach(groupInfo => {
             const group = document.createElement('div');
             group.className = 'rebate-group';
 
+            // 渠道标签
             const channelSpan = document.createElement('span');
-            channelSpan.className = 'channel';
-            // 这是"钱包"、"特殊"、"微信"等组名
-            channelSpan.textContent = type.label;
+            channelSpan.className = 'channel-label';
+            channelSpan.textContent = groupInfo.label;
             group.appendChild(channelSpan);
 
+            // 渠道列表
             const channelList = document.createElement('div');
             channelList.className = 'channel-list';
-
-            // 渲染渠道项
-            channelGroup[type.key].forEach(channelName => {
-                // 找到当前时间块的渠道
-                const item = Object.values(block.rates).find(i => i.channel === channelName);
+            // 渲染标签当中每个渠道（渠道列表）
+            groupInfo.channels.forEach(channelName => {
+                const item = block.rates.find(i => i.channel === channelName);
                 if (!item) return;
 
                 // 颜色判定
                 let color = 'black';
-                if (index === 0) {
-                    // 00:00时间块全部黑色
-                    color = 'black';
-                } else {
+                if (index > 0) {
                     const last = lastDiscountByChannel[channelName];
                     if (last !== undefined) {
                         if (item.discount === last) color = 'black';
@@ -73,26 +71,23 @@ function renderXdCards(timeBlocks) {
                     }
                 }
 
-                // 创建独立的渠道项div
                 const channelItem = document.createElement('div');
                 channelItem.className = 'xd-item';
 
-                // 渠道名称
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'channel-name';
                 nameSpan.textContent = channelName;
 
-                // 渠道值
                 const discountSpan = document.createElement('span');
                 discountSpan.className = 'channel-discount';
                 discountSpan.textContent = item.discount;
-                discountSpan.style.color = color; // 设置颜色
+                discountSpan.style.color = color;
 
                 channelItem.appendChild(nameSpan);
                 channelItem.appendChild(discountSpan);
                 channelList.appendChild(channelItem);
 
-                // 更新当前渠道的last discount
+                // 更新当前渠道的 last discount
                 lastDiscountByChannel[channelName] = item.discount;
             });
 
@@ -107,9 +102,7 @@ function renderXdCards(timeBlocks) {
         tab.className = `time-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
         tab.textContent = block.time;
         tab.addEventListener('click', () => {
-            // 切换到对应时间块
             slide.scrollIntoView({behavior: 'smooth'});
-            // 更新活跃标签
             document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
         });
@@ -122,7 +115,6 @@ function renderXdCards(timeBlocks) {
         const tabs = document.querySelectorAll('.time-tab');
         slides.forEach((slide, index) => {
             const rect = slide.getBoundingClientRect();
-            // 检查当前slide是否在可视区域
             if (rect.left >= 0 && rect.right <= window.innerWidth) {
                 tabs.forEach(t => t.classList.remove('active'));
                 tabs[index].classList.add('active');
