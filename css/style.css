@@ -160,7 +160,7 @@ h1 {
     flex: 1;
 }
 
-.xd-item {
+.rebate-system .channel-item {
     border-left: 4px solid #3498db;
     transition: transform 0.2s ease;
     display: flex;
@@ -172,16 +172,16 @@ h1 {
     padding: 10px 14px;
 }
 
-.xd-item:hover {
+.rebate-system .channel-item:hover {
     transform: translateX(5px);
 }
 
-.rebate-system .channel-name {
+.rebate-system .channel-item .channel-name {
     color: #34495e;
     font-weight: 500;
 }
 
-.rebate-system .channel-discount {
+.rebate-system .channel-item .channel-discount {
     font-weight: 600;
 }
 
