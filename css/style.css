@@ -136,6 +136,7 @@ h1 {
 }
 
 .xd-slider-container {
+    /* 给按钮提供参考点 */
     position: relative;
     overflow: hidden;
     padding-bottom: 30px;
@@ -223,7 +224,6 @@ h1 {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
     font-weight: 600;
-    position: relative;
     overflow: hidden;
 }
 
@@ -253,7 +253,7 @@ h1 {
 }
 
 /* 绝对定位右上角，按钮本身内容居中 */
-.rebate-group .copy-btn {
+.xd-slider-container .copy-btn {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -266,7 +266,7 @@ h1 {
     text-align: center;
 }
 
-.copy-btn {
+.xd-slider-container .copy-btn {
     position: absolute;
     left: 50%;
     bottom: -5px;
