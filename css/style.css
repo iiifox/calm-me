@@ -214,7 +214,6 @@ h1 {
 
 /* 基础样式 */
 .copy-btn {
-    /* text-align: center; */
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
@@ -222,21 +221,22 @@ h1 {
     font-size: 1.1rem;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    
     box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
     font-weight: 600;
-    position: relative;
-    overflow: hidden;
+    
     position: absolute;
     left: 50%;
     bottom: -5px;
     transform: translateX(-50%);
     z-index: 10;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 /* 悬停效果 */
 .copy-btn:hover {
-    transform: translateY(-3px);
+    transform: translateY(-50%, -3px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
 
