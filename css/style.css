@@ -254,7 +254,7 @@ h1 {
 }
 
 /* 绝对定位右上角，按钮本身内容居中 */
-.xd-slider-container .copy-btn {
+.rebate-group .copy-btn {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -267,7 +267,7 @@ h1 {
     text-align: center;
 }
 
-.xd-slider-container .copy-btn {
+.copy-btn {
     position: absolute;
     left: 50%;
     bottom: -5px;
