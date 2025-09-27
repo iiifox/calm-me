@@ -398,8 +398,7 @@ h1 {
 }
 
 .xd-item .channel-value {
-    color: #e74c3c;
-    font-weight: 600;
+    font-weight: 300;
 }
 
 /* 统一新旧返利渠道项的宽度和样式 */
@@ -500,13 +499,6 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* 返利值颜色柔和些 */
-.channel-value {
-    color: #fa9841; /* 柔和橙色 */
-    font-weight: 600;
-}
-
-
 /* 复制按钮定位到旧返利折扣时间条右上角 */
 .rebate-group {
     position: relative;
@@ -557,9 +549,10 @@ h1 {
     transition: box-shadow 0.2s, transform 0.2s;
     cursor: pointer;
     text-decoration: none;
-  }
-  .fab:hover {
+}
+
+.fab:hover {
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     transform: scale(1.05);
     background: #1565c0;
-  }
+}
