@@ -25,14 +25,9 @@ header {
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-h1 {
     color: #2c3e50;
-    margin-bottom: 10px;
     font-size: 2rem;
 }
-
-
 
 .gbo-section {
     background: white;
@@ -179,23 +174,6 @@ h1 {
     }
 }
 
-/* 响应式调整 */
-/* 平板 大屏手机 */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
-    }
-
-    .card-header {
-        padding: 12px;
-        font-size: 1.1rem;
-    }
-
-    .card-content {
-        padding: 15px;
-    }
-}
-
 /* 小屏幕手机 */
 @media (max-width: 480px) {
     body {
@@ -204,14 +182,6 @@ h1 {
 
     header {
         padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.6rem;
-    }
-
-    .subtitle {
-        font-size: 0.95rem;
     }
 
     .copy-btn {
