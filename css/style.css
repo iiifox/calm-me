@@ -88,6 +88,7 @@ h1 {
     }
 }
 
+
 /* 返利系统样式设置 */
 .rebate-system {
     padding: 18px 24px;
@@ -104,6 +105,34 @@ h1 {
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 2px solid #3498db;
+}
+
+.rebate-system .time-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.rebate-system .time-tab {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9em;
+    cursor: pointer;
+    background: #e8edf7;
+    color: #4062a9;
+    transition: all 0.2s;
+}
+
+.rebate-system .time-tab.active {
+    font-weight: 500;
+    background: #4062a9;
+    color: #fff;
+}
+
+.rebate-system .time-tab:hover {
+    background: #e2e8f0;
 }
 
 .rebate-system .rebate-group {
@@ -127,6 +156,7 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fill, 180px);
     gap: 8px;
+    /* 占据父容器剩余空间 */
     flex: 1;
 }
 
@@ -175,34 +205,6 @@ h1 {
 .xd-slide {
     min-width: 100%;
     scroll-snap-align: start;
-}
-
-.time-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-}
-
-.time-tab {
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 0.9em;
-    cursor: pointer;
-    background: #e8edf7;
-    color: #4062a9;
-    transition: all 0.2s;
-}
-
-.time-tab.active {
-    font-weight: 500;
-    background: #4062a9;
-    color: #fff;
-}
-
-.time-tab:hover {
-    background: #e2e8f0;
 }
 
 /* 隐藏滚动条但保留功能 */
