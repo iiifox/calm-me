@@ -117,7 +117,7 @@ h1 {
     margin-bottom: 6px;
 }
 
-.channel {
+channel-label {
     font-weight: bold;
     color: #4b7bf5;
 }
@@ -254,7 +254,7 @@ h1 {
 }
 
 /* 固定组名宽度，确保所有组对齐 */
-.rebate-group .channel {
+.rebate-group .channel-label {
     min-width: 60px;
     flex-shrink: 0; /* 不压缩组名宽度 */
 }
