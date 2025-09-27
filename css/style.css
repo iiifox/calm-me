@@ -251,7 +251,6 @@ h1 {
     color: #888;
     font-size: 0.95em;
 }
-
 .fox-android-q .charge-value {
     background: #e9ecef;
     border-radius: 4px;
@@ -260,30 +259,6 @@ h1 {
     font-weight: 500;
 }
 
-/* 确保不继承其他返利项的网格布局 */
-.fox-android-q .channel-list {
-    display: inline;
-    flex: none;
-    grid-template-columns: none;
-}
-
-/* 狐狸安卓Q 一行两列布局 */
-.fox-android-q .rebate-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.fox-android-q .rebate-group {
-    flex: 1; /* 各占一半宽度 */
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 0; /* 取消底部间距 */
-    padding: 10px 15px;
-    background: #f8f9fa; /* 轻微背景色区分区块 */
-    border-radius: 6px;
-}
 
 /* 悬浮按钮 */
 .fab {
