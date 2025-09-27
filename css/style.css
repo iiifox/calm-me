@@ -473,95 +473,113 @@ h1 {
 }
 
 
-/* GBO块 */
-.gbo-section {
-    background: white;
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-}
+/* 基础 Reset（推荐放在最前面） */
+* { box-sizing: border-box; }
+html,body { margin:0; padding:0; font-family: system-ui, "Segoe UI", Roboto, "Hiragino Sans GB", "PingFang SC", "Microsoft Yahei", sans-serif; }
 
-.gbo-section h2 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #3498db;
-}
+/* 容器与标题 */
+.gbo-section { padding: 16px; background: #ffffff; border-radius: 8px; max-width: 980px; margin: 16px auto; }
+.gbo-section h2 { margin: 0 0 12px 0; font-size: 18px; font-weight: 600; }
 
+/* 网格：自动适配列数（响应式） */
 .gbo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  align-items: start;
 }
 
+/* 单个卡片样式 */
 .gbo-item {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #3498db;
-    transition: transform 0.2s ease;
+  background: #fbfbfd;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 1;
+  cursor: default; /* 如果可点击改为 pointer */
+  position: relative; /* tooltip 绝对定位基准 */
+  transition: transform .12s ease, box-shadow .12s ease;
+  min-height: 44px;
 }
 
-.gbo-item:hover {
-    transform: translateX(5px);
+/* 悬浮与聚焦的提升效果 */
+.gbo-item:hover,
+.gbo-item:focus {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  outline: none; /* 不要去掉 focus 的可见性，下面我加了自定义 focus 样式 */
 }
 
+/* 对键盘用户友好的 focus 样式 */
+.gbo-item:focus {
+  box-shadow: 0 0 0 3px rgba(100,150,255,0.18);
+}
+
+/* 强调数字（<strong>） */
 .gbo-item strong {
-    color: #e74c3c;
+  font-weight: 700;
+  margin-left: 8px;
+  font-size: 15px;
 }
 
-/* 鼠标悬停显示 */
-
-.gbo-item {
-    position: relative;
-    cursor: help;
+/* CSS Tooltip（使用 data-tooltip 的内容） */
+.gbo-item::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 10px);
+  white-space: pre-line; /* 允许 data-tooltip 中的换行 */
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.3;
+  max-width: 260px;
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  transform-origin: bottom center;
+  z-index: 20;
 }
 
-.gbo-item:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    white-space: pre-line; /* 支持多行文本 */
-    text-align: left;
-    min-width: 200px;
-    max-width: 300px;
-    z-index: 100;
-    pointer-events: none;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    line-height: 1.5;
+/* tooltip 箭头：用 ::before 做小三角 */
+.gbo-item::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 4px);
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(0,0,0,0.85);
+  opacity: 0;
+  transition: opacity .12s ease;
+  z-index: 21;
 }
 
-.gbo-item:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 8px;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
-    margin-bottom: -8px;
+/* 当 hover 或 focus 时显示 tooltip */
+.gbo-item:hover::after,
+.gbo-item:focus::after,
+.gbo-item[aria-expanded="true"]::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+.gbo-item:hover::before,
+.gbo-item:focus::before,
+.gbo-item[aria-expanded="true"]::before {
+  opacity: 1;
 }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .gbo-item:hover::after {
-        left: 0;
-        transform: translateX(0);
-        min-width: 200px;
-    }
-
-    .gbo-item:hover::before {
-        left: 20px;
-        transform: translateX(0);
-    }
+/* 小屏幕优化：如果屏幕太窄，改为更大的 tooltip 或禁止 hover 行为 */
+@media (max-width:420px) {
+  .gbo-item::after { left: 8px; right: 8px; transform: none; bottom: calc(100% + 8px); max-width: none; }
+  .gbo-item::before { display: none; } /* 箭头可以不显示 */
 }
