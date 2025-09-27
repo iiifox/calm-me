@@ -212,8 +212,9 @@ h1 {
     font-weight: 600;
 }
 
+/* 基础样式 */
 .copy-btn {
-    text-align: center;
+    /* text-align: center; */
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
@@ -226,17 +227,25 @@ h1 {
     font-weight: 600;
     position: relative;
     overflow: hidden;
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    z-index: 10;
 }
 
+/* 悬停效果 */
 .copy-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
 
+/* 点击效果 */
 .copy-btn:active {
     transform: translateY(0);
 }
 
+/* 流光效果 */
 .copy-btn::after {
     content: '';
     position: absolute;
@@ -253,13 +262,13 @@ h1 {
     transform: translateX(100%) rotate(30deg);
 }
 
-.copy-btn {
+/* .copy-btn {
     position: absolute;
     left: 50%;
     bottom: -5px;
     transform: translateX(-50%);
     z-index: 10;
-}
+} */
 
 
 
