@@ -111,6 +111,21 @@ h1 {
     align-items: center;
     gap: 12px;
     margin-bottom: 6px;
+    /* 防止组名和渠道列表换行(直接元素) */
+    /* flex-wrap: nowrap; */
+}
+
+/* 调整组容器样式，确保组名与渠道项在同一行且不换行 */
+.rebate-group {
+    margin-bottom: 4px !important; /* 原12px/15px → 4px，更紧凑 */
+    padding: 8px 0 !important; /* 适度缩减内边距 */
+    gap: 10px !important; /* 原12/15 → 10px，内容更紧凑 */
+    min-height: 42px !important; /* 与渠道块高度一致 */
+    align-items: center !important; /* 垂直居中内容 */
+}
+/* 复制按钮定位到旧返利折扣时间条右上角 */
+.rebate-group {
+    position: relative;
 }
 
 .channel-label {
@@ -212,26 +227,6 @@ h1 {
     scrollbar-width: none;
 }
 
-/* 调整组名与渠道项在同一行 */
-.rebate-group {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* 组名与渠道项之间的间距 */
-    margin-bottom: 12px;
-    flex-wrap: wrap; /* 确保在小屏幕上自动换行 */
-}
-
-/* 调整组容器样式，确保组名与渠道项在同一行且不换行 */
-.rebate-group {
-    display: flex;
-    flex-wrap: nowrap; /* 防止组名和渠道项换行 */
-    margin-bottom: 4px !important; /* 原12px/15px → 4px，更紧凑 */
-    padding: 8px 0 !important; /* 适度缩减内边距 */
-    gap: 10px !important; /* 原12/15 → 10px，内容更紧凑 */
-    min-height: 42px !important; /* 与渠道块高度一致 */
-    align-items: center !important; /* 垂直居中内容 */
-}
-
 /* 固定组名宽度，确保所有组对齐 */
 .rebate-group .channel-label {
     min-width: 60px;
@@ -280,15 +275,8 @@ h1 {
     border-radius: 6px;
 }
 
-/* 确保标题与内容正确对齐 */
-.fox-android-q .rebate-title {
-    margin-bottom: 10px;
-}
 
-/* 复制按钮定位到旧返利折扣时间条右上角 */
-.rebate-group {
-    position: relative;
-}
+
 
 /* 绝对定位右上角，按钮本身内容居中 */
 .rebate-group .copy-btn {
