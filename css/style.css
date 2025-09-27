@@ -205,58 +205,6 @@ h1 {
 }
 
 
-@keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    90% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-/* 平板 大屏手机 */
-/* @media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
-    }
-    .card-header {
-        padding: 12px;
-        font-size: 1.1rem;
-    }
-    .card-content {
-        padding: 15px;
-    }
-} */
-
-
-/* 小屏幕手机 */
-/* @media (max-width: 480px) {
-    body {
-        padding: 15px;
-    }
-    header {
-        padding: 15px;
-    }
-    h1 {
-        font-size: 1.6rem;
-    }
-    .copy-btn {
-        padding: 12px 24px;
-        font-size: 1rem;
-    }
-} */
-
-
 /* 狐狸安卓Q 样式 */
 .fox-android-q .charge-type {
     color: #888;
@@ -420,6 +368,26 @@ h1 {
     display: none;
     z-index: 1000;
     font-weight: 600;
+}
+
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
 }
 
 .notification.show {
