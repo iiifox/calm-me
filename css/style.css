@@ -257,6 +257,40 @@ h1 {
 }
 
 
+
+.rebate-system .time-tab {
+    background: #f0f4ff;   /* 更柔和的浅蓝色 */
+    color: #2c3e75;        /* 更深的文字颜色，提高对比 */
+}
+
+.rebate-system .time-tab.active {
+    background: #4062a9;   /* 保留深蓝 */
+    color: #fff;           /* 白色文字对比明显 */
+    font-weight: 600;      /* 激活更突出 */
+}
+
+.rebate-system .time-tab:hover {
+    background: #dbe5ff;   /* 悬停明显区分未选中 */
+}
+
+.xd-slider-container .copy-btn {
+    background: linear-gradient(135deg, #28a745, #1e7e34); /* 渐变深绿，更稳重 */
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.xd-slider-container .copy-btn:hover {
+    background: linear-gradient(135deg, #3ac15b, #2ecc71); /* 悬停颜色亮一些 */
+    box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
+}
+
+.xd-slider-container .copy-btn:active {
+    background: linear-gradient(135deg, #218838, #1c7430); /* 点击颜色更深 */
+}
+
+
+
+
 /* 狐狸安卓Q 样式 */
 .fox-android-q .charge-type {
     color: #888;
