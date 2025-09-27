@@ -153,7 +153,7 @@ h1 {
 }
 
 .channel-discount {
-    color: #e74c3c;
+    /* color: #e74c3c; */
     font-weight: 600;
 }
 
@@ -303,13 +303,6 @@ h1 {
 .fox-android-q .rebate-title {
     margin-bottom: 10px;
 }
-
-/* 返利值颜色柔和些 */
-.channel-discount {
-    color: #fa9841; /* 柔和橙色 */
-    font-weight: 600;
-}
-
 
 /* 复制按钮定位到旧返利折扣时间条右上角 */
 .rebate-group {
