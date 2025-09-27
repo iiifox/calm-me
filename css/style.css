@@ -221,10 +221,8 @@ h1 {
     font-size: 1.1rem;
     border-radius: 8px;
     cursor: pointer;
-    
     box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
     font-weight: 600;
-    
     position: absolute;
     left: 50%;
     bottom: -5px;
@@ -233,18 +231,15 @@ h1 {
     overflow: hidden;
     transition: all 0.3s ease;
 }
-
 /* 悬停效果 */
 .copy-btn:hover {
-    transform: translateY(-50%, -3px);
+    transform: translateY(-50%, -30px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
-
 /* 点击效果 */
 .copy-btn:active {
     transform: translateY(0);
 }
-
 /* 流光效果 */
 .copy-btn::after {
     content: '';
