@@ -257,12 +257,17 @@ h1 {
     position: absolute;
     top: 8px;
     right: 8px;
+    z-index: 20;
     padding: 6px 18px;
     font-size: 0.95rem;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+.copy-btn {
+    position: absolute;
     left: 50%;
     bottom: -5px;
     transform: translateX(-50%);
