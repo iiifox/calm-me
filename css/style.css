@@ -106,7 +106,7 @@ h1 {
     border-bottom: 2px solid #3498db;
 }
 
-.rebate-group {
+.rebate-system .rebate-group {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -115,14 +115,16 @@ h1 {
     min-height: 42px;
 }
 
-.channel-label {
+.rebate-system .channel-label {
     font-weight: bold;
     color: #4b7bf5;
-    min-width: auto;
     padding-top: 0;
+    min-width: 60px;
+    /* 不允许缩小，保持原始宽度 */
+    flex-shrink: 0;
 }
 
-.channel-list {
+.rebate-system .channel-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, 180px);
     gap: 15px;
@@ -145,12 +147,12 @@ h1 {
     transform: translateX(5px);
 }
 
-.channel-name {
+.rebate-system .channel-name {
     color: #34495e;
     font-weight: 500;
 }
 
-.channel-discount {
+.rebate-system .channel-discount {
     font-weight: 600;
 }
 
@@ -213,13 +215,6 @@ h1 {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
-
-/* 固定组名宽度，确保所有组对齐 */
-.rebate-group .channel-label {
-    min-width: 60px;
-    flex-shrink: 0; /* 不压缩组名宽度 */
-}
-
 
 /* 狐狸安卓Q 样式 */
 .fox-android-q .charge-type {
