@@ -126,7 +126,7 @@ h1 {
 
 .rebate-group .channel-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 180px);
+    grid-template-columns: repeat(auto-fill, 170px);
     gap: 10px;
     /* 占据父容器剩余空间 */
     flex: 1;
