@@ -131,12 +131,28 @@ h1 {
     flex: 1;
 }
 
-.xd-item .channel-name {
+.xd-item {
+    border-left: 4px solid #3498db;
+    transition: transform 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border-left: 4px solid #4b7bf5;
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.xd-item:hover {
+    transform: translateX(5px);
+}
+
+.channel-name {
     color: #34495e;
     font-weight: 500;
 }
 
-.xd-item .channel-discount {
+.channel-discount {
     color: #e74c3c;
     font-weight: 600;
 }
@@ -222,24 +238,6 @@ h1 {
     gap: 15px; /* 组名与渠道项之间的间距 */
     margin-bottom: 12px;
     flex-wrap: wrap; /* 确保在小屏幕上自动换行 */
-}
-
-/* 旧返利单个渠道项 - 完全对齐新返利的 gbo-item 样式 */
-.xd-item {
-    border-left: 4px solid #3498db; /* 与新返利左侧边框一致 */
-    transition: transform 0.2s ease; /* 与新返利悬停动画一致 */
-    display: flex;
-    justify-content: space-between; /* 渠道名和值两端对齐 */
-    align-items: center;
-    background: #ffffff; /* 更纯净 */
-    border-left: 4px solid #4b7bf5; /* 主蓝色略深 */
-    border-radius: 10px;
-    padding: 10px 14px;
-}
-
-/* 旧返利渠道项悬停效果 - 与新返利保持一致 */
-.xd-item:hover {
-    transform: translateX(5px); /* 与新返利悬停位移一致 */
 }
 
 /* 调整组容器样式，确保组名与渠道项在同一行且不换行 */
