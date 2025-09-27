@@ -210,7 +210,7 @@ h1 {
     font-weight: 500;
 }
 
-.xd-item .channel-value {
+.xd-item .channel-discount {
     color: #e74c3c;
     font-weight: 600;
 }
@@ -314,7 +314,7 @@ h1 {
 }
 
 /* 返利值颜色柔和些 */
-.channel-value {
+.channel-discount {
     color: #fa9841; /* 柔和橙色 */
     font-weight: 600;
 }
