@@ -111,7 +111,7 @@ function renderXdCards(timeBlocks) {
 
     // 监听滚动事件，更新活跃标签
     container.addEventListener('scroll', () => {
-        const slides = document.querySelectorAll('.xd-slide');
+        const slides = document.querySelectorAll('.slide');
         const tabs = document.querySelectorAll('.time-tab');
         slides.forEach((slide, index) => {
             const rect = slide.getBoundingClientRect();
@@ -124,7 +124,7 @@ function renderXdCards(timeBlocks) {
 
     // 默认滚动到最后一个时间块
     setTimeout(() => {
-        const lastSlide = document.querySelector('.xd-slide:last-child');
+        const lastSlide = document.querySelector('.slide:last-child');
         if (lastSlide) {
             lastSlide.scrollIntoView({behavior: 'smooth'});
         }
