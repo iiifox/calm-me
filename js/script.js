@@ -67,9 +67,9 @@ function renderXdCards(timeBlocks) {
                 } else {
                     const last = lastDiscountByChannel[channelName];
                     if (last !== undefined) {
-                        if (item.value === last) color = 'black';
-                        else if (item.value > last) color = 'red';
-                        else if (item.value < last) color = 'green';
+                        if (item.discount === last) color = 'black';
+                        else if (item.discount > last) color = 'red';
+                        else if (item.discount < last) color = 'green';
                     }
                 }
 
@@ -83,17 +83,17 @@ function renderXdCards(timeBlocks) {
                 nameSpan.textContent = channelName;
 
                 // 渠道值
-                const valueSpan = document.createElement('span');
-                valueSpan.className = 'channel-value';
-                valueSpan.textContent = item.value;
-                valueSpan.style.color = color; // 设置颜色
+                const discountSpan = document.createElement('span');
+                discountSpan.className = 'channel-discount';
+                discountSpan.textContent = item.discount;
+                discountSpan.style.color = color; // 设置颜色
 
                 channelItem.appendChild(nameSpan);
-                channelItem.appendChild(valueSpan);
+                channelItem.appendChild(discountSpan);
                 channelList.appendChild(channelItem);
 
-                // 更新当前渠道的last value
-                lastDiscountByChannel[channelName] = item.value;
+                // 更新当前渠道的last discount
+                lastDiscountByChannel[channelName] = item.discount;
             });
 
             group.appendChild(channelList);
@@ -246,9 +246,9 @@ async function loadData() {
         // 转换为时间块格式
         const timeBlocks = timeKeys.map(time => ({
             time: time, // 直接使用接口返回的标准时间
-            rates: Object.entries(xdData[time]).map(([channel, value]) => ({
+            rates: Object.entries(xdData[time]).map(([channel, discount]) => ({
                 channel,
-                value
+                discount
             }))
         }));
         renderXdCards(timeBlocks);
