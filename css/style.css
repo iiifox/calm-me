@@ -32,100 +32,6 @@ h1 {
     font-size: 2rem;
 }
 
-.subtitle {
-    color: #7f8c8d;
-    font-size: 1.1rem;
-}
-
-.copy-btn {
-    text-align: center;
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
-    color: white;
-    border: none;
-    padding: 14px 32px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-    font-weight: 600;
-    position: relative;
-    overflow: hidden;
-}
-
-.copy-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
-}
-
-.copy-btn:active {
-    transform: translateY(0);
-}
-
-.copy-btn::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(30deg);
-    transition: all 0.6s ease;
-}
-
-.copy-btn:hover::after {
-    transform: translateX(100%) rotate(30deg);
-}
-
-.notification {
-    position: fixed;
-    top: 60px; /* 原为20px，向下移 */
-    right: 20px;
-    background: #2ecc71;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    display: none;
-    z-index: 1000;
-    font-weight: 600;
-}
-
-.notification.show {
-    display: block;
-    animation: fadeInOut 3s forwards;
-}
-
-.notification.error {
-    background: #e74c3c;
-}
-
-.error {
-    text-align: center;
-    padding: 40px;
-    color: #e74c3c;
-    background: #fff5f5;
-    border-radius: 10px;
-    margin: 20px 0;
-}
-
-.refresh-btn {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 15px;
-    font-weight: 600;
-    transition: background 0.3s;
-}
-
-.refresh-btn:hover {
-    background: #2980b9;
-}
-
 @keyframes fadeInOut {
     0% {
         opacity: 0;
@@ -556,4 +462,95 @@ h1 {
         left: 20px;
         transform: translateX(0);
     }
+}
+
+
+/* 复制按钮 */
+.copy-btn {
+    text-align: center;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.copy-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.copy-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.copy-btn:hover::after {
+    transform: translateX(100%) rotate(30deg);
+}
+
+.notification {
+    position: fixed;
+    top: 60px; /* 原为20px，向下移 */
+    right: 20px;
+    background: #2ecc71;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
+    font-weight: 600;
+}
+
+.notification.show {
+    display: block;
+    animation: fadeInOut 3s forwards;
+}
+
+.notification.error {
+    background: #e74c3c;
+}
+
+.error {
+    text-align: center;
+    padding: 40px;
+    color: #e74c3c;
+    background: #fff5f5;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.refresh-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.refresh-btn:hover {
+    background: #2980b9;
 }
