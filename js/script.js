@@ -35,8 +35,7 @@ function renderXdCards(timeBlocks) {
         slide.className = 'xd-slide';
         slide.dataset.time = block.time;
 
-        const timeTitle = document.createElement('div');
-        timeTitle.className = 'rebate-title';
+        const timeTitle = document.createElement('h2');
         timeTitle.textContent = `旧返利折扣（${block.time}开始）`;
         slide.appendChild(timeTitle);
 
