@@ -197,6 +197,13 @@ h1 {
     box-shadow: 0 3px 12px rgba(100, 150, 220, 0.06);
 }
 
+.rebate-system h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
 .rebate-title {
     font-size: 1.2em;
     font-weight: bold;
@@ -482,20 +489,6 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* .gbo-section h2 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #3498db;
-} */
-
-.rebate-system h2 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #3498db;
-}
-
 .gbo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -519,7 +512,6 @@ h1 {
 }
 
 /* 鼠标悬停显示 */
-
 .gbo-item {
     position: relative;
     cursor: help;
