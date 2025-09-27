@@ -253,11 +253,9 @@ h1 {
 }
 
 /* 复制按钮定位到旧返利折扣时间条右上角 */
-.rebate-group {
+/* .rebate-group {
     position: relative;
-}
-
-
+} */
 
 /* 绝对定位右上角，按钮本身内容居中 */
 .rebate-group .copy-btn {
@@ -274,9 +272,9 @@ h1 {
 }
 
 /* copy-btn */
-.xd-slider-container {
+/* .xd-slider-container {
     position: relative;
-}
+} */
 
 #copyRatesBtn {
     position: absolute;
