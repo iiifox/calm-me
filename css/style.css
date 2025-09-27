@@ -135,6 +135,32 @@ h1 {
     background: #e2e8f0;
 }
 
+.xd-slider-container {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 50px;
+}
+
+.xd-slides {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.xd-slides::-webkit-scrollbar {
+    display: none;
+}
+
+.xd-slides .xd-slide {
+    min-width: 100%;
+    scroll-snap-align: start;
+}
+
 .rebate-system .rebate-group {
     display: flex;
     align-items: center;
@@ -184,36 +210,6 @@ h1 {
     color: #e74c3c;
     font-weight: 600;
 }
-
-/* 在style.css中添加以下样式 */
-.xd-slider-container {
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 30px;
-}
-
-.xd-slides {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    /* gap: 20px; */
-    padding-bottom: 10px;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* 隐藏滚动条但保留功能 */
-.xd-slides::-webkit-scrollbar {
-    display: none;
-}
-
-.xd-slide {
-    min-width: 100%;
-    scroll-snap-align: start;
-}
-
 
 
 /* 狐狸安卓Q 样式 */
