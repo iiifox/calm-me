@@ -107,61 +107,6 @@ h1 {
     border-bottom: 2px solid #3498db;
 }
 
-.rebate-system .time-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-}
-
-.rebate-system .time-tab {
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 0.9em;
-    cursor: pointer;
-    background: #e8edf7;
-    color: #4062a9;
-    transition: all 0.2s;
-}
-
-.rebate-system .time-tab.active {
-    font-weight: 500;
-    background: #4062a9;
-    color: #fff;
-}
-
-.rebate-system .time-tab:hover {
-    background: #e2e8f0;
-}
-
-.xd-slider-container {
-    /* 给按钮提供参考点 */
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 30px;
-}
-
-.xd-slides {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.xd-slides::-webkit-scrollbar {
-    display: none;
-}
-
-.xd-slides .xd-slide {
-    min-width: 100%;
-    scroll-snap-align: start;
-}
-
 .rebate-system .rebate-group {
     display: flex;
     align-items: center;
@@ -212,8 +157,67 @@ h1 {
     font-weight: 600;
 }
 
+
+/* 外层容器，隐藏溢出内容、提供按钮定位参考点 */
+.slider-container {
+    /* 给按钮提供参考点 */
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+
+/* 时间标签容器基础样式 */
+.slider-container .time-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+/* 时间标签基础样式 */
+.slider-container .time-tab {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9em;
+    cursor: pointer;
+    background: #f0f4ff;
+    color: #2c3e75;
+    transition: all 0.2s;
+}
+/* 激活状态 */
+.slider-container .time-tab.active {
+    font-weight: 600;
+    background: #4062a9;
+    color: #fff;
+}
+/* 悬停状态 */
+.slider-container .time-tab:hover {
+    background: #dbe5ff;
+}
+
+/* flex 横向滚动容器，支持平滑滚动和滚动捕捉 */
+.slider-container .slides {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+/* 隐藏水平滚动条，使滑动视觉上更干净 */
+.slider-container .slides::-webkit-scrollbar {
+    display: none;
+}
+/* 每个子滑块占满容器宽度，滚动结束自动对齐 */
+.slider-container .slide {
+    min-width: 100%;
+    scroll-snap-align: start;
+}
+
 /* 复制按钮基础样式 */
-.xd-slider-container .copy-btn {
+.slider-container .copy-btn {
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
@@ -232,16 +236,16 @@ h1 {
     transition: all 0.3s ease;
 }
 /* 悬停效果 */
-.xd-slider-container .copy-btn:hover {
+.slider-container .copy-btn:hover {
     transform: translateX(-50%) translateY(-3px);
     box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
 }
 /* 点击效果 */
-.xd-slider-container .copy-btn:active {
+.slider-container .copy-btn:active {
     transform: translateX(-50%) translateY(0);
 }
 /* 流光效果 */
-.xd-slider-container .copy-btn::after {
+.slider-container .copy-btn::after {
     content: '';
     position: absolute;
     top: -50%;
@@ -252,43 +256,9 @@ h1 {
     transform: rotate(30deg);
     transition: all 0.6s ease;
 }
-.xd-slider-container .copy-btn:hover::after {
+.slider-container .copy-btn:hover::after {
     transform: translateX(100%) rotate(30deg);
 }
-
-
-
-.rebate-system .time-tab {
-    background: #f0f4ff;   /* 更柔和的浅蓝色 */
-    color: #2c3e75;        /* 更深的文字颜色，提高对比 */
-}
-
-.rebate-system .time-tab.active {
-    background: #4062a9;   /* 保留深蓝 */
-    color: #fff;           /* 白色文字对比明显 */
-    font-weight: 600;      /* 激活更突出 */
-}
-
-.rebate-system .time-tab:hover {
-    background: #dbe5ff;   /* 悬停明显区分未选中 */
-}
-
-.xd-slider-container .copy-btn {
-    background: linear-gradient(135deg, #28a745, #1e7e34); /* 渐变深绿，更稳重 */
-    color: #fff;
-    transition: all 0.3s ease;
-}
-
-.xd-slider-container .copy-btn:hover {
-    background: linear-gradient(135deg, #3ac15b, #2ecc71); /* 悬停颜色亮一些 */
-    box-shadow: 0 7px 15px rgba(46, 204, 113, 0.4);
-}
-
-.xd-slider-container .copy-btn:active {
-    background: linear-gradient(135deg, #218838, #1c7430); /* 点击颜色更深 */
-}
-
-
 
 
 /* 狐狸安卓Q 样式 */
