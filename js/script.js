@@ -34,7 +34,7 @@ function renderXdCards(timeBlocks) {
     timeBlocks.forEach((block, index) => {
         // 创建时间块面板
         const slide = document.createElement('div');
-        slide.className = 'xd-slide';
+        slide.className = 'slide';
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('h2');
