@@ -32,62 +32,6 @@ h1 {
     font-size: 2rem;
 }
 
-@keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    90% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-/* 响应式调整 */
-/* 平板 大屏手机 */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
-    }
-
-    .card-header {
-        padding: 12px;
-        font-size: 1.1rem;
-    }
-
-    .card-content {
-        padding: 15px;
-    }
-}
-
-/* 小屏幕手机 */
-@media (max-width: 480px) {
-    body {
-        padding: 15px;
-    }
-
-    header {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.6rem;
-    }
-
-    .copy-btn {
-        padding: 12px 24px;
-        font-size: 1rem;
-    }
-}
-
 
 /* 返利系统样式设置 */
 .rebate-system {
@@ -259,6 +203,58 @@ h1 {
 .slider-container .copy-btn:hover::after {
     transform: translateX(100%) rotate(30deg);
 }
+
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* 平板 大屏手机 */
+/* @media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    .card-header {
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+    .card-content {
+        padding: 15px;
+    }
+} */
+
+
+/* 小屏幕手机 */
+/* @media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    header {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    .copy-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+} */
 
 
 /* 狐狸安卓Q 样式 */
