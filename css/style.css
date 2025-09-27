@@ -37,43 +37,6 @@ h1 {
     font-size: 1.1rem;
 }
 
-.gbo-section {
-    background: white;
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-}
-
-.gbo-section h2 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #3498db;
-}
-
-.gbo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-}
-
-.gbo-item {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #3498db;
-    transition: transform 0.2s ease;
-}
-
-.gbo-item:hover {
-    transform: translateX(5px);
-}
-
-.gbo-item strong {
-    color: #e74c3c;
-}
-
 .copy-btn {
     text-align: center;
     background: linear-gradient(135deg, #2ecc71, #27ae60);
@@ -220,62 +183,6 @@ h1 {
     .copy-btn {
         padding: 12px 24px;
         font-size: 1rem;
-    }
-}
-
-
-/* 鼠标悬停显示 */
-
-.gbo-item {
-    position: relative;
-    cursor: help;
-}
-
-.gbo-item:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    white-space: pre-line; /* 支持多行文本 */
-    text-align: left;
-    min-width: 200px;
-    max-width: 300px;
-    z-index: 100;
-    pointer-events: none;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    line-height: 1.5;
-}
-
-.gbo-item:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 8px;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
-    margin-bottom: -8px;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .gbo-item:hover::after {
-        left: 0;
-        transform: translateX(0);
-        min-width: 200px;
-    }
-
-    .gbo-item:hover::before {
-        left: 20px;
-        transform: translateX(0);
     }
 }
 
@@ -563,4 +470,98 @@ h1 {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     transform: scale(1.05);
     background: #1565c0;
+}
+
+
+/* GBO块 */
+.gbo-section {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.gbo-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+.gbo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.gbo-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    transition: transform 0.2s ease;
+}
+
+.gbo-item:hover {
+    transform: translateX(5px);
+}
+
+.gbo-item strong {
+    color: #e74c3c;
+}
+
+/* 鼠标悬停显示 */
+
+.gbo-item {
+    position: relative;
+    cursor: help;
+}
+
+.gbo-item:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: pre-line; /* 支持多行文本 */
+    text-align: left;
+    min-width: 200px;
+    max-width: 300px;
+    z-index: 100;
+    pointer-events: none;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    line-height: 1.5;
+}
+
+.gbo-item:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+    margin-bottom: -8px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .gbo-item:hover::after {
+        left: 0;
+        transform: translateX(0);
+        min-width: 200px;
+    }
+
+    .gbo-item:hover::before {
+        left: 20px;
+        transform: translateX(0);
+    }
 }
