@@ -124,6 +124,7 @@ h1 {
     margin-bottom: 15px;
     flex-wrap: wrap;
 }
+
 /* 时间标签基础样式 */
 .rebate-panel .rebate-tab {
     padding: 6px 12px;
@@ -160,6 +161,7 @@ h1 {
 .rebate-panel .rebate-slides::-webkit-scrollbar {
     display: none;
 }
+
 /* 每个子滑块占满容器宽度，滚动结束自动对齐 */
 .rebate-panel .rebate-slide {
     min-width: 100%;
@@ -257,6 +259,7 @@ h1 {
     color: #888;
     font-size: 0.95em;
 }
+
 .fox-android-q .charge-value {
     background: #e9ecef;
     border-radius: 4px;
@@ -277,6 +280,7 @@ h1 {
     border-left: 4px solid #3498db;
     cursor: help;
 }
+
 /* 悬停时，显示一个黑色小箭头，箭头指向条目，放在条目正上方 */
 .rebate-system #gboChannelList .channel-item:hover::before {
     content: '';
@@ -314,28 +318,51 @@ h1 {
 }
 
 
-/* 悬浮按钮 */
-.fab {
+/* 容器固定在右下角 */
+.fab-container {
     position: fixed;
-    right: 32px;
     bottom: 32px;
+    right: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 10;
+}
+
+/* 基础 FAB 样式 */
+.fab {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #1976d2;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
     color: #fff;
-    z-index: 1000;
-    transition: box-shadow 0.2s, transform 0.2s;
-    cursor: pointer;
     text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
 }
-
+/* 悬停效果 */
 .fab:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     transform: scale(1.05);
-    background: #1565c0;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+/* 点击反馈 */
+.fab:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+/* 不同颜色 */
+.fab-blue {
+    background: #1976d2;
+}
+.fab-green {
+    background: #2ecc71;
+}
+.fab-red {
+    background: #e74c3c;
 }
