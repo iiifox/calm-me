@@ -15,6 +15,8 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    /* 鼠标悬停提供定位 */
+    position: relative;
 }
 
 header {
@@ -272,15 +274,21 @@ h1 {
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #3498db;
-    /* 鼠标悬停显示 */
-    position: relative;
     cursor: help;
 }
-
-#gboChannelList .channel-item:hover {
-    transform: translateX(5px);
+/* 悬停时，显示一个黑色小箭头，箭头指向条目，放在条目正上方 */
+#gboChannelList .channel-item:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+    margin-bottom: -8px;
 }
-
+/* 悬停时，显示一个黑色半透明方框，上面有 tooltip 文本，支持多行 */
 #gboChannelList .channel-item:hover::after {
     content: attr(data-tooltip);
     position: absolute;
@@ -292,27 +300,16 @@ h1 {
     padding: 12px;
     border-radius: 6px;
     font-size: 0.9rem;
-    white-space: pre-line; /* 支持多行文本 */
+    line-height: 1.5;
     text-align: left;
-    min-width: 200px;
-    max-width: 300px;
+    /* 支持换行 */
+    white-space: pre-line;
+    min-width: 180px;
+    max-width: 250px;
     z-index: 100;
     pointer-events: none;
     margin-bottom: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    line-height: 1.5;
-}
-
-#gboChannelList .channel-item:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 8px;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
-    margin-bottom: -8px;
 }
 
 
