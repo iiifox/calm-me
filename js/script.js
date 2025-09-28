@@ -158,16 +158,23 @@ function renderGbo(gbo) {
     // 渲染每个渠道项
     channels.forEach(channel => {
         const { price, paths } = gbo[channel];
-        // 容错处理：确保 paths 是数组
-        const validPaths = Array.isArray(paths) ? paths : [];
-        
         const gboItem = document.createElement('div');
-        gboItem.className = 'gbo-item';
+        channelItem.className = 'channel-item';
         // 悬停提示使用 paths 数组（换行分隔）
-        gboItem.setAttribute('data-tooltip', validPaths.join('\n'));
+        channelItem.setAttribute('data-tooltip', paths.join('\n'));
         // 显示渠道名和价格
-        gboItem.innerHTML = `${channel} <strong>${price}</strong>`;
-        container.appendChild(gboItem);
+        // channelItem.innerHTML = `${channel} <strong>${price}</strong>`;
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'channel-name';
+        nameSpan.textContent = channel;
+
+        const discountSpan = document.createElement('span');
+        discountSpan.className = 'channel-discount';
+        discountSpan.textContent = price;
+
+        channelItem.appendChild(nameSpan);
+        channelItem.appendChild(discountSpan);
+        container.appendChild(channelItem);
     });
 }
 
