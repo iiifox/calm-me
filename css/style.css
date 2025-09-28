@@ -268,7 +268,7 @@ h1 {
     grid-template-columns: repeat(auto-fill, 150px);
 }
 
-.gbo-item {
+#gboChannelList .channel-item {
     background: #ffffff;
     padding: 15px;
     border-radius: 8px;
@@ -276,21 +276,17 @@ h1 {
     transition: transform 0.2s ease;
 }
 
-.gbo-item:hover {
+#gboChannelList .channel-item:hover {
     transform: translateX(5px);
 }
 
-.gbo-item strong {
-    color: #e74c3c;
-}
-
 /* 鼠标悬停显示 */
-.gbo-item {
+#gboChannelList .channel-item {
     position: relative;
     cursor: help;
 }
 
-.gbo-item:hover::after {
+#gboChannelList .channel-item:hover::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -312,7 +308,7 @@ h1 {
     line-height: 1.5;
 }
 
-.gbo-item:hover::before {
+#gboChannelList .channel-item:hover::before {
     content: '';
     position: absolute;
     bottom: 100%;
