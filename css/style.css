@@ -299,11 +299,11 @@ h1 {
     margin-bottom: 30px;
 }
 
-.gbo-grid {
+/* .gbo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
-}
+} */
 
 .gbo-item {
     background: #ffffff;
