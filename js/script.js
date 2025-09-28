@@ -158,7 +158,7 @@ function renderGbo(gbo) {
     // 渲染每个渠道项
     channels.forEach(channel => {
         const { price, paths } = gbo[channel];
-        const gboItem = document.createElement('div');
+        const channelItem = document.createElement('div');
         channelItem.className = 'channel-item';
         // 悬停提示使用 paths 数组（换行分隔）
         channelItem.setAttribute('data-tooltip', paths.join('\n'));
