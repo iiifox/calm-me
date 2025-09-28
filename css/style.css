@@ -269,21 +269,16 @@ h1 {
 }
 
 #gboChannelList .channel-item {
-    background: #ffffff;
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #3498db;
-    transition: transform 0.2s ease;
+    /* 鼠标悬停显示 */
+    position: relative;
+    cursor: help;
 }
 
 #gboChannelList .channel-item:hover {
     transform: translateX(5px);
-}
-
-/* 鼠标悬停显示 */
-#gboChannelList .channel-item {
-    position: relative;
-    cursor: help;
 }
 
 #gboChannelList .channel-item:hover::after {
