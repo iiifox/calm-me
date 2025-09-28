@@ -136,6 +136,9 @@ function renderXdCards(timeBlocks) {
                 lastSlide.scrollIntoView({behavior: 'smooth'});
             }
         }, 100);
+    } else {
+        // 如果只有一个时间块，直接隐藏 tab 容器
+        tabsContainer.style.display = 'none';
     }
 }
 
