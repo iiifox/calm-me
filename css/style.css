@@ -338,3 +338,16 @@ h1 {
     transform: scale(1.05);
     background: #1565c0;
 }
+
+
+.rebate-system {
+    position: relative; 
+    z-index: 20; /* 高于按钮所在 stacking context */
+}
+#GboChannelList .channel-item::after {
+    z-index: 21; /* 高于父容器 */
+}
+
+#GboChannelList .channel-item::before {
+    z-index: 20; /* 箭头在内容框下 */
+}
