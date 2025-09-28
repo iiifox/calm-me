@@ -11,7 +11,7 @@ function renderXdCards(timeBlocks) {
         return;
     }
 
-    // 合并后的结构
+    // 渠道太多，按组分好
     const groups = {
         qianbao: {
             label: '钱包',
@@ -30,7 +30,7 @@ function renderXdCards(timeBlocks) {
     // 存储每个渠道上一次的折扣值
     const lastDiscountByChannel = {};
 
-    // 为每个时间块创建滑动面板
+    // === 渲染 折扣slide ===
     timeBlocks.forEach((block, index) => {
         // 创建时间块面板
         const slide = document.createElement('div');
@@ -41,7 +41,7 @@ function renderXdCards(timeBlocks) {
         timeTitle.textContent = `旧返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
         slide.appendChild(timeTitle);
 
-        // 渲染各个分组
+        // 渠道分组进行渲染
         Object.values(groups).forEach(groupInfo => {
             const group = document.createElement('div');
             group.className = 'rebate-group';
@@ -60,13 +60,12 @@ function renderXdCards(timeBlocks) {
                 const item = block.rates.find(i => i.channel === channelName);
                 if (!item) return;
 
-                // 颜色判定
+                // 颜色判定（默认黑色 涨价红色 降价绿色）
                 let color = 'black';
                 if (index > 0) {
                     const last = lastDiscountByChannel[channelName];
                     if (last !== undefined) {
-                        if (item.discount === last) color = 'black';
-                        else if (item.discount > last) color = 'red';
+                        if (item.discount > last) color = 'red';
                         else if (item.discount < last) color = 'green';
                     }
                 }
@@ -96,39 +95,48 @@ function renderXdCards(timeBlocks) {
         });
 
         container.appendChild(slide);
+    });
+
+    // === 如果有多个时间块，才渲染 tabs ===
+    if (timeBlocks.length > 1) {
+        tabsContainer.style.display = '';
 
         // 创建时间标签
-        const tab = document.createElement('div');
-        tab.className = `time-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
-        tab.textContent = block.time;
-        tab.addEventListener('click', () => {
-            slide.scrollIntoView({behavior: 'smooth'});
-            document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+        timeBlocks.forEach((block, index) => {
+            const slide = container.querySelectorAll('.slide')[index];
+            const tab = document.createElement('div');
+            tab.className = `time-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
+            tab.textContent = block.time;
+            // 绑定点击样式
+            tab.addEventListener('click', () => {
+                slide.scrollIntoView({behavior: 'smooth'});
+                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+            tabsContainer.appendChild(tab);
         });
-        tabsContainer.appendChild(tab);
-    });
 
-    // 监听滚动事件，更新活跃标签
-    container.addEventListener('scroll', () => {
-        const slides = document.querySelectorAll('.slide');
-        const tabs = document.querySelectorAll('.time-tab');
-        slides.forEach((slide, index) => {
-            const rect = slide.getBoundingClientRect();
-            if (rect.left >= 0 && rect.right <= window.innerWidth) {
-                tabs.forEach(t => t.classList.remove('active'));
-                tabs[index].classList.add('active');
+        // 监听滚动事件，更新活跃标签
+        container.addEventListener('scroll', () => {
+            const slides = document.querySelectorAll('.slide');
+            const tabs = document.querySelectorAll('.time-tab');
+            slides.forEach((slide, index) => {
+                const rect = slide.getBoundingClientRect();
+                if (rect.left >= 0 && rect.right <= window.innerWidth) {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabs[index].classList.add('active');
+                }
+            });
+        });
+
+        // 默认滚动到最后一个时间块
+        setTimeout(() => {
+            const lastSlide = document.querySelector('.slide:last-child');
+            if (lastSlide) {
+                lastSlide.scrollIntoView({behavior: 'smooth'});
             }
-        });
-    });
-
-    // 默认滚动到最后一个时间块
-    setTimeout(() => {
-        const lastSlide = document.querySelector('.slide:last-child');
-        if (lastSlide) {
-            lastSlide.scrollIntoView({behavior: 'smooth'});
-        }
-    }, 100);
+        }, 100);
+    }
 }
 
 // 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
