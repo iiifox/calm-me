@@ -270,14 +270,14 @@ h1 {
     grid-template-columns: repeat(auto-fill, 150px);
 }
 
-#gboChannelList .channel-item {
+.container #gboChannelList .channel-item {
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #3498db;
     cursor: help;
 }
 /* 悬停时，显示一个黑色小箭头，箭头指向条目，放在条目正上方 */
-#gboChannelList .channel-item:hover::before {
+.container #gboChannelList .channel-item:hover::before {
     content: '';
     position: absolute;
     bottom: 100%;
@@ -289,7 +289,7 @@ h1 {
     margin-bottom: -8px;
 }
 /* 悬停时，显示一个黑色半透明方框，上面有 tooltip 文本，支持多行 */
-#gboChannelList .channel-item:hover::after {
+.container #gboChannelList .channel-item:hover::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
