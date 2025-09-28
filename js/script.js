@@ -38,7 +38,7 @@ function renderXdCards(timeBlocks) {
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('h2');
-        timeTitle.textContent = `旧返利折扣（${block.time}开始）`;
+        timeTitle.textContent = `旧返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
         slide.appendChild(timeTitle);
 
         // 渲染各个分组
