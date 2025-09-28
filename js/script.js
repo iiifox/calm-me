@@ -1,6 +1,6 @@
 function renderXdCards(timeBlocks) {
     const container = document.getElementById('xd-rebate-system');
-    const tabsContainer = document.querySelector('.rebate-tab');
+    const tabsContainer = document.querySelector('.rebate-tabs');
 
     // 清空容器
     container.innerHTML = '';
