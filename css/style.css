@@ -15,8 +15,6 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    /* 鼠标悬停提供定位 */
-    position: relative;
 }
 
 header {
@@ -267,17 +265,19 @@ h1 {
 
 /* GBO卡片额外进行微调 */
 #gboChannelList {
-    grid-template-columns: repeat(auto-fill, 150px);
+    grid-template-columns: repeat(auto-fill, 155px);
+    /* 鼠标悬停提供定位 */
+    position: relative;
 }
 
-.container #gboChannelList .channel-item {
+#gboChannelList .channel-item {
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #3498db;
     cursor: help;
 }
 /* 悬停时，显示一个黑色小箭头，箭头指向条目，放在条目正上方 */
-.container #gboChannelList .channel-item:hover::before {
+#gboChannelList .channel-item:hover::before {
     content: '';
     position: absolute;
     bottom: 100%;
@@ -289,7 +289,7 @@ h1 {
     margin-bottom: -8px;
 }
 /* 悬停时，显示一个黑色半透明方框，上面有 tooltip 文本，支持多行 */
-.container #gboChannelList .channel-item:hover::after {
+#gboChannelList .channel-item:hover::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
