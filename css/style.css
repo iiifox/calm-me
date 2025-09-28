@@ -265,7 +265,7 @@ h1 {
 
 /* GBO卡片额外进行微调 */
 #gboChannelList {
-    grid-template-columns: repeat(auto-fill, 155px);
+    grid-template-columns: repeat(auto-fill, 160px);
     /* 鼠标悬停提供定位 */
     position: relative;
 }
@@ -306,7 +306,7 @@ h1 {
     white-space: pre-line;
     min-width: 180px;
     max-width: 250px;
-    z-index: 100;
+    z-index: 10;
     pointer-events: none;
     margin-bottom: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
