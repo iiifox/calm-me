@@ -60,6 +60,12 @@ h1 {
     min-height: 42px;
 }
 
+.rebate-system .channel-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 170px);
+    gap: 10px;
+}
+
 .rebate-group .channel-label {
     color: #4b7bf5;
     font-weight: bold;
@@ -69,9 +75,6 @@ h1 {
 }
 
 .rebate-group .channel-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 170px);
-    gap: 10px;
     /* 占据父容器剩余空间 */
     flex: 1;
 }
@@ -356,15 +359,4 @@ h1 {
     border-style: solid;
     border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
     margin-bottom: -8px;
-}
-
-
-
-.error {
-    text-align: center;
-    padding: 40px;
-    color: #e74c3c;
-    background: #fff5f5;
-    border-radius: 10px;
-    margin: 20px 0;
 }
