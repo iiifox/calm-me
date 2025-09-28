@@ -263,34 +263,7 @@ h1 {
 }
 
 
-/* 悬浮按钮 */
-.fab {
-    position: fixed;
-    right: 32px;
-    bottom: 32px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #1976d2;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    z-index: 1000;
-    transition: box-shadow 0.2s, transform 0.2s;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.fab:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    transform: scale(1.05);
-    background: #1565c0;
-}
-
-
-/* GBO块 */
+/* GBO卡片额外进行微调 */
 .gbo-section {
     background: white;
     border-radius: 10px;
@@ -299,9 +272,8 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* 额外微调 */
 #gboChannelList {
-    grid-template-columns: repeat(auto-fill, 160px);
+    grid-template-columns: repeat(auto-fill, 150px);
 }
 
 .gbo-item {
@@ -358,4 +330,31 @@ h1 {
     border-style: solid;
     border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
     margin-bottom: -8px;
+}
+
+
+/* 悬浮按钮 */
+.fab {
+    position: fixed;
+    right: 32px;
+    bottom: 32px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1976d2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    z-index: 1000;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.fab:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    background: #1565c0;
 }
