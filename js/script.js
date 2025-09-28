@@ -1,6 +1,6 @@
 function renderXdCards(timeBlocks) {
     const container = document.getElementById('xd-rebate-system');
-    const tabsContainer = document.querySelector('.time-tabs');
+    const tabsContainer = document.querySelector('.rebate-tab');
 
     // 清空容器
     container.innerHTML = '';
@@ -34,7 +34,7 @@ function renderXdCards(timeBlocks) {
     timeBlocks.forEach((block, index) => {
         // 创建时间块面板
         const slide = document.createElement('div');
-        slide.className = 'slide';
+        slide.className = 'rebate-slide';
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('h2');
@@ -103,14 +103,14 @@ function renderXdCards(timeBlocks) {
 
         // 创建时间标签
         timeBlocks.forEach((block, index) => {
-            const slide = container.querySelectorAll('.slide')[index];
+            const slide = container.querySelectorAll('.rebate-slide')[index];
             const tab = document.createElement('div');
-            tab.className = `time-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
+            tab.className = `rebate-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
             tab.textContent = block.time;
             // 绑定点击样式
             tab.addEventListener('click', () => {
                 slide.scrollIntoView({behavior: 'smooth'});
-                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
             });
             tabsContainer.appendChild(tab);
@@ -118,8 +118,8 @@ function renderXdCards(timeBlocks) {
 
         // 监听滚动事件，更新活跃标签
         container.addEventListener('scroll', () => {
-            const slides = document.querySelectorAll('.slide');
-            const tabs = document.querySelectorAll('.time-tab');
+            const slides = document.querySelectorAll('.rebate-slide');
+            const tabs = document.querySelectorAll('.rebate-tab');
             slides.forEach((slide, index) => {
                 const rect = slide.getBoundingClientRect();
                 if (rect.left >= 0 && rect.right <= window.innerWidth) {
@@ -131,7 +131,7 @@ function renderXdCards(timeBlocks) {
 
         // 默认滚动到最后一个时间块
         setTimeout(() => {
-            const lastSlide = document.querySelector('.slide:last-child');
+            const lastSlide = document.querySelector('.rebate-slide:last-child');
             if (lastSlide) {
                 lastSlide.scrollIntoView({behavior: 'smooth'});
             }
