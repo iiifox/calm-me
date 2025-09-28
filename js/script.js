@@ -144,7 +144,7 @@ function renderXdCards(timeBlocks) {
 
 // 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
 function renderGbo(gbo) {
-    const container = document.getElementById('gboGrid');
+    const container = document.getElementById('gboChannelList');
     container.innerHTML = '';
 
     // 校验数据是否存在
