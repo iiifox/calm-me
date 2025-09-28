@@ -268,7 +268,7 @@ h1 {
 
 /* GBO卡片额外进行微调 */
 #gboChannelList {
-    grid-template-columns: repeat(auto-fill, 155px);
+    grid-template-columns: repeat(auto-fill, 150px);
 }
 
 .rebate-system #gboChannelList .channel-item {
