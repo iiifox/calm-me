@@ -1,5 +1,14 @@
 // /api/discount
 
+const normalizeGboLine = line => line
+    // 只保留第一个字符到最后一个数字之间
+    .replace(/^(.*\d).*/, '$1')
+    // 特定词替换
+    .replace(/(?:综合、端游|端游、综合)/g, "点券")
+    // 移除数字和文字之间的空格(综合、端游100  极速 --> 点卷100极速)
+    .replace(/(\d+)\s+([^\d\s])/g, '$1$2')
+    .trim();
+
 // 辅助函数：格式化费率值 映射到区间 {0}∪[0.2,2)
 function formatRateValue(value) {
     const num = Number(value);
@@ -103,7 +112,7 @@ function parseXd(lines, profit) {
 async function parseGbo(lines, request, profit) {
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
     if (!resp.ok) {
-        return new Response(JSON.stringify({error: '数据源获取失败'}), {
+        return new Response(JSON.stringify({error: 'GBO配置数据源获取失败'}), {
             status: 502,
             headers: {'Content-Type': 'application/json'}
         });
@@ -111,32 +120,19 @@ async function parseGbo(lines, request, profit) {
     const gboJson = await resp.json();
 
     // 解析所有折扣项（精确匹配自定义渠道名）
-    const discountItems = [];
-    for (const line of lines) {
-        // 格式处理
-        const cleanLine = line.replace(/^(.*\d).*/, '$1')
-            .replace(/(综合、端游|端游、综合)\s*/g, "点券")
-            .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
-        // 有些个数处理后变为了空值（比如全中文）
-        if (!cleanLine) continue;
-
-        // 首先提取整行最后的折扣部分
-        const discountMatch = cleanLine.match(/(\d+(?:\.\d+)?)$/);
-        if (discountMatch) {
-            const discount = formatRateValue(parseFloat(discountMatch[1]));
-            // 移除折扣部分，保留前面的渠道部分
-            const prefixPart = cleanLine.substring(0, discountMatch.index).trim();
-            // 拆分前缀渠道部分
-            const separatorPattern = /[、,，]/
-            const channels = separatorPattern.test(prefixPart)
-                ? prefixPart.split(separatorPattern).map(p => p.trim())
-                : [prefixPart]
-            // 为每个渠道创建折扣
-            channels.forEach(channel => {
-                if (channel) discountItems.push({channel, discount});
-            });
-        }
-    }
+    const discountItems = lines
+        .map(normalizeGboLine)
+        .filter(Boolean)
+        .flatMap(line => {
+            const m = line.match(/^(.*?)(\d+(?:\.\d+)?)$/);
+            if (!m) return [];
+            const prefixPart = m[1].trim();
+            const discount = formatAndRound(m[2], profit);
+            return prefixPart.split(/[、,，]/)
+                .map(s => s.trim())
+                .filter(Boolean)
+                .map(channel => ({ channel, discount }));
+        });
 
     const channelConfig = gboJson.channelConfig;
     // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
@@ -144,7 +140,7 @@ async function parseGbo(lines, request, profit) {
     discountItems.forEach(item => {
         const channelName = channelConfig.nameMap[item.channel] || item.channel;
         const paths = (channelConfig.channelMap[channelName] || '').split('\n');
-        discountMap.set(channelName, { price: formatAndRound(item.discount, profit), paths })
+        discountMap.set(channelName, { price: item.discount, paths })
     });
 
     const gbo = {};
