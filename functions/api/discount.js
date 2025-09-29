@@ -98,7 +98,8 @@ async function parseGbo(lines, request, profit) {
     // 构建 gbo
     const gbo = Object.fromEntries(
         [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
-            .map(channel => [channel, discountMap.get(channel) || {price: 0, paths: []}])
+            .filter(channel => discountMap.has(channel))
+            .map(channel => [channel, discountMap.get(channel)])
     );
 
     return gbo;
