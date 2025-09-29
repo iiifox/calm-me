@@ -139,7 +139,7 @@ async function parseGbo(lines, request, profit) {
     const discountMap = new Map();
     discountItems.forEach(item => {
         const channelName = channelConfig.nameMap[item.channel] || item.channel;
-        const paths = (channelConfig.channelMap[channelName] || '').split('\n');
+        const paths = (channelConfig.channelMap[channelName] || '').split('\n').filter(Boolean);
         discountMap.set(channelName, { price: item.discount, paths })
     });
 
