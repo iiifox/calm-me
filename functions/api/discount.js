@@ -65,62 +65,37 @@ function parseXd(lines, profit) {
         }
     }
 
-    // 收集所有出现过的渠道，以及每个渠道首次出现的时间段索引
-    const allChannels = new Set();
-    // 键：渠道名，值：首次出现的时间索引（在timeOrder中）
+    // 1️⃣ 收集渠道首次出现的顺序和索引
     const firstOccurrence = {};
+    const channelsOrder = [];
     timeOrder.forEach((time, index) => {
-        const channels = Object.keys(xd[time]);
-        channels.forEach(channel => {
-            allChannels.add(channel);
-            if (firstOccurrence[channel] === undefined) {
-                // 记录首次出现的时间索引
-                firstOccurrence[channel] = index;
-            }
-        });
-    });
-
-    // 收集全局渠道首次出现顺序
-    const channelsFirstOrder = [];
-    const seen = new Set();
-    timeOrder.forEach(time => {
         Object.keys(xd[time]).forEach(channel => {
-            if (!seen.has(channel)) {
-                seen.add(channel);
-                channelsFirstOrder.push(channel);
+            if (!(channel in firstOccurrence)) {
+                firstOccurrence[channel] = index;
+                channelsOrder.push(channel);
             }
         });
     });
 
-    // 补全
-    channelsFirstOrder.forEach(channel => {
-        let lastDiscount;
-        timeOrder.forEach(time => {
-            if (xd[time][channel] !== undefined) lastDiscount = xd[time][channel];
-            else xd[time][channel] = lastDiscount;
-        });
-    });
-
-    // 重建对象，确保输出顺序一致
-    timeOrder.forEach(time => {
+    // 2️⃣ 补全并重建，同时生成 template
+    const templateItems = [];
+    timeOrder.forEach((time, timeIndex) => {
         const newObj = {};
-        channelsFirstOrder.forEach(channel => {
-            if (xd[time].hasOwnProperty(channel)) {
-                newObj[channel] = xd[time][channel];
+        channelsOrder.forEach(channel => {
+            if (timeIndex < firstOccurrence[channel]) {
+                // 首次出现前，补 1
+                newObj[channel] = 1;
+            } else {
+                // 首次出现及之后
+                newObj[channel] = xd[time][channel] ?? xd[timeOrder[timeIndex - 1]][channel];
             }
+            templateItems.push(`${channel}${time}/${newObj[channel]}`);
         });
         xd[time] = newObj;
     });
 
-    // === 新的 template 生成逻辑 ===
-    const templateItems = [];
-    channelsFirstOrder.forEach(channel => {
-        timeOrder.forEach(time => {
-            templateItems.push(`${channel}${time}/${xd[time][channel]}`);
-        });
-    });
     xd.template = templateItems.join('\n');
-    
+
     return xd;
 }
 
