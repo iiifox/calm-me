@@ -226,7 +226,7 @@ async function loadData() {
     try {
         const params = new URLSearchParams(window.location.search);
         const profit = params.get('profit');
-        let discountUrl = '/discount';
+        let discountUrl = '/api/discount';
         if (profit) {
             discountUrl += `?profit=${encodeURIComponent(profit)}`;
         }
