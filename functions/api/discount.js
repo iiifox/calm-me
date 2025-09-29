@@ -10,9 +10,9 @@ function formatRateValue(value) {
     return +(num / 1000).toFixed(3);
 }
 
-// 四舍五入函数：自动去除末尾多余的零
-function roundToFixed(num, decimalPlaces = 4) {
-    return Number(num.toFixed(decimalPlaces));
+// 先用辅助函数格式化，再加上浮动参数profit后四舍五入：自动去除末尾多余的零
+function formatAndRound(value, profit = 0, decimalPlaces = 4) {
+    return Number((formatRateValue(value) + profit).toFixed(decimalPlaces));
 }
 
 // 解析xd折扣
@@ -61,7 +61,7 @@ function parseXd(lines, profit) {
             if (matchedKey) {
                 channel = specialMap[matchedKey];
             }
-            xd[currentTimeKey][channel] = roundToFixed(formatRateValue(m[2]) + profit);
+            xd[currentTimeKey][channel] = formatAndRound(m[2], profit);
         }
     }
 
