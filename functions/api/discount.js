@@ -16,13 +16,14 @@ function formatAndRound(value, profit = 0, decimalPlaces = 4) {
     return Number((formatRateValue(value) + profit).toFixed(decimalPlaces));
 }
 
+
 // 解析xd折扣
 function parseXd(lines, profit) {
     const xd = {};
     const timeOrder = [];
     let currentTimeKey = '';
 
-    const specialMap = { VB: "VB微信10起", VC: "VC微信50", VD: "VD100", VE: "VE200" };
+    const specialMap = {VB: "VB微信10起", VC: "VC微信50", VD: "VD100", VE: "VE200"};
 
     const channelsFirstIndex = new Map();
 
@@ -75,13 +76,13 @@ async function parseGbo(lines, request, profit) {
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
     if (!resp.ok) throw new Error('GBO配置数据源获取失败');
 
-    const { channelConfig } = await resp.json();
+    const {channelConfig} = await resp.json();
 
     const discountMap = new Map();
     for (const line of lines.map(l => l.trim()).filter(Boolean)) {
         let cleanLine = line.replace(/^(.*\d).*/, '$1')
-                            .replace(/(?:综合、端游|端游、综合)/g, "点券")
-                            .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
+            .replace(/(?:综合、端游|端游、综合)/g, "点券")
+            .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
         const m = cleanLine.match(/^(.*?)(\d+(?:\.\d+)?)$/);
         if (!m) continue;
 
@@ -90,14 +91,14 @@ async function parseGbo(lines, request, profit) {
         channels.forEach(channel => {
             const name = channelConfig.nameMap[channel] || channel;
             const paths = (channelConfig.channelMap[name] || '').split('\n').filter(Boolean);
-            discountMap.set(name, { price: discount, paths });
+            discountMap.set(name, {price: discount, paths});
         });
     }
 
     // 构建 gbo
     const gbo = Object.fromEntries(
         [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
-            .map(channel => [channel, discountMap.get(channel) || { price: 0, paths: [] }])
+            .map(channel => [channel, discountMap.get(channel) || {price: 0, paths: []}])
     );
 
     return gbo;
@@ -107,51 +108,35 @@ async function parseGbo(lines, request, profit) {
 export async function onRequest({request}) {
     const profit = Number(new URL(request.url).searchParams.get("profit") || 0);
     const resp = await fetch(new URL('/price.txt', new URL(request.url).origin));
-    if (!resp.ok) {
-        return new Response(JSON.stringify({error: '数据源获取失败'}), {
-            status: 502,
-            headers: {'Content-Type': 'application/json'}
-        });
-    }
-    const text = await resp.text();
+    if (!resp.ok) return new Response(JSON.stringify({error: '数据源获取失败'}), {
+        status: 502,
+        headers: {'Content-Type': 'application/json'}
+    });
+    const lines = (await resp.text()).split('\n').map(s => s.trim()).filter(Boolean);
 
-    const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
-
-    let yesterdayPage = '';
-    let date = '';
-    let xdLines = [];
-    let gboLines = [];
-
+    let yesterdayPage = '', date = '', xdLines = [], gboLines = [];
     let currentSystem = "xd";
+
     for (const line of lines) {
-        // 昨日费率页面
-        if (/^https:\/\/[\w-]+(\.[\w-]+)+(?:\/[^\s?#]*)?(?:\?[^#\s]*)?(?:#\S*)?/i.test(line)) {
+        if (/^https?:\/\//i.test(line)) {
             yesterdayPage = line;
             continue;
         }
-        // 当前费率日期
-        if (/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/.test(line)) {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(line)) {
             date = line;
             continue;
         }
-
-        // xd
         if (currentSystem === "xd") {
             if (line.startsWith('微信')) {
                 currentSystem = "gbo";
                 continue;
             }
             xdLines.push(line);
-            continue;
-        }
-        // gbo
-        gboLines.push(line);
+        } else gboLines.push(line);
     }
 
     const xd = parseXd(xdLines, profit);
     const gbo = await parseGbo(gboLines, request, profit);
 
-    return new Response(JSON.stringify({yesterdayPage, date, xd, gbo}), {
-        headers: {'Content-Type': 'application/json'}
-    });
+    return new Response(JSON.stringify({ yesterdayPage, date, xd, gbo}), {headers: {'Content-Type': 'application/json'}});
 }
