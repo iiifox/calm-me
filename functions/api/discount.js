@@ -19,135 +19,90 @@ function formatAndRound(value, profit = 0, decimalPlaces = 4) {
 // 解析xd折扣
 function parseXd(lines, profit) {
     const xd = {};
-    let timeOrder = [];
-    let currentTimeKey = ""
+    const timeOrder = [];
+    let currentTimeKey = '';
+
+    const specialMap = { VB: "VB微信10起", VC: "VC微信50", VD: "VD100", VE: "VE200" };
+
+    const channelsFirstIndex = new Map();
+
     for (const line of lines) {
-        // “30号过点” 视为 00:00
-        if (line.includes('号')) {
-            currentTimeKey = '00:00';
-            if (!xd[currentTimeKey]) {
-                xd[currentTimeKey] = {};
-                timeOrder.push(currentTimeKey);
-            }
-            continue;
-        }
-        // “9:25开始”“11点开始”等
-        const t = line.match(/(\d{1,2})(?:[:：](\d{2}))?点?开始/);
-        if (t) {
-            const hh = String(t[1]).padStart(2, '0');
-            const mm = t[2] ? t[2] : '00';
-            currentTimeKey = `${hh}:${mm}`;
-            if (!xd[currentTimeKey]) {
-                xd[currentTimeKey] = {};
-                timeOrder.push(currentTimeKey);
-            }
-            continue;
+        // 时间匹配
+        const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
+        if (line.includes('号')) currentTimeKey = '00:00';
+        else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
+
+        if (currentTimeKey && !(currentTimeKey in xd)) {
+            xd[currentTimeKey] = {};
+            timeOrder.push(currentTimeKey);
         }
 
-        // 渠道行：渠道名 + 数字
+        // 渠道行匹配
         const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)(?:，|$)/);
         if (m && currentTimeKey) {
-            let channel = m[1];
-            // 1️⃣ 先统一大写
-            channel = channel.replace(/[a-z]/g, c => c.toUpperCase());
-            // 2️⃣ 特殊渠道映射（可选，未来可能移除）
-            const specialMap = {
-                VB: "VB微信10起",
-                VC: "VC微信50",
-                VD: "VD100",
-                VE: "VE200"
-            };
-            // 查找是否包含特殊渠道标识
+            let channel = m[1].toUpperCase();
             const matchedKey = Object.keys(specialMap).find(k => channel.includes(k));
-            if (matchedKey) {
-                channel = specialMap[matchedKey];
-            }
+            if (matchedKey) channel = specialMap[matchedKey];
             xd[currentTimeKey][channel] = formatAndRound(m[2], profit);
+
+            if (!channelsFirstIndex.has(channel)) {
+                channelsFirstIndex.set(channel, timeOrder.indexOf(currentTimeKey));
+            }
         }
     }
 
-    // 1️⃣ 收集渠道首次出现的顺序和索引
-    const firstOccurrence = {};
-    const channelsOrder = [];
-    timeOrder.forEach((time, index) => {
-        Object.keys(xd[time]).forEach(channel => {
-            if (!(channel in firstOccurrence)) {
-                firstOccurrence[channel] = index;
-                channelsOrder.push(channel);
-            }
-        });
-    });
-
-    // 2️⃣ 补全并重建，同时生成 template
+    // 补全缺失值并生成 template
+    const channelsOrder = Array.from(channelsFirstIndex.keys());
     const templateItems = [];
+
     timeOrder.forEach((time, timeIndex) => {
         const newObj = {};
         channelsOrder.forEach(channel => {
-            if (timeIndex < firstOccurrence[channel]) {
-                // 首次出现前，补 1
-                newObj[channel] = 1;
-            } else {
-                // 首次出现及之后
-                newObj[channel] = xd[time][channel] ?? xd[timeOrder[timeIndex - 1]][channel];
-            }
+            if (timeIndex < channelsFirstIndex.get(channel)) newObj[channel] = 1;
+            else newObj[channel] = xd[time][channel] ?? xd[timeOrder[timeIndex - 1]][channel];
             templateItems.push(`${channel}${time}/${newObj[channel]}`);
         });
         xd[time] = newObj;
     });
 
     xd.template = templateItems.join('\n');
-
     return xd;
 }
+
 
 // 解析gbo折扣
 async function parseGbo(lines, request, profit) {
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
-    if (!resp.ok) {
-        return new Response(JSON.stringify({error: 'GBO配置数据源获取失败'}), {
-            status: 502,
-            headers: {'Content-Type': 'application/json'}
+    if (!resp.ok) throw new Error('GBO配置数据源获取失败');
+
+    const { channelConfig } = await resp.json();
+
+    const discountMap = new Map();
+    for (const line of lines.map(l => l.trim()).filter(Boolean)) {
+        let cleanLine = line.replace(/^(.*\d).*/, '$1')
+                            .replace(/(?:综合、端游|端游、综合)/g, "点券")
+                            .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
+        const m = cleanLine.match(/^(.*?)(\d+(?:\.\d+)?)$/);
+        if (!m) continue;
+
+        const discount = formatAndRound(m[2], profit);
+        const channels = m[1].split(/[、,，]/).map(s => s.trim()).filter(Boolean);
+        channels.forEach(channel => {
+            const name = channelConfig.nameMap[channel] || channel;
+            const paths = (channelConfig.channelMap[name] || '').split('\n').filter(Boolean);
+            discountMap.set(name, { price: discount, paths });
         });
     }
-    const gboJson = await resp.json();
 
-    // 解析所有折扣项（精确匹配自定义渠道名）
-    const discountItems = lines
-        .map(line => line.trim())
-        .filter(Boolean)
-        .map(line => {
-            line = line.replace(/^(.*\d).*/, '$1')
-                .replace(/(?:综合、端游|端游、综合)/g, "点券")
-                .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
-            const m = line.match(/^(.*?)(\d+(?:\.\d+)?)$/);
-            if (!m) return null;
-            const discount = formatAndRound(m[2], profit);
-            return m[1].split(/[、,，]/).map(s => s.trim()).filter(Boolean).map(channel => ({channel, discount}));
-        })
-        .flat()
-        .filter(Boolean);
-
-    const channelConfig = gboJson.channelConfig;
-    // 渠道映射 和 折扣+鼠标悬停提示信息(渠道对应的所有通道)
-    const discountMap = discountItems.reduce((map, item) => {
-        const channelName = channelConfig.nameMap[item.channel] || item.channel;
-        const paths = (channelConfig.channelMap[channelName] || '').split('\n').filter(Boolean);
-        map.set(channelName, { price: item.discount, paths });
-        return map;
-    }, new Map());
-
+    // 构建 gbo
     const gbo = Object.fromEntries(
-        Object.keys(channelConfig.channelMap)
-            .filter(channel => discountMap.has(channel))
-            .map(channel => [channel, discountMap.get(channel)])
-            .concat(
-                Array.from(discountMap.entries())
-                    .filter(([channel]) => !(channel in channelConfig.channelMap))
-            )
+        [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
+            .map(channel => [channel, discountMap.get(channel) || { price: 0, paths: [] }])
     );
 
     return gbo;
 }
+
 
 export async function onRequest({request}) {
     const profit = Number(new URL(request.url).searchParams.get("profit") || 0);
