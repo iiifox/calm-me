@@ -14,6 +14,9 @@ export async function onRequestGet(context) {
         // 向远端接口发起请求
         const resp = await fetch("http://104.143.42.32/WebPayCfld.asmx/getCldcwnTest", {
             method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
             body: JSON.stringify({orderId}),
         });
 
