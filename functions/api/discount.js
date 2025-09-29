@@ -144,7 +144,7 @@ async function parseGbo(lines, request, profit) {
     discountItems.forEach(item => {
         const channelName = channelConfig.nameMap[item.channel] || item.channel;
         const paths = (channelConfig.channelMap[channelName] || '').split('\n');
-        discountMap.set(channelName, { price: roundToFixed(item.discount + profit), paths })
+        discountMap.set(channelName, { price: formatAndRound(item.discount, profit), paths })
     });
 
     const gbo = {};
