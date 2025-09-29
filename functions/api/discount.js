@@ -1,13 +1,5 @@
 // /api/discount
 
-const normalizeGboLine = line => line
-    // 只保留第一个字符到最后一个数字之间
-    .replace(/^(.*\d).*/, '$1')
-    // 特定词替换
-    .replace(/(?:综合、端游|端游、综合)/g, "点券")
-    // 移除数字和文字之间的空格(综合、端游100  极速 --> 点卷100极速)
-    .replace(/(\d+)\s+([^\d\s])/g, '$1$2')
-    .trim();
 
 // 辅助函数：格式化费率值 映射到区间 {0}∪[0.2,2)
 function formatRateValue(value) {
@@ -121,40 +113,38 @@ async function parseGbo(lines, request, profit) {
 
     // 解析所有折扣项（精确匹配自定义渠道名）
     const discountItems = lines
-        .map(normalizeGboLine)
+        .map(line => line.trim())
         .filter(Boolean)
-        .flatMap(line => {
+        .map(line => {
+            line = line.replace(/^(.*\d).*/, '$1')
+                .replace(/(?:综合、端游|端游、综合)/g, "点券")
+                .replace(/(\d+)\s+([^\d\s])/g, '$1$2');
             const m = line.match(/^(.*?)(\d+(?:\.\d+)?)$/);
-            if (!m) return [];
-            const prefixPart = m[1].trim();
+            if (!m) return null;
             const discount = formatAndRound(m[2], profit);
-            return prefixPart.split(/[、,，]/)
-                .map(s => s.trim())
-                .filter(Boolean)
-                .map(channel => ({ channel, discount }));
-        });
+            return m[1].split(/[、,，]/).map(s => s.trim()).filter(Boolean).map(channel => ({channel, discount}));
+        })
+        .flat()
+        .filter(Boolean);
 
     const channelConfig = gboJson.channelConfig;
-    // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
-    const discountMap = new Map();
-    discountItems.forEach(item => {
+    // 渠道映射 和 折扣+鼠标悬停提示信息(渠道对应的所有通道)
+    const discountMap = discountItems.reduce((map, item) => {
         const channelName = channelConfig.nameMap[item.channel] || item.channel;
         const paths = (channelConfig.channelMap[channelName] || '').split('\n').filter(Boolean);
-        discountMap.set(channelName, { price: item.discount, paths })
-    });
+        map.set(channelName, { price: item.discount, paths });
+        return map;
+    }, new Map());
 
-    const gbo = {};
-    // 1️⃣ 按 channelMap 顺序输出
-    Object.keys(channelConfig.channelMap).forEach(channel => {
-        if (discountMap.has(channel)) {
-            gbo[channel] = discountMap.get(channel);
-            discountMap.delete(channel); // 已输出
-        }
-    });
-    // 2️⃣ 输出剩余未匹配渠道
-    for (const [channel, value] of discountMap.entries()) {
-        gbo[channel] = value;
-    }
+    const gbo = Object.fromEntries(
+        Object.keys(channelConfig.channelMap)
+            .filter(channel => discountMap.has(channel))
+            .map(channel => [channel, discountMap.get(channel)])
+            .concat(
+                Array.from(discountMap.entries())
+                    .filter(([channel]) => !(channel in channelConfig.channelMap))
+            )
+    );
 
     return gbo;
 }
