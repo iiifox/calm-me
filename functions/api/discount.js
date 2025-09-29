@@ -3,8 +3,7 @@
 // 辅助函数：格式化费率值 映射到区间 {0}∪[0.2,2)
 function formatRateValue(value) {
     const num = Number(value);
-    if (Number.isNaN(num) || num < 0 || num > 2000) return 0;
-    if (num === 0) return 0;
+    if (Number.isNaN(num) || num <= 0) return 0;
     if (num < 2) return num;
     if (num < 20) return +(num / 10).toFixed(3);
     if (num < 200) return +(num / 100).toFixed(3);
@@ -13,9 +12,7 @@ function formatRateValue(value) {
 
 // 四舍五入函数：自动去除末尾多余的零
 function roundToFixed(num, decimalPlaces = 4) {
-    const factor = Math.pow(10, decimalPlaces);
-    // 先四舍五入到指定位数，再转换为Number自动去除末尾零
-    return Number(Math.round(num * factor) / factor);
+    return Number(num.toFixed(decimalPlaces));
 }
 
 // 解析xd折扣
@@ -50,17 +47,19 @@ function parseXd(lines, profit) {
         const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)(?:，|$)/);
         if (m && currentTimeKey) {
             let channel = m[1];
-            // 小写转大写
+            // 1️⃣ 先统一大写
             channel = channel.replace(/[a-z]/g, c => c.toUpperCase());
-            // VB VC VD VE
-            if (/VB/.test(channel)) {
-                channel = "VB微信10起";
-            } else if (/VC/.test(channel)) {
-                channel = "VC微信50";
-            } else if (/VD/.test(channel)) {
-                channel = "VD100";
-            } else if (/VE/.test(channel)) {
-                channel = "VE200";
+            // 2️⃣ 特殊渠道映射（可选，未来可能移除）
+            const specialMap = {
+                VB: "VB微信10起",
+                VC: "VC微信50",
+                VD: "VD100",
+                VE: "VE200"
+            };
+            // 查找是否包含特殊渠道标识
+            const matchedKey = Object.keys(specialMap).find(k => channel.includes(k));
+            if (matchedKey) {
+                channel = specialMap[matchedKey];
             }
             xd[currentTimeKey][channel] = roundToFixed(formatRateValue(m[2]) + profit);
         }
@@ -96,14 +95,9 @@ function parseXd(lines, profit) {
     // 补全
     channelsFirstOrder.forEach(channel => {
         let lastDiscount;
-        timeOrder.forEach((time, timeIndex) => {
-            if (timeIndex < firstOccurrence[channel]) {
-                xd[time][channel] = 1;
-            } else if (xd[time].hasOwnProperty(channel)) {
-                lastDiscount = xd[time][channel];
-            } else if (lastDiscount !== undefined) {
-                xd[time][channel] = lastDiscount;
-            }
+        timeOrder.forEach(time => {
+            if (xd[time][channel] !== undefined) lastDiscount = xd[time][channel];
+            else xd[time][channel] = lastDiscount;
         });
     });
 
@@ -132,8 +126,6 @@ function parseXd(lines, profit) {
 
 // 解析gbo折扣
 async function parseGbo(lines, request, profit) {
-    const gbo = {};
-
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
     if (!resp.ok) {
         return new Response(JSON.stringify({error: '数据源获取失败'}), {
@@ -173,33 +165,24 @@ async function parseGbo(lines, request, profit) {
 
     const channelConfig = gboJson.channelConfig;
     // 渠道映射 和 鼠标悬停提示信息(渠道对应的所有通道)
+    const discountMap = new Map();
     discountItems.forEach(item => {
-        item.channel = channelConfig.nameMap[item.channel] || item.channel;
-        const tooltip = channelConfig.channelMap[item.channel] || '';
-        item.paths = tooltip ? tooltip.split('\n') : [];
+        const channelName = channelConfig.nameMap[item.channel] || item.channel;
+        const paths = (channelConfig.channelMap[channelName] || '').split('\n');
+        discountMap.set(channelName, { price: roundToFixed(item.discount + profit), paths })
     });
 
-    // 获取顺序（直接使用 channelMap 的键）
-    const order = Object.keys(channelConfig.channelMap);
-
-    // 精确匹配自定义渠道顺序
-    order.forEach(channel => {
-        const index = discountItems.findIndex(item => item.channel === channel);
-        if (index !== -1) {
-            const item = discountItems[index];
-            gbo[channel] = {
-                price: roundToFixed(item.discount + profit),
-                paths: item.paths
-            };
-            discountItems.splice(index, 1);
+    const gbo = {};
+    // 1️⃣ 按 channelMap 顺序输出
+    Object.keys(channelConfig.channelMap).forEach(channel => {
+        if (discountMap.has(channel)) {
+            gbo[channel] = discountMap.get(channel);
+            discountMap.delete(channel); // 已输出
         }
     });
-    // 剩余项（没有被精确匹配的渠道名）
-    for (const item of discountItems) {
-        gbo[item.channel] = {
-            price: roundToFixed(item.discount + profit),
-            paths: item.paths
-        };
+    // 2️⃣ 输出剩余未匹配渠道
+    for (const [channel, value] of discountMap.entries()) {
+        gbo[channel] = value;
     }
 
     return gbo;
