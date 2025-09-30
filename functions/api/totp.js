@@ -2,13 +2,24 @@ export async function onRequestGet({request}) {
     const url = new URL(request.url);
     const secret = url.searchParams.get("secret");
 
+    // 可选参数：digits（验证码长度），period（周期秒数）
+    const digits = parseInt(url.searchParams.get("digits") || "6", 10);
+    const period = parseInt(url.searchParams.get("period") || "30", 10);
+
     if (!secret) {
         return jsonResponse({error: "缺少secret参数"}, 400);
     }
 
+    if (isNaN(digits) || digits <= 0) {
+        return jsonResponse({error: "digits 参数必须是正整数"}, 400);
+    }
+    if (isNaN(period) || period <= 0) {
+        return jsonResponse({error: "period 参数必须是正整数"}, 400);
+    }
+
     try {
-        const {code, remaining} = await generateTOTP(secret);
-        return jsonResponse({code, remaining});
+        const {code, remaining} = await generateTOTP(secret, digits, period);
+        return jsonResponse({code, remaining, digits, period});
     } catch (err) {
         return jsonResponse({error: err.message}, 500);
     }
@@ -28,12 +39,9 @@ function jsonResponse(data, status = 200) {
 
 /**
  * 生成TOTP验证码并返回剩余有效秒数
- * @param {string} secret Base32编码的密钥
  */
-async function generateTOTP(secret) {
+async function generateTOTP(secret, digits = 6, period = 30) {
     const algorithm = "SHA-1";
-    const digits = 6;
-    const period = 30;
 
     const now = Math.floor(Date.now() / 1000);
     const timeStep = Math.floor(now / period);
@@ -59,7 +67,8 @@ function base32ToBytes(base32) {
 
     for (const char of base32.toUpperCase().replace(/=+$/, "")) {
         const idx = alphabet.indexOf(char);
-        if (idx < 0) throw new Error(`无效的Base32字符: ${char}`);
+        if (idx < 0) throw new Error(`
+    无效的Base32字符: ${char}`);
         value = (value << 5) | idx;
         bits += 5;
         if (bits >= 8) {
@@ -68,6 +77,7 @@ function base32ToBytes(base32) {
         }
     }
     return new Uint8Array(output);
+
 }
 
 async function hmac(key, data, algorithm) {
