@@ -19,7 +19,7 @@ export async function onRequestGet({request}) {
 
     try {
         const {code, remaining} = await generateTOTP(secret, digits, period);
-        return jsonResponse({code, remaining, digits, period});
+        return jsonResponse({code, remaining});
     } catch (err) {
         return jsonResponse({error: err.message}, 500);
     }
