@@ -52,18 +52,26 @@ function parseXd(lines, profit) {
         }
     }
 
-    // 补全缺失值并生成 template
+    // 补全缺失值（按时间填充）
     const channelsOrder = Array.from(channelsFirstIndex.keys());
-    const templateItems = [];
-
     timeOrder.forEach((time, timeIndex) => {
         const newObj = {};
         channelsOrder.forEach(channel => {
-            if (timeIndex < channelsFirstIndex.get(channel)) newObj[channel] = 1;
-            else newObj[channel] = xd[time][channel] ?? xd[timeOrder[timeIndex - 1]][channel];
-            templateItems.push(`${channel}${time}/${newObj[channel]}`);
+            if (timeIndex < channelsFirstIndex.get(channel)) {
+                newObj[channel] = 1;
+            } else {
+                newObj[channel] = xd[time][channel] ?? xd[timeOrder[timeIndex - 1]][channel];
+            }
         });
         xd[time] = newObj;
+    });
+
+    // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
+    const templateItems = [];
+    channelsOrder.forEach(channel => {
+        timeOrder.forEach(time => {
+            templateItems.push(`${channel}${time}/${xd[time][channel]}`);
+        });
     });
 
     xd.template = templateItems.join('\n');
