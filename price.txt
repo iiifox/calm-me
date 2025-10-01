@@ -1,8 +1,8 @@
-https://cde7d546.iiifox.me/
+https://4d77d853.iiifox.me/
 
-2025-10-01
+2025-10-02
 
-1号
+2号过点
 渠道A   905
 渠道B   91
 渠道C   915
@@ -17,11 +17,6 @@ https://cde7d546.iiifox.me/
 渠道VC    84
 渠道VD    87
 渠道VE     91
-
-12点开始
-渠道D   93
-渠道E   94
-渠道F   95
 
 
 微信
