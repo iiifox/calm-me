@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸导出代理统计
 // @namespace    https://iiifox.me/
-// @version      1.1.0
+// @version      1.2.0
 // @description  监听 dltj.aspx 响应，按渠道精确折扣导出代理统计，汇总同用户同业务
 // @match        *://116.62.60.127:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
@@ -20,7 +20,7 @@
             "王者4笔Q钱点卷（电商）",
             "王者点券Q钱电商单笔",
             "王者点券Q钱电商四笔"
-        ], value: -0.86 },
+        ], value: -0.88 },
         "特价": { channels: [
             "王者点券特价单笔",
             "王者点券特价五笔"
