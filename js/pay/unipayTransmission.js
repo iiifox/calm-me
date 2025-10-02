@@ -1,13 +1,17 @@
 // ==UserScript==
 // @name         自动传码
 // @namespace    https://iiifox.me/
-// @version      0.9
-// @description  在腾讯充值中心页面中，监听钱包支付接口，提取正常出码的响应 body 并复制到剪贴板
+// @version      1.0
+// @description  自动传码到饭票（需填写url与次数）
 // @author       iiifox
 // @match        *://pay.qq.com/*
-// @grant        none
-// @run-at       document-start
+// @grant        GM_xmlhttpRequest
+// @grant        GM_getValue
+// @grant        GM_setValue
 // @updateURL    https://iiifox.me/js/pay/unipayTransmission.js
+// @downloadURL  https://iiifox.me/js/pay/unipayTransmission.js
+// @connect      081w5a8cim.top
+// @connect      8w0m6rjg3l.top
 // ==/UserScript==
 
 (function () {
