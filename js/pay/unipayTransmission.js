@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         提取QQ钱包支付响应Body
+// @name         自动传码
 // @namespace    https://iiifox.me/
 // @version      0.9
 // @description  在腾讯充值中心页面中，监听钱包支付接口，提取正常出码的响应 body 并复制到剪贴板
