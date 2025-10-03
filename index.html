@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <!-- PC 默认 75% -->
+    <meta name="viewport" content="width=device-width, initial-scale=0.75">
+    <!-- 移动端 50% -->
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    
     <link rel="icon" href="https://raw.githubusercontent.com/iiifox/calm-luei/main/favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,5 +72,22 @@
 
 </div>
 <script src="js/script.js"></script>
+<script>
+  (function() {
+    var viewport = document.querySelector("meta[name=viewport]");
+    if (!viewport) {
+      viewport = document.createElement("meta");
+      viewport.name = "viewport";
+      document.head.appendChild(viewport);
+    }
+    if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+      // 移动端
+      viewport.content = "width=device-width, initial-scale=0.5, maximum-scale=0.5";
+    } else {
+      // PC端
+      viewport.content = "width=device-width, initial-scale=0.75, maximum-scale=0.75";
+    }
+  })();
+</script>
 </body>
 </html>
