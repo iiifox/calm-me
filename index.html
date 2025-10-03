@@ -6,6 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>8</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- 🔥 动态 viewport 代码（放在 head 里靠前位置） -->
+    <script>
+      (function() {
+        var viewport = document.querySelector("meta[name=viewport]");
+        if (!viewport) {
+          viewport = document.createElement("meta");
+          viewport.name = "viewport";
+          document.head.appendChild(viewport);
+        }
+        if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+          // 移动端缩放 50%
+          viewport.content = "width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no";
+        } else {
+          // PC 缩放 75%
+          viewport.content = "width=device-width, initial-scale=0.75, maximum-scale=0.75, user-scalable=no";
+        }
+      })();
+    </script>
 </head>
 <body>
 <div class="container">
