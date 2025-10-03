@@ -3,37 +3,15 @@
 <head>
     <link rel="icon" href="https://raw.githubusercontent.com/iiifox/calm-luei/main/favicon.ico">
     <meta charset="UTF-8">
-    <!-- <script>
-        (function(){
-            var isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) && !/iPad|Tablet/i.test(navigator.userAgent);
-            var content = isMobile ? 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no' : 'width=device-width, initial-scale=1.0';
-            var meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = content;
-            document.head.appendChild(meta);
-        })();
-    </script> -->
     <script>
-        (function(){
+        (() => {
             const ua = navigator.userAgent;
             const isMobile = /Mobi|Android|iPhone/i.test(ua) && !/iPad|Tablet/i.test(ua);
             const isIOS = /iPhone|iPad|iPod/i.test(ua);
-            let content;
-            if(isMobile){
-                if(isIOS){
-                    // iOS Safari 固定 55%
-                    content = 'width=device-width, initial-scale=0.55, maximum-scale=0.55, user-scalable=no';
-                } else {
-                    // 安卓及其他移动端 保留原来的 50%
-                    content = 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no';
-                }
-            } else {
-                // PC 端
-                content = 'width=device-width, initial-scale=1.0';
-            }  
+            const scale = isMobile ? (isIOS ? 0.55 : 0.5) : 1.0;
             const meta = document.createElement('meta');
             meta.name = 'viewport';
-            meta.content = content;
+            meta.content = `width=device-width, initial-scale=${scale}, maximum-scale=${scale}${isMobile ? ', user-scalable=no' : ''}`;
             document.head.appendChild(meta);
         })();
     </script>
