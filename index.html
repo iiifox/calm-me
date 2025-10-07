@@ -21,15 +21,15 @@
         @media (min-width: 769px) {
             /* 如果浏览器支持 zoom（Chrome/Safari）则使用它 */
             @supports (zoom:1) {
-                html { zoom: 0.75; }
+                html { zoom: 0.8; }
             }
             /* Firefox 或不支持 zoom 的浏览器使用 transform 回退 */
             @supports not (zoom:1) {
                 body {
-                    transform: scale(0.75);
+                    transform: scale(0.8);
                     transform-origin: top left;
-                    width: 133.333%; /* 1 / 0.75 */
-                    height: 133.333%;
+                    width: 125%; /* 1 / 0.8 */
+                    height: 125%;
                 }
             }
         }
