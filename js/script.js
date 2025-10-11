@@ -249,26 +249,19 @@ async function loadData() {
             }
         }
 
-        // 处理旧返利数据（xd）- 核心修改：过滤掉template字段
-        const xdData = discountData.xd || {};
-        // 获取xd中所有键，但排除'template'（避免被当作时间块渲染）
-        const timeKeys = Object.keys(xdData).filter(key => key !== 'template');
-        // 转换为时间块格式
-        const timeBlocks = timeKeys.map(time => ({
-            time: time, // 直接使用接口返回的标准时间
-            rates: Object.entries(xdData[time]).map(([channel, discount]) => ({
-                channel,
-                discount
-            }))
-        }));
+        // 渲染小刀数据
+        const timeBlocks = Object.entries(discountData.xd || {})
+            .filter(([key]) => key !== 'template')
+            .map(([time, channels]) => ({
+                time,
+                rates: Object.entries(channels).map(([channel, discount]) => ({ channel, discount }))
+            }));
         renderXdCards(timeBlocks);
-
-        // 处理新返利数据（gbo）
-        const gbo = discountData.gbo || {};
-        renderGbo(gbo);
-
         // 初始化复制按钮（传入xd.template数据）
         initCopyButton(discountData.xd?.template);
+
+        // 渲染gbo数据
+        renderGbo(discountData.gbo || {});
 
     } catch (error) {
         showError('数据加载失败: ' + error.message);
