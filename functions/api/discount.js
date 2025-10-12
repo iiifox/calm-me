@@ -93,7 +93,7 @@ function parseXy(lines, profit) {
         if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
         else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
 
-        if (currentTimeKey && !(currentTimeKey in xd)) {
+        if (currentTimeKey && !(currentTimeKey in xy)) {
             xy[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
         }
