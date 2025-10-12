@@ -268,7 +268,25 @@ h1 {
 }
 
 
-/* GBO卡片额外进行微调 */
+/* 小刀额外微调 */
+#xd-rebate-system .channel-label {
+    color: #3c8dbc;
+}
+#xd-rebate-system .channel-item {
+    border-left: 4px solid #3c8dbc;
+}
+
+
+/* 星悦额外微调 */
+#xy-rebate-system .channel-label {
+    color: #3186ff;
+}
+#xy-rebate-system .channel-item {
+    border-left: 4px solid #3186ff;
+}
+
+
+/* GBO额外微调 */
 #gboChannelList {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
