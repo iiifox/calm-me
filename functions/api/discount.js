@@ -32,10 +32,10 @@ function parseXd(lines, profit) {
         const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
         if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
         else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
-
         if (currentTimeKey && !(currentTimeKey in xd)) {
             xd[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
+            continue;
         }
 
         // 渠道行匹配
@@ -92,10 +92,10 @@ function parseXy(lines, profit) {
         const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
         if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
         else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
-
         if (currentTimeKey && !(currentTimeKey in xy)) {
             xy[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
+            continue;
         }
 
         // 渠道行匹配
@@ -111,18 +111,18 @@ function parseXy(lines, profit) {
     }
 
     // 补全缺失值（按时间填充）
-    const channelsOrder = Array.from(channelsFirstIndex.keys());
-    timeOrder.forEach((time, timeIndex) => {
-        const newObj = {};
-        channelsOrder.forEach(channel => {
-            if (timeIndex < channelsFirstIndex.get(channel)) {
-                newObj[channel] = 1;
-            } else {
-                newObj[channel] = xy[time][channel] ?? xy[timeOrder[timeIndex - 1]][channel];
-            }
-        });
-        xy[time] = newObj;
-    });
+    // const channelsOrder = Array.from(channelsFirstIndex.keys());
+    // timeOrder.forEach((time, timeIndex) => {
+    //     const newObj = {};
+    //     channelsOrder.forEach(channel => {
+    //         if (timeIndex < channelsFirstIndex.get(channel)) {
+    //             newObj[channel] = 1;
+    //         } else {
+    //             newObj[channel] = xy[time][channel] ?? xy[timeOrder[timeIndex - 1]][channel];
+    //         }
+    //     });
+    //     xy[time] = newObj;
+    // });
     
     return xy;
 }
