@@ -17,7 +17,7 @@ function formatAndRound(value, profit = 0, decimalPlaces = 4) {
 }
 
 
-// 解析xd折扣
+// ========== 解析小刀折扣 ==========
 function parseXd(lines, profit) {
     const xd = {};
     const timeOrder = [];
@@ -79,7 +79,15 @@ function parseXd(lines, profit) {
 }
 
 
-// 解析gbo折扣
+// ========== 解析星悦折扣 ==========
+function parseXy(lines, profit) {
+    const xy = {};
+    
+    return xy;
+}
+
+
+// ========== 解析gbo折扣 ==========
 async function parseGbo(lines, request, profit) {
     const resp = await fetch(new URL('/config/gbo.json', new URL(request.url).origin));
     if (!resp.ok) throw new Error('GBO配置数据源获取失败');
@@ -123,7 +131,7 @@ export async function onRequest({request}) {
     });
     const lines = (await resp.text()).split('\n').map(s => s.trim()).filter(Boolean);
 
-    let yesterdayPage = '', date = '', xdLines = [], gboLines = [];
+    let yesterdayPage = '', date = '', xdLines = [], xyLines = [], gboLines = [];
     let currentSystem = "xd";
 
     for (const line of lines) {
@@ -145,7 +153,8 @@ export async function onRequest({request}) {
     }
 
     const xd = parseXd(xdLines, profit);
+    const xy = parseXy(xyLines, profit);
     const gbo = await parseGbo(gboLines, request, profit);
 
-    return new Response(JSON.stringify({ yesterdayPage, date, xd, gbo}), {headers: {'Content-Type': 'application/json'}});
+    return new Response(JSON.stringify({ yesterdayPage, date, xd, xy, gbo}), {headers: {'Content-Type': 'application/json'}});
 }
