@@ -254,6 +254,9 @@ h1 {
 
 
 /* 狐狸安卓Q 样式 */
+.fox-android-q .channel-label {
+    color: #232323;
+}
 .fox-android-q .charge-type {
     color: #888;
     font-size: 0.95em;
@@ -315,8 +318,8 @@ h1 {
     text-align: left;
     /* 支持换行 */
     white-space: pre-line;
-    min-width: 170px;
-    max-width: 200px;
+    min-width: 120px;
+    max-width: 150px;
     z-index: 10;
     pointer-events: none;
     margin-bottom: 10px;
