@@ -193,6 +193,7 @@ export async function onRequest({request}) {
         } else if (currentSystem === "gbo") {
             if (line.includes("星悦")) {
                 currentSystem = "xy";
+                xyLines.push(line);
                 continue;
             }
             gboLines.push(line);
