@@ -1,3 +1,4 @@
+// ========== 小刀 ==========
 function renderXdCards(timeBlocks) {
     const container = document.getElementById('xd-rebate-system');
     const tabsContainer = document.querySelector('.rebate-tabs');
@@ -164,6 +165,7 @@ function initCopyButton(templateData) {
 }
 
 
+// ========== 星悦 ==========
 function renderXyCards(timeBlocks) {
     const container = document.getElementById('xy-rebate-system');
     const tabsContainer = document.querySelector('.rebate-tabs');
@@ -184,6 +186,12 @@ function renderXyCards(timeBlocks) {
             channels: ["微信小额", "微信双端", "微信固额"]
         }
     };
+
+    tooltipMap = {
+        "微信小额": "额度50",
+        "微信双端" : "额度100-1000",
+        "微信固额" : "额度200"
+    }
 
     // 存储每个渠道上一次的折扣值
     const lastDiscountByChannel = {};
@@ -230,6 +238,8 @@ function renderXyCards(timeBlocks) {
 
                 const channelItem = document.createElement('div');
                 channelItem.className = 'channel-item';
+                // 悬停提示使用
+                channelItem.setAttribute('data-tooltip', tooltipMap[channelName]);
 
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'channel-name';
@@ -301,7 +311,7 @@ function renderXyCards(timeBlocks) {
 }
 
 
-// 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
+// ========== GBO ==========
 function renderGbo(gbo) {
     const container = document.getElementById('gboChannelList');
     container.innerHTML = '';
@@ -322,7 +332,6 @@ function renderGbo(gbo) {
         // 悬停提示使用 paths 数组（换行分隔）
         channelItem.setAttribute('data-tooltip', paths.join('\n'));
         // 显示渠道名和价格
-        // channelItem.innerHTML = `${channel} <strong>${price}</strong>`;
         const nameSpan = document.createElement('span');
         nameSpan.className = 'channel-name';
         nameSpan.textContent = channel;
