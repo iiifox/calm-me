@@ -7,7 +7,7 @@ function renderXdCards(timeBlocks) {
     tabsContainer.innerHTML = '';
 
     if (!timeBlocks || timeBlocks.length === 0) {
-        container.innerHTML = '<div class="error">暂无小刀报价</div>';
+        container.innerHTML = '<p>暂无报价</p>';
         return;
     }
 
@@ -170,7 +170,7 @@ function renderGbo(gbo) {
 
     // 校验数据是否存在
     if (!gbo || typeof gbo !== 'object' || Object.keys(gbo).length === 0) {
-        container.innerHTML = '<p>暂无GBO报价</p>';
+        container.innerHTML = '<p>暂无报价</p>';
         return;
     }
 
