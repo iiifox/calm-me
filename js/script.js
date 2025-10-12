@@ -13,14 +13,6 @@ function renderXdCards(timeBlocks) {
 
     // 渠道太多，按组分好
     const groups = {
-        qianbao: {
-            label: '钱包',
-            channels: ["渠道A", "渠道B", "渠道C", "渠道D", "渠道E", "渠道F", "渠道H"]
-        },
-        teshu: {
-            label: '特殊',
-            channels: ["渠道TA", "渠道TB"]
-        },
         weixin: {
             label: '微信',
             channels: ["渠道VA", "VB微信10起", "VC微信50", "VD100", "VE200"]
