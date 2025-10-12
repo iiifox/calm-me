@@ -7,7 +7,7 @@ function renderXdCards(timeBlocks) {
     tabsContainer.innerHTML = '';
 
     if (!timeBlocks || timeBlocks.length === 0) {
-        container.innerHTML = '<div class="error">未找到有效的价格数据</div>';
+        container.innerHTML = '<div class="error">暂无小刀报价</div>';
         return;
     }
 
@@ -142,6 +142,27 @@ function renderXdCards(timeBlocks) {
     }
 }
 
+// 初始化复制按钮功能
+function initCopyButton(templateData) {
+    const copyBtn = document.getElementById('copyRatesBtn');
+    if (!copyBtn) return;
+
+    copyBtn.addEventListener('click', () => {
+        if (!templateData) {
+            showNotification('无可用费率数据（xd.template不存在）', true);
+            return;
+        }
+
+        // 复制xd.template内容到剪贴板
+        navigator.clipboard.writeText(templateData)
+            .then(() => showNotification('费率已复制到剪贴板'))
+            .catch(err => {
+                showNotification('复制失败，请手动复制', true);
+                console.error('复制失败:', err);
+            });
+    });
+}
+
 // 直接使用 discountData.gbo 中的 {渠道: {price, paths}} 数据
 function renderGbo(gbo) {
     const container = document.getElementById('gboChannelList');
@@ -149,7 +170,7 @@ function renderGbo(gbo) {
 
     // 校验数据是否存在
     if (!gbo || typeof gbo !== 'object' || Object.keys(gbo).length === 0) {
-        container.innerHTML = '<p>暂无微信报价</p>';
+        container.innerHTML = '<p>暂无GBO报价</p>';
         return;
     }
 
@@ -194,34 +215,14 @@ function showError(message) {
 function showNotification(message, isError = false) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
-    notification.className = 'notification'; // 重置样式
+    notification.className = 'notification';
     if (isError) notification.classList.add('error');
     notification.classList.add('show');
     setTimeout(() => notification.classList.remove('show'), 3000);
 }
 
-// 初始化复制按钮功能
-function initCopyButton(templateData) {
-    const copyBtn = document.getElementById('copyRatesBtn');
-    if (!copyBtn) return;
 
-    copyBtn.addEventListener('click', () => {
-        if (!templateData) {
-            showNotification('无可用费率数据（xd.template不存在）', true);
-            return;
-        }
-
-        // 复制xd.template内容到剪贴板
-        navigator.clipboard.writeText(templateData)
-            .then(() => showNotification('费率已复制到剪贴板'))
-            .catch(err => {
-                showNotification('复制失败，请手动复制', true);
-                console.error('复制失败:', err);
-            });
-    });
-}
-
-// 修改主数据加载逻辑，添加复制按钮初始化
+// 主数据加载逻辑
 async function loadData() {
     try {
         const params = new URLSearchParams(window.location.search);
