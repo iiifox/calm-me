@@ -30,7 +30,7 @@ function parseXd(lines, profit) {
     for (const line of lines) {
         // 时间匹配
         const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
-        if (line.includes('号')) currentTimeKey = '00:00';
+        if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
         else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
 
         if (currentTimeKey && !(currentTimeKey in xd)) {
@@ -82,6 +82,47 @@ function parseXd(lines, profit) {
 // ========== 解析星悦折扣 ==========
 function parseXy(lines, profit) {
     const xy = {};
+    const timeOrder = [];
+    let currentTimeKey = '';
+
+    const channelsFirstIndex = new Map();
+
+    for (const line of lines) {
+        // 时间匹配
+        const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
+        if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
+        else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
+
+        if (currentTimeKey && !(currentTimeKey in xd)) {
+            xy[currentTimeKey] = {};
+            timeOrder.push(currentTimeKey);
+        }
+
+        // 渠道行匹配
+        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)/);
+        if (m && currentTimeKey) {
+            const channel = m[1];
+            xy[currentTimeKey][channel] = formatAndRound(m[2], profit);
+
+            if (!channelsFirstIndex.has(channel)) {
+                channelsFirstIndex.set(channel, timeOrder.indexOf(currentTimeKey));
+            }
+        }
+    }
+
+    // 补全缺失值（按时间填充）
+    const channelsOrder = Array.from(channelsFirstIndex.keys());
+    timeOrder.forEach((time, timeIndex) => {
+        const newObj = {};
+        channelsOrder.forEach(channel => {
+            if (timeIndex < channelsFirstIndex.get(channel)) {
+                newObj[channel] = 1;
+            } else {
+                newObj[channel] = xy[time][channel] ?? xy[timeOrder[timeIndex - 1]][channel];
+            }
+        });
+        xy[time] = newObj;
+    });
     
     return xy;
 }
@@ -131,7 +172,7 @@ export async function onRequest({request}) {
     });
     const lines = (await resp.text()).split('\n').map(s => s.trim()).filter(Boolean);
 
-    let yesterdayPage = '', date = '', xdLines = [], xyLines = [], gboLines = [];
+    let yesterdayPage = '', date = '', xdLines = [], gboLines = [], xyLines = [];
     let currentSystem = "xd";
 
     for (const line of lines) {
@@ -149,7 +190,15 @@ export async function onRequest({request}) {
                 continue;
             }
             xdLines.push(line);
-        } else gboLines.push(line);
+        } else if (currentSystem === "gbo") {
+            if (line.includes("星悦")) {
+                currentSystem = "xy";
+                continue;
+            }
+            gboLines.push(line);
+        } else {
+            xyLines.push(line);
+        }
     }
 
     const xd = parseXd(xdLines, profit);
