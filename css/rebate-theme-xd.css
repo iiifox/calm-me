@@ -1,0 +1,8 @@
+/* 小刀额外微调 */
+#xd-rebate-system .channel-label {
+    color: #3c8dbc;
+}
+
+#xd-rebate-system .channel-item {
+    border-left: 4px solid #3c8dbc;
+}
