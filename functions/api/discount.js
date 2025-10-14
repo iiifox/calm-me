@@ -35,6 +35,7 @@ function parseXd(lines, profit) {
         if (currentTimeKey && !(currentTimeKey in xd)) {
             xd[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
+            continue;
         }
 
         // 渠道行匹配
