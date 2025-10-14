@@ -1,7 +1,8 @@
 // ========== 小刀 ==========
 function renderXdCards(timeBlocks) {
-    const container = document.getElementById('xd-rebate-system');
-    const tabsContainer = document.querySelector('.rebate-tabs');
+    const panel = document.getElementById('xd-panel');
+    const tabsContainer = panel.querySelector('.rebate-tabs');
+    const container = panel.querySelector('.rebate-slides');
 
     // 清空容器
     container.innerHTML = '';
@@ -111,16 +112,16 @@ function renderXdCards(timeBlocks) {
             // 绑定点击样式
             tab.addEventListener('click', () => {
                 slide.scrollIntoView({behavior: 'smooth'});
-                document.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
+                tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
             });
             tabsContainer.appendChild(tab);
         });
 
-        // 监听滚动事件，更新活跃标签
+        // 监听滚动时间，更新活跃标签
         container.addEventListener('scroll', () => {
-            const slides = document.querySelectorAll('.rebate-slide');
-            const tabs = document.querySelectorAll('.rebate-tab');
+            const tabs = tabsContainer.querySelectorAll('.rebate-tab');
+            const slides = container.querySelectorAll('.rebate-slide');
             slides.forEach((slide, index) => {
                 const rect = slide.getBoundingClientRect();
                 if (rect.left >= 0 && rect.right <= window.innerWidth) {
@@ -130,15 +131,15 @@ function renderXdCards(timeBlocks) {
             });
         });
 
-        // 默认滚动到最后一个时间块
+        // 默认滚动到最后一哥时间块
         setTimeout(() => {
-            const lastSlide = document.querySelector('.rebate-slide:last-child');
+            const lastSlide = container.querySelector('.rebate-slide:last-child');
             if (lastSlide) {
                 lastSlide.scrollIntoView({behavior: 'smooth'});
             }
         }, 100);
     } else {
-        // 如果只有一个时间块，直接隐藏 tab 容器
+        // 如果只有一哥时间块，直接隐藏tab容器
         tabsContainer.style.display = 'none';
     }
 }
@@ -167,8 +168,10 @@ function initCopyButton(templateData) {
 
 // ========== 星悦 ==========
 function renderXyCards(timeBlocks) {
-    const container = document.getElementById('xy-rebate-system');
-    const tabsContainer = document.querySelector('.rebate-tabs');
+    const panel = document.getElementById('xy-panel');
+    const tabsContainer = panel.querySelector('.rebate-tabs');
+    const container = panel.querySelector('.rebate-slides');
+
 
     // 清空容器
     container.innerHTML = '';
@@ -189,8 +192,8 @@ function renderXyCards(timeBlocks) {
 
     tooltipMap = {
         "微信小额": "额度50",
-        "微信双端" : "额度100-1000",
-        "微信固额" : "额度200"
+        "微信双端": "额度100-1000",
+        "微信固额": "额度200"
     }
 
     // 存储每个渠道上一次的折扣值
@@ -278,16 +281,16 @@ function renderXyCards(timeBlocks) {
             // 绑定点击样式
             tab.addEventListener('click', () => {
                 slide.scrollIntoView({behavior: 'smooth'});
-                document.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
+                tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
             });
             tabsContainer.appendChild(tab);
         });
 
-        // 监听滚动事件，更新活跃标签
+        // 监听滚动时间，更新活跃标签
         container.addEventListener('scroll', () => {
-            const slides = document.querySelectorAll('.rebate-slide');
-            const tabs = document.querySelectorAll('.rebate-tab');
+            const tabs = tabsContainer.querySelectorAll('.rebate-tab');
+            const slides = container.querySelectorAll('.rebate-slide');
             slides.forEach((slide, index) => {
                 const rect = slide.getBoundingClientRect();
                 if (rect.left >= 0 && rect.right <= window.innerWidth) {
@@ -297,15 +300,15 @@ function renderXyCards(timeBlocks) {
             });
         });
 
-        // 默认滚动到最后一个时间块
+        // 默认滚动到最后一哥时间块
         setTimeout(() => {
-            const lastSlide = document.querySelector('.rebate-slide:last-child');
+            const lastSlide = container.querySelector('.rebate-slide:last-child');
             if (lastSlide) {
                 lastSlide.scrollIntoView({behavior: 'smooth'});
             }
         }, 100);
     } else {
-        // 如果只有一个时间块，直接隐藏 tab 容器
+        // 如果只有一哥时间块，直接隐藏tab容器
         tabsContainer.style.display = 'none';
     }
 }
@@ -326,7 +329,7 @@ function renderGbo(gbo) {
 
     // 渲染每个渠道项
     channels.forEach(channel => {
-        const { price, paths } = gbo[channel];
+        const {price, paths} = gbo[channel];
         const channelItem = document.createElement('div');
         channelItem.className = 'channel-item';
         // 悬停提示使用 paths 数组（换行分隔）
@@ -372,17 +375,170 @@ function showNotification(message, isError = false) {
 // 主数据加载逻辑
 async function loadData() {
     try {
-        const params = new URLSearchParams(window.location.search);
-        const profit = params.get('profit');
-        let discountUrl = '/api/discount';
-        if (profit) {
-            discountUrl += `?profit=${encodeURIComponent(profit)}`;
-        }
-        const discountResp = await fetch(discountUrl);
-        if (!discountResp.ok) throw new Error('折扣数据接口请求失败');
-        const discountData = await discountResp.json();
-        
-        if (discountData.error) throw new Error(discountData.error);
+        const profit = 0;
+        const discountData = {
+            "yesterdayPage": "https://3577fc03.iiifox.me/",
+            "date": "2025-10-14",
+            "xd": {
+                "00:00": {
+                    "渠道A": 0.895,
+                    "渠道B": 0.9,
+                    "渠道C": 0.905,
+                    "渠道D": 0.915,
+                    "渠道E": 0.92,
+                    "渠道F": 0.925,
+                    "渠道TA": 0.96,
+                    "渠道TB": 0.965,
+                    "渠道VA": 0.89,
+                    "VB微信10起": 0.83,
+                    "VC微信50": 0.855,
+                    "VD100": 0.87,
+                    "VE200": 0.9
+                },
+                "11:10": {
+                    "渠道A": 0.895,
+                    "渠道B": 0.9,
+                    "渠道C": 0.905,
+                    "渠道D": 0.915,
+                    "渠道E": 0.92,
+                    "渠道F": 0.93,
+                    "渠道TA": 0.96,
+                    "渠道TB": 0.97,
+                    "渠道VA": 0.89,
+                    "VB微信10起": 0.83,
+                    "VC微信50": 0.855,
+                    "VD100": 0.87,
+                    "VE200": 0.9
+                },
+                "template": "渠道A00:00/0.895\n渠道A11:10/0.895\n渠道B00:00/0.9\n渠道B11:10/0.9\n渠道C00:00/0.905\n渠道C11:10/0.905\n渠道D00:00/0.915\n渠道D11:10/0.915\n渠道E00:00/0.92\n渠道E11:10/0.92\n渠道F00:00/0.925\n渠道F11:10/0.93\n渠道TA00:00/0.96\n渠道TA11:10/0.96\n渠道TB00:00/0.965\n渠道TB11:10/0.97\n渠道VA00:00/0.89\n渠道VA11:10/0.89\nVB微信10起00:00/0.83\nVB微信10起11:10/0.83\nVC微信5000:00/0.855\nVC微信5011:10/0.855\nVD10000:00/0.87\nVD10011:10/0.87\nVE20000:00/0.9\nVE20011:10/0.9"
+            },
+            "xy": {
+                "00:00": {
+                    "微信小额": 0.86,
+                    "微信双端": 0.895,
+                    "微信固额": 0.905
+                }
+            },
+            "gbo": {
+                "1起": {
+                    "price": 0.76,
+                    "paths": [
+                        "腾讯综合(1起)",
+                        "腾讯端游无限充(1起)",
+                        "腾讯QB无限充(1起)"
+                    ]
+                },
+                "10起": {
+                    "price": 0.805,
+                    "paths": [
+                        "腾讯综合(10起)",
+                        "腾讯端游(10起)",
+                        "王者点卷（10起）",
+                        "无畏契约无线充(10)",
+                        "腾讯综合无限充(10起)",
+                        "腾讯端游无限充(10起)"
+                    ]
+                },
+                "10可限": {
+                    "price": 0.82,
+                    "paths": [
+                        "腾讯综合(10起可限)",
+                        "腾讯端游(10起可限)"
+                    ]
+                },
+                "50起": {
+                    "price": 0.82,
+                    "paths": [
+                        "腾讯综合(50起)",
+                        "腾讯端游(50起）",
+                        "心悦DNF(50起)",
+                        "王者点卷（50起）",
+                        "lolm点卷红包（50）"
+                    ]
+                },
+                "100起": {
+                    "price": 0.845,
+                    "paths": [
+                        "腾讯综合(100起)",
+                        "腾讯端游(100起）",
+                        "心悦DNF(100起)",
+                        "王者点卷（100起）",
+                        "lolm点卷红包（100）"
+                    ]
+                },
+                "100极速": {
+                    "price": 0.855,
+                    "paths": [
+                        "腾讯综合(极速100起)",
+                        "腾讯端游(极速100起)",
+                        "王者点卷（极速100起）",
+                        "心悦DNF（极速100起）",
+                        "lolm点卷红包(极速100)"
+                    ]
+                },
+                "单笔200": {
+                    "price": 0.855,
+                    "paths": [
+                        "单笔200（赠送点卷）"
+                    ]
+                },
+                "200极速": {
+                    "price": 0.86,
+                    "paths": [
+                        "单笔200(极速赠送点卷)"
+                    ]
+                },
+                "可限": {
+                    "price": 0.855,
+                    "paths": [
+                        "腾讯综合(可限金额)",
+                        "腾讯端游(可限金额）",
+                        "心悦DNF(可限金额)",
+                        "lolm点卷红包（200）"
+                    ]
+                },
+                "可限极速": {
+                    "price": 0.86,
+                    "paths": [
+                        "腾讯综合(极速可限金额)",
+                        "腾讯端游(极速可限金额)",
+                        "心悦dnf（极速可限额）",
+                        "lolm点卷红包(极速200)"
+                    ]
+                },
+                "qb10起": {
+                    "price": 0.875,
+                    "paths": [
+                        "腾讯QB(10起)"
+                    ]
+                },
+                "qb10可限": {
+                    "price": 0.885,
+                    "paths": [
+                        "腾讯QB(10起可限)"
+                    ]
+                },
+                "qb50起": {
+                    "price": 0.895,
+                    "paths": [
+                        "腾讯Q币(50起)"
+                    ]
+                },
+                "qb100起": {
+                    "price": 0.92,
+                    "paths": [
+                        "腾讯Q币(100起)"
+                    ]
+                },
+                "心悦": {
+                    "price": 0.845,
+                    "paths": [
+                        "悦享卡/小黑卡(心悦100)",
+                        "悦享卡/小黑卡(心悦200)"
+                    ]
+                }
+            }
+        };
 
         // 设置昨日费率链接
         if (discountData.yesterdayPage) {
@@ -402,7 +558,7 @@ async function loadData() {
             .filter(([key]) => key !== 'template')
             .map(([time, channels]) => ({
                 time,
-                rates: Object.entries(channels).map(([channel, discount]) => ({ channel, discount }))
+                rates: Object.entries(channels).map(([channel, discount]) => ({channel, discount}))
             }));
         renderXdCards(xdTimeBlocks);
         // 初始化复制按钮（传入xd.template数据）
@@ -412,7 +568,7 @@ async function loadData() {
         const xyTimeBlocks = Object.entries(discountData.xy || {})
             .map(([time, channels]) => ({
                 time,
-                rates: Object.entries(channels).map(([channel, discount]) => ({ channel, discount }))
+                rates: Object.entries(channels).map(([channel, discount]) => ({channel, discount}))
             }));
         renderXyCards(xyTimeBlocks);
 
