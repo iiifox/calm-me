@@ -40,7 +40,7 @@ function renderXdCards(timeBlocks) {
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('h2');
-        timeTitle.textContent = `旧返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
+        timeTitle.textContent = `小刀返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
@@ -139,7 +139,7 @@ function renderXdCards(timeBlocks) {
             }
         }, 100);
     } else {
-        // 如果只有一哥时间块，直接隐藏tab容器
+        // 如果只有一个时间块，直接隐藏tab容器
         tabsContainer.style.display = 'none';
     }
 }
@@ -209,7 +209,7 @@ function renderXyCards(timeBlocks) {
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('h2');
-        timeTitle.textContent = `星悦折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
+        timeTitle.textContent = `星悦返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
@@ -308,7 +308,7 @@ function renderXyCards(timeBlocks) {
             }
         }, 100);
     } else {
-        // 如果只有一哥时间块，直接隐藏tab容器
+        // 如果只有一个时间块，直接隐藏tab容器
         tabsContainer.style.display = 'none';
     }
 }
