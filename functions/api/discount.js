@@ -85,13 +85,13 @@ function parseXy(lines, profit) {
     const timeOrder = [];
     let currentTimeKey = '';
 
-    const specialMap = {直拉: "钱包直拉", "小额": "微信小额"};
+    const specialMap = {直拉: "钱包直拉", "单端": "微信单端", "小额": "微信小额", "扫码": "微信扫码"};
     const channelsFirstIndex = new Map();
 
     for (const line of lines) {
         // 时间匹配
         const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
-        if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
+        if (line.includes('星悦')) currentTimeKey = '00:00';
         else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
         if (currentTimeKey && !(currentTimeKey in xy)) {
             xy[currentTimeKey] = {};
@@ -114,18 +114,18 @@ function parseXy(lines, profit) {
     }
 
     // 补全缺失值（按时间填充）
-    // const channelsOrder = Array.from(channelsFirstIndex.keys());
-    // timeOrder.forEach((time, timeIndex) => {
-    //     const newObj = {};
-    //     channelsOrder.forEach(channel => {
-    //         if (timeIndex < channelsFirstIndex.get(channel)) {
-    //             newObj[channel] = 1;
-    //         } else {
-    //             newObj[channel] = xy[time][channel] ?? xy[timeOrder[timeIndex - 1]][channel];
-    //         }
-    //     });
-    //     xy[time] = newObj;
-    // });
+    const channelsOrder = Array.from(channelsFirstIndex.keys());
+    timeOrder.forEach((time, timeIndex) => {
+        const newObj = {};
+        channelsOrder.forEach(channel => {
+            if (timeIndex < channelsFirstIndex.get(channel)) {
+                newObj[channel] = 1;
+            } else {
+                newObj[channel] = xy[time][channel] ?? xy[timeOrder[timeIndex - 1]][channel];
+            }
+        });
+        xy[time] = newObj;
+    });
     
     return xy;
 }
