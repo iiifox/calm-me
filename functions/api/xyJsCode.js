@@ -24,7 +24,7 @@ export async function onRequest({request}) {
             "微信扫码": "qr"
         };
 
-        // 获取时间段（例如 ["00:00", "10:00"]）
+        // 获取时间段
         const timeKeys = Object.keys(xy).filter(k => k !== "template").sort();
 
         // 生成时间分段
@@ -33,9 +33,15 @@ export async function onRequest({request}) {
             const start = timeKeys[i];
             const end = i < timeKeys.length - 1 ? timeKeys[i + 1] : null;
             const startFull = `${start}:00`;
-            const endFull = end ? `${end.split(":")[0].padStart(2, "0")}:${(parseInt(end.split(":")[1]) - 1)
-                .toString()
-                .padStart(2, "0")}:59` : "23:59:59";
+            const endFull = end
+                ? (() => {
+                    const [eh, em] = end.split(":").map(Number);
+                    // 若下一段起始分钟是 00，则回到上一小时 59 分
+                    const hour = em === 0 ? eh - 1 : eh;
+                    const minute = em === 0 ? 59 : em - 1;
+                    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:59`;
+                })()
+                : "23:59:59";
             timeRanges.push({start_time: startFull, end_time: endFull, rates: xy[start]});
         }
 
