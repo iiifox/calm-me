@@ -1,7 +1,15 @@
 export async function onRequest({request}) {
     try {
+        const url = new URL(request.url);
+        const profit = url.searchParams.get("profit")
+
+        let discountUrl = '/api/discount';
+        if (profit) {
+            discountUrl += `?profit=${encodeURIComponent(profit)}`;
+        }
+
         // 从同域获取折扣数据
-        const res = await fetch(new URL("/api/discount", request.url));
+        const res = await fetch(new URL(discountUrl, request.url));
         const data = await res.json();
 
         const date = data.date;
