@@ -29,9 +29,8 @@ function parseXd(lines, profit) {
 
     for (const line of lines) {
         // 时间匹配
-        const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
         if (line.includes('过点') || line.includes('号')) currentTimeKey = '00:00';
-        else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
+        else if (line.match(/^(\d{2}):(\d{2})$/)) currentTimeKey = line;
         if (currentTimeKey && !(currentTimeKey in xd)) {
             xd[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
@@ -90,9 +89,8 @@ function parseXy(lines, profit) {
 
     for (const line of lines) {
         // 时间匹配
-        const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
         if (line.includes('星悦')) currentTimeKey = '00:00';
-        else if (t) currentTimeKey = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
+        else if (line.match(/^(\d{2}):(\d{2})$/)) currentTimeKey = line;
         if (currentTimeKey && !(currentTimeKey in xy)) {
             xy[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
@@ -176,8 +174,8 @@ export async function onRequest({request}) {
     const lines = (await resp.text()).split('\n').map(s => s.trim()).filter(Boolean);
 
     let yesterdayPage = '', date = '', xdLines = [], gboLines = [], xyLines = [];
+    
     let currentSystem = "xd";
-
     for (const line of lines) {
         if (/^https?:\/\//i.test(line)) {
             yesterdayPage = line;
@@ -200,8 +198,23 @@ export async function onRequest({request}) {
                 continue;
             }
             gboLines.push(line);
-        } else {
+        } else if (currentSystem === "xy" || currentSystem === "xy-gai") {
+            // 时间匹配
+            const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
+            if (t) {
+                line = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
+                currentSystem = "xd-gai";
+                xdLines.push(line)
+                xyLines.push(line);
+                continue;
+            }
             xyLines.push(line);
+        } else if (currentSystem === "xd-gai") {
+            if (line.includes("星悦")) {
+                currentSystem = "xy-gai";
+                continue;
+            }
+            xdLines.push(line);
         }
     }
 
