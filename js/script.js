@@ -145,7 +145,7 @@ function renderXdCards(timeBlocks) {
 }
 
 // 初始化复制按钮功能
-function initCopyButton(templateData) {
+function initCopyRateButton(templateData) {
     const copyBtn = document.getElementById('copyRatesBtn');
     if (!copyBtn) return;
 
@@ -243,7 +243,7 @@ function renderXyCards(timeBlocks) {
 
                 const channelItem = document.createElement('div');
                 channelItem.className = 'channel-item';
-                
+
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'channel-name';
                 nameSpan.textContent = channelName;
@@ -311,6 +311,28 @@ function renderXyCards(timeBlocks) {
         // 如果只有一个时间块，直接隐藏tab容器
         tabsContainer.style.display = 'none';
     }
+}
+
+async function initCopyJsButton() {
+    const copyBtn = document.getElementById('copyJsBtn');
+    if (!copyBtn) return;
+
+    const text = await fetch("/api/xyJsCode").then(r => r.text());
+
+    copyBtn.addEventListener('click', () => {
+        if (!text) {
+            showNotification('无可用费率数据', true);
+            return;
+        }
+
+        // 复制xd.template内容到剪贴板
+        navigator.clipboard.writeText(text)
+            .then(() => showNotification('费率脚本代码已复制到剪贴板'))
+            .catch(err => {
+                showNotification('复制失败，请手动复制', true);
+                console.error('复制失败:', err);
+            });
+    });
 }
 
 
@@ -384,7 +406,7 @@ async function loadData() {
         const discountResp = await fetch(discountUrl);
         if (!discountResp.ok) throw new Error('折扣数据接口请求失败');
         const discountData = await discountResp.json();
-        
+
         if (discountData.error) throw new Error(discountData.error);
 
         // 设置昨日费率链接
@@ -408,8 +430,8 @@ async function loadData() {
                 rates: Object.entries(channels).map(([channel, discount]) => ({channel, discount}))
             }));
         renderXdCards(xdTimeBlocks);
-        // 初始化复制按钮（传入xd.template数据）
-        initCopyButton(discountData.xd?.template);
+        // 初始化复制小刀费率按钮
+        initCopyRateButton(discountData.xd?.template);
 
         // 渲染星悦数据
         const xyTimeBlocks = Object.entries(discountData.xy || {})
@@ -418,6 +440,8 @@ async function loadData() {
                 rates: Object.entries(channels).map(([channel, discount]) => ({channel, discount}))
             }));
         renderXyCards(xyTimeBlocks);
+        // 初始化复制星悦费率脚本按钮
+        await initCopyJsButton();
 
         // 渲染gbo数据
         renderGbo(discountData.gbo || {});
