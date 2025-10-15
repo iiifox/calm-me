@@ -202,10 +202,10 @@ export async function onRequest({request}) {
             // 时间匹配
             const t = line.match(/(\d{1,2})(?::|：)?(\d{2})?点?开始/);
             if (t) {
-                line = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
+                const temp_line = `${String(t[1]).padStart(2, '0')}:${t[2] || '00'}`;
                 currentSystem = "xd-gai";
-                xdLines.push(line)
-                xyLines.push(line);
+                xdLines.push(temp_line)
+                xyLines.push(temp_line);
                 continue;
             }
             xyLines.push(line);
