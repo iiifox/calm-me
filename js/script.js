@@ -157,7 +157,7 @@ function initCopyRateButton(templateData) {
 
         // 复制xd.template内容到剪贴板
         navigator.clipboard.writeText(templateData)
-            .then(() => showNotification('费率已复制到剪贴板'))
+            .then(() => showNotification('费率已复制到剪贴板', false, 'xd-notification'))
             .catch(err => {
                 showNotification('复制失败，请手动复制', true);
                 console.error('复制失败:', err);
@@ -327,7 +327,7 @@ async function initCopyJsButton() {
 
         // 复制xd.template内容到剪贴板
         navigator.clipboard.writeText(text)
-            .then(() => showNotification('费率脚本代码已复制到剪贴板'))
+            .then(() => showNotification('费率脚本代码已复制到剪贴板', false, 'xy-notification'))
             .catch(err => {
                 showNotification('复制失败，请手动复制', true);
                 console.error('复制失败:', err);
@@ -384,8 +384,9 @@ function showError(message) {
 }
 
 // 显示通知提示
-function showNotification(message, isError = false) {
-    const notification = document.getElementById('notification');
+function showNotification(message, isError = false, containerId = 'xd-notification') {
+    const notification = document.getElementById(containerId);
+    if (!notification) return;
     notification.textContent = message;
     notification.className = 'notification';
     if (isError) notification.classList.add('error');
