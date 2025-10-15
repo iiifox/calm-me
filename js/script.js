@@ -184,17 +184,19 @@ function renderXyCards(timeBlocks) {
 
     // 渠道太多，按组分好
     const groups = {
+        qianbao: {
+            label: '钱包',
+            channels: ["普通", "加速", "超速", "极速", "秒拉", "直拉"]
+        },
+        teshu: {
+            label: '特殊',
+            channels: ["怪额", "超怪"]
+        },
         weixin: {
             label: '微信',
             channels: ["微信小额", "微信双端", "微信固额"]
         }
     };
-
-    tooltipMap = {
-        "微信小额": "额度50",
-        "微信双端": "额度100-1000",
-        "微信固额": "额度200"
-    }
 
     // 存储每个渠道上一次的折扣值
     const lastDiscountByChannel = {};
@@ -241,9 +243,7 @@ function renderXyCards(timeBlocks) {
 
                 const channelItem = document.createElement('div');
                 channelItem.className = 'channel-item';
-                // 悬停提示使用
-                channelItem.setAttribute('data-tooltip', tooltipMap[channelName]);
-
+                
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'channel-name';
                 nameSpan.textContent = channelName;
