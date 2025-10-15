@@ -194,7 +194,7 @@ function renderXyCards(timeBlocks) {
         },
         weixin: {
             label: '微信',
-            channels: ["微信小额", "微信双端", "微信固额"]
+            channels: ["微信单端", "微信双端", "微信固额", "微信小额", "微信扫码"]
         }
     };
 
