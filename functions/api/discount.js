@@ -85,6 +85,7 @@ function parseXy(lines, profit) {
     const timeOrder = [];
     let currentTimeKey = '';
 
+    const specialMap = {直拉: "钱包直拉", "小额": "微信小额"};
     const channelsFirstIndex = new Map();
 
     for (const line of lines) {
@@ -101,7 +102,9 @@ function parseXy(lines, profit) {
         // 渠道行匹配
         const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)/);
         if (m && currentTimeKey) {
-            const channel = m[1];
+            let channel = m[1];
+            const matchedKey = Object.keys(specialMap).find(k => channel.includes(k));
+            if (matchedKey) channel = specialMap[matchedKey];
             xy[currentTimeKey][channel] = formatAndRound(m[2], profit);
 
             if (!channelsFirstIndex.has(channel)) {
