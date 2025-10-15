@@ -1,0 +1,79 @@
+export async function onRequest({request}) {
+    try {
+        // 从同域获取折扣数据
+        const res = await fetch(new URL("/api/discount", request.url));
+        const data = await res.json();
+
+        const date = data.date;
+        const xy = data.xy;
+
+        // speed_mode 映射表
+        const modeMap = {
+            "普通": "qq",
+            "加速": "fast",
+            "超速": "sup",
+            "极速": "very",
+            "秒拉": "ml",
+            "钱包直拉": "zl",
+            "怪额": "odd",
+            "超怪": "cg",
+            "微信小额": "xe",
+            "微信双端": "bz",
+            "微信固额": "ge",
+            "微信扫码": "qr"
+        };
+
+        // 获取时间段（例如 ["00:00", "10:00"]）
+        const timeKeys = Object.keys(xy).filter(k => k !== "template").sort();
+
+        // 生成时间分段
+        const timeRanges = [];
+        for (let i = 0; i < timeKeys.length; i++) {
+            const start = timeKeys[i];
+            const end = i < timeKeys.length - 1 ? timeKeys[i + 1] : null;
+            const startFull = `${start}:00`;
+            const endFull = end ? `${end.split(":")[0].padStart(2, "0")}:${(parseInt(end.split(":")[1]) - 1)
+                .toString()
+                .padStart(2, "0")}:59` : "23:59:59";
+            timeRanges.push({start_time: startFull, end_time: endFull, rates: xy[start]});
+        }
+
+        // 构造 rateConfigs
+        const rateConfigs = Object.entries(modeMap)
+            .filter(([name]) => timeRanges.some(t => t.rates && t.rates[name] != null))
+            .map(([name, speed_mode]) => ({
+                speed_mode,
+                time_rates: timeRanges
+                    .filter(t => t.rates && t.rates[name] != null)
+                    .map(t => ({
+                        start_time: t.start_time,
+                        end_time: t.end_time,
+                        rate: t.rates[name]
+                    }))
+            }));
+
+        // 生成 JavaScript 文本
+        const jsCode = `
+fetch("https://mgr.k7m9x2n.com/api/v1/system/qr-dealers/reckon/configs", {
+    method: "POST",
+    body: JSON.stringify({
+        id: null,
+        date: "${date}",
+        rateConfigs: ${JSON.stringify(rateConfigs, null, 4)}
+    })
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(err => console.error("请求失败:", err));
+`.trim();
+
+        // 返回纯文本
+        return new Response(jsCode, {
+            headers: {
+                "Content-Type": "text/plain; charset=utf-8"
+            }
+        });
+    } catch (err) {
+        return new Response("生成失败: " + err.message, {status: 500});
+    }
+}
