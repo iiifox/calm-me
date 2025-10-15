@@ -313,11 +313,16 @@ function renderXyCards(timeBlocks) {
     }
 }
 
-async function initCopyJsButton() {
+async function initCopyJsButton(profit) {
     const copyBtn = document.getElementById('copyJsBtn');
     if (!copyBtn) return;
 
-    const text = await fetch("/api/xyJsCode").then(r => r.text());
+    // 拼接带 profit 的接口
+    let apiUrl = "/api/xyJsCode";
+    if (profit) {
+        apiUrl += `?profit=${encodeURIComponent(profit)}`;
+    }
+    const text = await fetch(apiUrl).then(r => r.text());
 
     copyBtn.addEventListener('click', () => {
         if (!text) {
@@ -442,7 +447,7 @@ async function loadData() {
             }));
         renderXyCards(xyTimeBlocks);
         // 初始化复制星悦费率脚本按钮
-        await initCopyJsButton();
+        await initCopyJsButton(profit);
 
         // 渲染gbo数据
         renderGbo(discountData.gbo || {});
