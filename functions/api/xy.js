@@ -1,11 +1,5 @@
-
-
-
 fetch("https://mgr.k7m9x2n.com/api/v1/system/qr-dealers/reckon/configs", {
     method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
     body: JSON.stringify({
         id: null,
         date: "2025-10-14",
