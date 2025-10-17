@@ -208,10 +208,20 @@ export async function onRequest({request}) {
                 xyLines.push(temp_line);
                 continue;
             }
+            // 一行带改价判断，直接存小刀价格
+            if (t.includes("，")) {
+                const afterComma = line.replace(/^[^，]*，/, '').trim();
+                const m = afterComma.match(/^(.*?)\s*(?:，\s*改(?:价)?为\s*)?(\d+(?:\.\d+)?)(?:，|$)/);
+                if (m) xdLines.push(m[1] + m[2]);
+            }
             xyLines.push(line);
         } else if (currentSystem === "xd-gai") {
             if (line.includes("星悦")) {
                 currentSystem = "xy-gai";
+                // 一行带改价判断，直接存星悦价格
+                const m = line.replace(/^.*?星悦/, '').trim()
+                    .match(/^(.*?)\s*(?:，\s*改(?:价)?为\s*)?(\d+(?:\.\d+)?)(?:，|$)/);
+                if (m) xyLines.push(m[1] + m[2]);
                 continue;
             }
             xdLines.push(line);
