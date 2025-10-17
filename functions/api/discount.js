@@ -209,7 +209,7 @@ export async function onRequest({request}) {
                 // 一行带改价判断，直接存小刀价格
                 if (line.includes("，")) {
                     const m = line.replace(/^[^，]*，/, '').trim()
-                        .match(/^(.*?)(?:\s*，?\s*改(?:价)?为\s*)(\d+(?:\.\d+)?)(?:，|$)/);
+                        .match(/^(.*?)(?=\s*(?:，\s*)?(?:改(?:价)?为\s*)?\d)(?:\s*，?\s*(?:改(?:价)?为\s*)?)?(\d+(?:\.\d+)?)(?:，|$)/);
                     if (m) xdLines.push(m[1] + m[2]);
                 }
                 continue;
@@ -220,7 +220,7 @@ export async function onRequest({request}) {
                 currentSystem = "xy-gai";
                 // 一行带改价判断，直接存星悦价格
                 const m = line.replace(/^.*?星悦/, '').trim()
-                    .match(/^(.*?)\s*(?:，\s*改(?:价)?为\s*)?(\d+(?:\.\d+)?)(?:，|$)/);
+                    .match(/^(.*?)(?=\s*(?:，\s*)?(?:改(?:价)?为\s*)?\d)(?:\s*，?\s*(?:改(?:价)?为\s*)?)?(\d+(?:\.\d+)?)(?:，|$)/);
                 if (m) xyLines.push(m[1] + m[2]);
                 continue;
             }
