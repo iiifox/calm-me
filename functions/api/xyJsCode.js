@@ -54,9 +54,6 @@ export async function onRequest({request}) {
             "微信扫码": "qr"
         };
 
-        // 获取时间段
-        const timeKeys = Object.keys(xy).filter(k => k !== "template").sort();
-
         // 生成时间分段
         const timeRanges = [];
         for (let i = 0; i < timeKeys.length; i++) {
