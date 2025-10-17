@@ -207,9 +207,9 @@ export async function onRequest({request}) {
                 xdLines.push(temp_line)
                 xyLines.push(temp_line);
                 // 一行带改价判断，直接存小刀价格
-                if (t.includes("，")) {
-                    const afterComma = line.replace(/^[^，]*，/, '').trim();
-                    const m = afterComma.match(/^(.*?)\s*(?:，\s*改(?:价)?为\s*)?(\d+(?:\.\d+)?)(?:，|$)/);
+                if (line.includes("，")) {
+                    const m = line.replace(/^[^，]*，/, '').trim()
+                        .match(/^(.*?)(?:\s*，?\s*改(?:价)?为\s*)(\d+(?:\.\d+)?)(?:，|$)/);
                     if (m) xdLines.push(m[1] + m[2]);
                 }
                 continue;
