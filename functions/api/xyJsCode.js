@@ -11,9 +11,30 @@ export async function onRequest({request}) {
         // 从同域获取折扣数据
         const res = await fetch(new URL(discountUrl, request.url));
         const data = await res.json();
-
         const date = data.date;
-        const xy = data.xy;
+        
+        // === 只保留变化的字段 ===
+        const xyFull = data.xy;
+        const timeKeys = Object.keys(xyFull).sort();
+        const xy = {};
+        for (let i = 0; i < timeKeys.length; i++) {
+            const key = timeKeys[i];
+            const curr = xyFull[key];
+            if (i === 0) {
+                xy[key] = curr;
+            } else {
+                const prev = xyFull[timeKeys[i - 1]];
+                const diff = {};
+                for (const mode in curr) {
+                    if (curr[mode] !== prev[mode]) {
+                        diff[mode] = curr[mode];
+                    }
+                }
+                if (Object.keys(diff).length > 0) {
+                    xy[key] = diff;
+                }
+            }
+        }
 
         // speed_mode 映射表
         const modeMap = {
