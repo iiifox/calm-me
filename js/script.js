@@ -383,24 +383,20 @@ async function loadData() {
                     // 用全局 selector 获取两个 panel 的 slides 列表，再滚动到对应 index
                     const xdSlides = document.querySelectorAll('#xd-panel .rebate-slide');
                     const xySlides = document.querySelectorAll('#xy-panel .rebate-slide');
-        
                     // 尽量通过 index 找对应 slide（timeBlocks 顺序一致）
                     const xdSlide = xdSlides[index];
                     const xySlide = xySlides[index];
-        
                     if (xdSlide) {
                         // 在 .rebate-slides 容器内平滑滚动（比直接 scrollIntoView 更可靠）
                         const xdContainer = document.querySelector('#xd-panel .rebate-slides');
                         if (xdContainer) xdContainer.scrollTo({ left: xdSlide.offsetLeft, behavior: 'smooth' });
                         else xdSlide.scrollIntoView({ behavior: 'smooth' });
                     }
-        
                     if (xySlide) {
                         const xyContainer = document.querySelector('#xy-panel .rebate-slides');
                         if (xyContainer) xyContainer.scrollTo({ left: xySlide.offsetLeft, behavior: 'smooth' });
                         else xySlide.scrollIntoView({ behavior: 'smooth' });
                     }
-        
                     // 更新 tabs 高亮
                     tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
@@ -412,12 +408,10 @@ async function loadData() {
             // 滚动监听：任一 panel 滚动时，仅更新 tabs 的高亮（不必强制同步另一侧滚动，避免抖动）
             const xdContainer = document.querySelector('#xd-panel .rebate-slides');
             const xyContainer = document.querySelector('#xy-panel .rebate-slides');
-        
             function updateActiveTabByContainer(container) {
                 if (!container) return;
                 const slides = container.querySelectorAll('.rebate-slide');
                 if (!slides.length) return;
-        
                 // 取容器中心对应的 slide 作为当前
                 const center = container.scrollLeft + container.clientWidth / 2;
                 let bestIdx = 0;
@@ -427,7 +421,6 @@ async function loadData() {
                     const d = Math.abs(sCenter - center);
                     if (d < bestDist) { bestDist = d; bestIdx = i; }
                 });
-        
                 // 高亮 tab
                 const tabs = tabsContainer.querySelectorAll('.rebate-tab');
                 tabs.forEach(t => t.classList.remove('active'));
