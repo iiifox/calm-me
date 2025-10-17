@@ -38,7 +38,7 @@ function parseXd(lines, profit) {
         }
 
         // 渠道行匹配
-        const m = line.match(/^(.*?)\s*(?:改为)?(\d+(?:\.\d+)?)(?:，|$)/);
+        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)(?:，|$)/);
         if (m && currentTimeKey) {
             let channel = m[1].toUpperCase();
             const matchedKey = Object.keys(specialMap).find(k => channel.includes(k));
@@ -98,7 +98,7 @@ function parseXy(lines, profit) {
         }
 
         // 渠道行匹配
-        const m = line.match(/^(.*?)\s*(?:改为)?(\d+(?:\.\d+)?)/);
+        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)/);
         if (m && currentTimeKey) {
             let channel = m[1];
             const matchedKey = Object.keys(specialMap).find(k => channel.includes(k));
