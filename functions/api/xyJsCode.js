@@ -26,7 +26,7 @@ export async function onRequest({request}) {
             "怪额": "odd",
             "超怪": "cg",
             "微信单端": "wx",
-            "微信双端": "bz",
+            "微信通额": "bz",
             "微信固额": "ge",
             "微信小额": "xe",
             "微信扫码": "qr"
