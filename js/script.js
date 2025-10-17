@@ -1,7 +1,7 @@
 // ========== 小刀 ==========
 function renderXdCards(timeBlocks) {
     const panel = document.getElementById('xd-panel');
-    const tabsContainer = panel.querySelector('.rebate-tabs');
+    const tabsContainer = document.querySelector('.rebate-tabs');
     const container = panel.querySelector('.rebate-slides');
 
     // 清空容器
@@ -169,7 +169,7 @@ function initCopyRateButton(templateData) {
 // ========== 星悦 ==========
 function renderXyCards(timeBlocks) {
     const panel = document.getElementById('xy-panel');
-    const tabsContainer = panel.querySelector('.rebate-tabs');
+    const tabsContainer = document.querySelector('.rebate-tabs');
     const container = panel.querySelector('.rebate-slides');
 
 
