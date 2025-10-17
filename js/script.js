@@ -99,49 +99,49 @@ function renderXdCards(timeBlocks) {
         container.appendChild(slide);
     });
 
-    // === 如果有多个时间块，才渲染 tabs ===
-    if (timeBlocks.length > 1) {
-        tabsContainer.style.display = '';
+    // // === 如果有多个时间块，才渲染 tabs ===
+    // if (timeBlocks.length > 1) {
+    //     tabsContainer.style.display = '';
 
-        // 创建时间标签
-        timeBlocks.forEach((block, index) => {
-            const slide = container.querySelectorAll('.rebate-slide')[index];
-            const tab = document.createElement('div');
-            tab.className = `rebate-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
-            tab.textContent = block.time;
-            // 绑定点击样式
-            tab.addEventListener('click', () => {
-                slide.scrollIntoView({behavior: 'smooth'});
-                tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-            });
-            tabsContainer.appendChild(tab);
-        });
+    //     // 创建时间标签
+    //     timeBlocks.forEach((block, index) => {
+    //         const slide = container.querySelectorAll('.rebate-slide')[index];
+    //         const tab = document.createElement('div');
+    //         tab.className = `rebate-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
+    //         tab.textContent = block.time;
+    //         // 绑定点击样式
+    //         tab.addEventListener('click', () => {
+    //             slide.scrollIntoView({behavior: 'smooth'});
+    //             tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
+    //             tab.classList.add('active');
+    //         });
+    //         tabsContainer.appendChild(tab);
+    //     });
 
-        // 监听滚动时间，更新活跃标签
-        container.addEventListener('scroll', () => {
-            const tabs = tabsContainer.querySelectorAll('.rebate-tab');
-            const slides = container.querySelectorAll('.rebate-slide');
-            slides.forEach((slide, index) => {
-                const rect = slide.getBoundingClientRect();
-                if (rect.left >= 0 && rect.right <= window.innerWidth) {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabs[index].classList.add('active');
-                }
-            });
-        });
+    //     // 监听滚动时间，更新活跃标签
+    //     container.addEventListener('scroll', () => {
+    //         const tabs = tabsContainer.querySelectorAll('.rebate-tab');
+    //         const slides = container.querySelectorAll('.rebate-slide');
+    //         slides.forEach((slide, index) => {
+    //             const rect = slide.getBoundingClientRect();
+    //             if (rect.left >= 0 && rect.right <= window.innerWidth) {
+    //                 tabs.forEach(t => t.classList.remove('active'));
+    //                 tabs[index].classList.add('active');
+    //             }
+    //         });
+    //     });
 
-        // 默认滚动到最后一哥时间块
-        setTimeout(() => {
-            const lastSlide = container.querySelector('.rebate-slide:last-child');
-            if (lastSlide) {
-                lastSlide.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-    } else {
-        // 如果只有一个时间块，直接隐藏tab容器
-        tabsContainer.style.display = 'none';
-    }
+    //     // 默认滚动到最后一哥时间块
+    //     setTimeout(() => {
+    //         const lastSlide = container.querySelector('.rebate-slide:last-child');
+    //         if (lastSlide) {
+    //             lastSlide.scrollIntoView({behavior: 'smooth'});
+    //         }
+    //     }, 100);
+    // } else {
+    //     // 如果只有一个时间块，直接隐藏tab容器
+    //     tabsContainer.style.display = 'none';
+    // }
 }
 
 // 初始化复制按钮功能
@@ -268,49 +268,49 @@ function renderXyCards(timeBlocks) {
         container.appendChild(slide);
     });
 
-    // === 如果有多个时间块，才渲染 tabs ===
-    if (timeBlocks.length > 1) {
-        tabsContainer.style.display = '';
+    // // === 如果有多个时间块，才渲染 tabs ===
+    // if (timeBlocks.length > 1) {
+    //     tabsContainer.style.display = '';
 
-        // 创建时间标签
-        timeBlocks.forEach((block, index) => {
-            const slide = container.querySelectorAll('.rebate-slide')[index];
-            const tab = document.createElement('div');
-            tab.className = `rebate-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
-            tab.textContent = block.time;
-            // 绑定点击样式
-            tab.addEventListener('click', () => {
-                slide.scrollIntoView({behavior: 'smooth'});
-                tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-            });
-            tabsContainer.appendChild(tab);
-        });
+    //     // 创建时间标签
+    //     timeBlocks.forEach((block, index) => {
+    //         const slide = container.querySelectorAll('.rebate-slide')[index];
+    //         const tab = document.createElement('div');
+    //         tab.className = `rebate-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
+    //         tab.textContent = block.time;
+    //         // 绑定点击样式
+    //         tab.addEventListener('click', () => {
+    //             slide.scrollIntoView({behavior: 'smooth'});
+    //             tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
+    //             tab.classList.add('active');
+    //         });
+    //         tabsContainer.appendChild(tab);
+    //     });
 
-        // 监听滚动时间，更新活跃标签
-        container.addEventListener('scroll', () => {
-            const tabs = tabsContainer.querySelectorAll('.rebate-tab');
-            const slides = container.querySelectorAll('.rebate-slide');
-            slides.forEach((slide, index) => {
-                const rect = slide.getBoundingClientRect();
-                if (rect.left >= 0 && rect.right <= window.innerWidth) {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabs[index].classList.add('active');
-                }
-            });
-        });
+    //     // 监听滚动时间，更新活跃标签
+    //     container.addEventListener('scroll', () => {
+    //         const tabs = tabsContainer.querySelectorAll('.rebate-tab');
+    //         const slides = container.querySelectorAll('.rebate-slide');
+    //         slides.forEach((slide, index) => {
+    //             const rect = slide.getBoundingClientRect();
+    //             if (rect.left >= 0 && rect.right <= window.innerWidth) {
+    //                 tabs.forEach(t => t.classList.remove('active'));
+    //                 tabs[index].classList.add('active');
+    //             }
+    //         });
+    //     });
 
-        // 默认滚动到最后一哥时间块
-        setTimeout(() => {
-            const lastSlide = container.querySelector('.rebate-slide:last-child');
-            if (lastSlide) {
-                lastSlide.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-    } else {
-        // 如果只有一个时间块，直接隐藏tab容器
-        tabsContainer.style.display = 'none';
-    }
+    //     // 默认滚动到最后一哥时间块
+    //     setTimeout(() => {
+    //         const lastSlide = container.querySelector('.rebate-slide:last-child');
+    //         if (lastSlide) {
+    //             lastSlide.scrollIntoView({behavior: 'smooth'});
+    //         }
+    //     }, 100);
+    // } else {
+    //     // 如果只有一个时间块，直接隐藏tab容器
+    //     tabsContainer.style.display = 'none';
+    // }
 }
 
 async function initCopyJsButton(profit) {
@@ -448,6 +448,99 @@ async function loadData() {
         renderXyCards(xyTimeBlocks);
         // 初始化复制星悦费率脚本按钮
         await initCopyJsButton(profit);
+        
+        // === 共用 rebate-tabs（只渲染一次） ===
+        (function renderSharedTabsOnce(timeBlocks) {
+            const tabsContainer = document.querySelector('.rebate-tabs'); // 共用容器（你已有）
+            if (!tabsContainer) return;
+        
+            // 如果只有一个时间块，隐藏并返回
+            if (!timeBlocks || timeBlocks.length <= 1) {
+                tabsContainer.style.display = 'none';
+                return;
+            }
+            tabsContainer.style.display = '';
+            tabsContainer.innerHTML = ''; // 清空旧内容
+        
+            // 创建 tabs，注意不要用各自函数中的 container 变量（那是局部的）
+            timeBlocks.forEach((block, index) => {
+                const tab = document.createElement('div');
+                tab.className = `rebate-tab ${index === timeBlocks.length - 1 ? 'active' : ''}`;
+                tab.textContent = block.time;
+                tab.dataset.time = block.time;
+        
+                tab.addEventListener('click', () => {
+                    // 用全局 selector 获取两个 panel 的 slides 列表，再滚动到对应 index
+                    const xdSlides = document.querySelectorAll('#xd-panel .rebate-slide');
+                    const xySlides = document.querySelectorAll('#xy-panel .rebate-slide');
+        
+                    // 尽量通过 index 找对应 slide（你的 timeBlocks 顺序应一致）
+                    const xdSlide = xdSlides[index];
+                    const xySlide = xySlides[index];
+        
+                    if (xdSlide) {
+                        // 在 .rebate-slides 容器内平滑滚动（比直接 scrollIntoView 更可靠）
+                        const xdContainer = document.querySelector('#xd-panel .rebate-slides');
+                        if (xdContainer) xdContainer.scrollTo({ left: xdSlide.offsetLeft, behavior: 'smooth' });
+                        else xdSlide.scrollIntoView({ behavior: 'smooth' });
+                    }
+        
+                    if (xySlide) {
+                        const xyContainer = document.querySelector('#xy-panel .rebate-slides');
+                        if (xyContainer) xyContainer.scrollTo({ left: xySlide.offsetLeft, behavior: 'smooth' });
+                        else xySlide.scrollIntoView({ behavior: 'smooth' });
+                    }
+        
+                    // 更新 tabs 高亮
+                    tabsContainer.querySelectorAll('.rebate-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
+        
+                tabsContainer.appendChild(tab);
+            });
+        
+            // 滚动监听：任一 panel 滚动时，仅更新 tabs 的高亮（不必强制同步另一侧滚动，避免抖动）
+            const xdContainer = document.querySelector('#xd-panel .rebate-slides');
+            const xyContainer = document.querySelector('#xy-panel .rebate-slides');
+        
+            function updateActiveTabByContainer(container) {
+                if (!container) return;
+                const slides = container.querySelectorAll('.rebate-slide');
+                if (!slides.length) return;
+        
+                // 取容器中心对应的 slide 作为当前
+                const center = container.scrollLeft + container.clientWidth / 2;
+                let bestIdx = 0;
+                let bestDist = Infinity;
+                slides.forEach((s, i) => {
+                    const sCenter = s.offsetLeft + s.offsetWidth / 2;
+                    const d = Math.abs(sCenter - center);
+                    if (d < bestDist) { bestDist = d; bestIdx = i; }
+                });
+        
+                // 高亮 tab
+                const tabs = tabsContainer.querySelectorAll('.rebate-tab');
+                tabs.forEach(t => t.classList.remove('active'));
+                if (tabs[bestIdx]) tabs[bestIdx].classList.add('active');
+            }
+        
+            // 绑定（节流简单实现，避免频繁计算）
+            let tOut;
+            [xdContainer, xyContainer].forEach(c => {
+                if (!c) return;
+                c.addEventListener('scroll', () => {
+                    if (tOut) clearTimeout(tOut);
+                    tOut = setTimeout(() => updateActiveTabByContainer(c), 50);
+                });
+            });
+        
+            // 默认滚到最后一个时间块（和你原来的行为一致）
+            setTimeout(() => {
+                const lastIdx = timeBlocks.length - 1;
+                const lastTab = tabsContainer.querySelectorAll('.rebate-tab')[lastIdx];
+                if (lastTab) lastTab.click();
+            }, 120);
+        })(xdTimeBlocks /* 传入时间块数组，注意调用位置应在 xdTimeBlocks/xyTimeBlocks 已生成  */);
 
         // 渲染gbo数据
         renderGbo(discountData.gbo || {});
