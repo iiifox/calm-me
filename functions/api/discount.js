@@ -84,7 +84,7 @@ function parseXy(lines, profit) {
     const timeOrder = [];
     let currentTimeKey = '';
 
-    const specialMap = {直拉: "钱包直拉", "单端": "微信单端", "小额": "微信小额", "扫码": "微信扫码"};
+    const specialMap = {直拉: "钱包直拉", "单端": "微信单端", "小额": "微信小额", "双端": "微信通额", "扫码": "微信扫码"};
     const channelsFirstIndex = new Map();
 
     for (const line of lines) {
