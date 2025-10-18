@@ -153,11 +153,17 @@ async function parseGbo(lines, request, profit) {
         });
     }
 
-    // 构建 gbo
+    // // 构建 gbo
+    // const gbo = Object.fromEntries(
+    //     [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
+    //         .filter(channel => discountMap.has(channel))
+    //         .map(channel => [channel, discountMap.get(channel)])
+    // );
+    构建 gbo
     const gbo = Object.fromEntries(
-        [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
-            .filter(channel => discountMap.has(channel))
-            .map(channel => [channel, discountMap.get(channel)])
+        discountMap.keys()
+        .filter(channel => discountMap.has(channel))
+        .map(channel => [channel, discountMap.get(channel)])
     );
 
     return gbo;
