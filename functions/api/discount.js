@@ -159,7 +159,7 @@ async function parseGbo(lines, request, profit) {
     //         .filter(channel => discountMap.has(channel))
     //         .map(channel => [channel, discountMap.get(channel)])
     // );
-    构建 gbo
+    // 构建 gbo
     const gbo = Object.fromEntries(
         discountMap.keys()
         .filter(channel => discountMap.has(channel))
