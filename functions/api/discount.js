@@ -153,21 +153,11 @@ async function parseGbo(lines, request, profit) {
         });
     }
 
-    // // 构建 gbo
-    // const gbo = Object.fromEntries(
-    //     [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
-    //         .filter(channel => discountMap.has(channel))
-    //         .map(channel => [channel, discountMap.get(channel)])
-    // );
+    // 构建 gbo
     const gbo = Object.fromEntries(
-        [...discountMap.keys()]  // 遍历 discountMap 的所有渠道
-            .map(channel => [
-                channel, 
-                { 
-                    channelConfigValue: channelConfig.channelMap[channel] || null,  // 从 channelConfig 中获取值
-                    discountMapValue: discountMap.get(channel) || null  // 从 discountMap 中获取值
-                }
-            ])
+        [...new Set([...Object.keys(channelConfig.channelMap), ...discountMap.keys()])]
+            .filter(channel => discountMap.has(channel))
+            .map(channel => [channel, discountMap.get(channel)])
     );
 
     return gbo;
