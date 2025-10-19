@@ -50,9 +50,19 @@ function parseXd(lines, profit) {
             }
         }
     }
+    
+    const channelsOrder = Array.from(channelsFirstIndex.keys());
+
+    // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
+    const templateItems = [];
+    channelsOrder.forEach(channel => {
+        timeOrder.forEach(time => {
+            templateItems.push(`${channel}${time}/${xd[time][channel]}`);
+        });
+    });
+    xd.template = templateItems.join('\n');
 
     // 补全缺失值（按时间填充）
-    const channelsOrder = Array.from(channelsFirstIndex.keys());
     timeOrder.forEach((time, timeIndex) => {
         const newObj = {};
         channelsOrder.forEach(channel => {
@@ -65,15 +75,6 @@ function parseXd(lines, profit) {
         xd[time] = newObj;
     });
 
-    // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
-    const templateItems = [];
-    channelsOrder.forEach(channel => {
-        timeOrder.forEach(time => {
-            templateItems.push(`${channel}${time}/${xd[time][channel]}`);
-        });
-    });
-
-    xd.template = templateItems.join('\n');
     return xd;
 }
 
