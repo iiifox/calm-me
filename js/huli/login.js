@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         狐狸登录页注入
 // @namespace    https://iiifox.me/
-// @version      0.5
+// @version      1.0
 // @description  狐狸登录页面注入iiifox账号密码谷歌验证码
 // @author       iiifox
-// @match        http://116.62.60.127:8369/WebLogin.aspx
+// @match        http://121.43.147.96:8369/weblogin.aspx
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
@@ -17,8 +17,8 @@
     'use strict';
 
     // 配置参数
-    const TARGET_HOST = '116.62.60.127:8369';
-    const TARGET_PATH = '/WebLogin.aspx';
+    const TARGET_HOST = '121.43.147.96:8369';
+    const TARGET_PATH = '/weblogin.aspx';
     const TOTP_API_URL = 'https://iiifox.me/totp';
 
     function isAllowedPath() {
