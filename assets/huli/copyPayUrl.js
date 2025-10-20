@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         提取狐狸代付链接
 // @namespace    https://iiifox.me/
-// @version      1.0.0
+// @version      1.1.0
 // @description  打开狐狸直冲链接时，捕获代付链接并提供按钮点击复制功能，支持 http 环境，带 Toast 提示（右下角），避免假复制问题。
 // @author       iiifox
-// @match        *://104.143.42.32/*
+// @match        *://121.43.147.96/*
 // @grant        none
 // @run-at       document-start
 // @updateURL    https://iiifox.me/assets/huli/copyPayUrl.js
@@ -13,7 +13,7 @@
 (function() {
     'use strict';
 
-    const TARGET_API = 'http://104.143.42.32/WebPayCfld.asmx/getCldcwnTest';
+    const TARGET_API = 'http://121.43.147.96/WebPayCfld.asmx/getCldcwnTest';
     let latestUrl = null; // 保存捕获到的代付链接
 
     // ================== Toast 提示 ==================
