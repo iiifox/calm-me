@@ -175,7 +175,7 @@ function renderXyCards(timeBlocks) {
         const titleText = document.createTextNode(`星悦返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`);
         // 创建链接
         const link = document.createElement('a');
-        link.href = 'https://6w8.081w5a8cim.top/admin';
+        link.href = 'https://mgr.k7m9x2n.com';
         link.target = '_blank';
         link.textContent = '网页入口';
         // 组装
