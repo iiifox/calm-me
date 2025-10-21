@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         狐狸登录页注入
 // @namespace    https://iiifox.me/
-// @version      1.1
+// @version      1.2
 // @description  狐狸登录页面注入iiifox账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
-// @match        http://121.43.147.96:8369/weblogin.aspx
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
