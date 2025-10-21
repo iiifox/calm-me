@@ -12,11 +12,22 @@
     z-index: 5;
 }
 
-.rebate-system h2 {
+/* .rebate-system h2 {
     color: #2c3e50;
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 2px solid #3498db;
+} */
+
+.rebate-title {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+  display: flex;
+  align-items: baseline; /* 让链接与文字底线对齐 */
+  gap: 10px; /* 控制标题与链接之间的间距 */
+  flex-wrap: nowrap; /* 防止换行 */
 }
 
 .rebate-title a {
