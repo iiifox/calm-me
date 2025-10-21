@@ -36,9 +36,19 @@ function renderXdCards(timeBlocks) {
         const slide = document.createElement('div');
         slide.className = 'rebate-slide';
         slide.dataset.time = block.time;
-
+        
         const timeTitle = document.createElement('h2');
-        timeTitle.textContent = `小刀返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
+        timeTitle.className = 'rebate-title';
+        // 创建文本节点
+        const titleText = document.createTextNode(`小刀返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`);
+        // 创建链接
+        const link = document.createElement('a');
+        link.href = 'https://6w8.081w5a8cim.top/admin';
+        link.target = '_blank';
+        link.textContent = '网页入口';
+        // 组装
+        timeTitle.appendChild(titleText);
+        timeTitle.appendChild(link);
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
@@ -160,7 +170,17 @@ function renderXyCards(timeBlocks) {
         slide.dataset.time = block.time;
 
         const timeTitle = document.createElement('h2');
-        timeTitle.textContent = `星悦返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`;
+        timeTitle.className = 'rebate-title';
+        // 创建文本节点
+        const titleText = document.createTextNode(`星悦返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`);
+        // 创建链接
+        const link = document.createElement('a');
+        link.href = 'https://6w8.081w5a8cim.top/admin';
+        link.target = '_blank';
+        link.textContent = '网页入口';
+        // 组装
+        timeTitle.appendChild(titleText);
+        timeTitle.appendChild(link);
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
