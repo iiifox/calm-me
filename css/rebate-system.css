@@ -19,6 +19,18 @@
     border-bottom: 2px solid #3498db;
 }
 
+.rebate-title a {
+  font-size: 14px;
+  color: #3498db;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.rebate-title a:hover {
+  color: #1d6fa5;
+  text-decoration: underline;
+}
+
 .rebate-system .rebate-group {
     display: flex;
     align-items: center;
