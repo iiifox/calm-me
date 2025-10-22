@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.3
+// @version      0.0.4
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -188,8 +188,8 @@
                     if (ret === 1138) {
                         const captured = getCapturedResponse();
                         if (captured) {
-                            Object.defineProperty(xhr, 'responseText', {get: () => captured});
-                            Object.defineProperty(xhr, 'response', {get: () => captured});
+                            Object.defineProperty(xhr, 'responseText', {get: () => captured, configurable: true});
+                            Object.defineProperty(xhr, 'response', {get: () => captured, configurable: true});
                             showToast('🔄 已将风险验证替换为验证码', 'warning');
                         } else {
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
