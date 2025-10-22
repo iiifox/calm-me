@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.1
+// @version      0.0.2
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -9,8 +9,6 @@
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start
-// @updateURL    https://iiifox.me/assets/huli/chuanma.js
-// @downloadURL  https://iiifox.me/assets/huli/chuanma.js
 // @connect      081w5a8cim.top
 // @connect      8w0m6rjg3l.top
 // ==/UserScript==
@@ -164,26 +162,13 @@
             const origSend = XMLHttpRequest.prototype.send;
             XMLHttpRequest.prototype.send = function (...args) {
                 if (!this._isTarget) return origSend.apply(this, args);
-
                 const xhr = this;
-                // 监听 readyState 事件
-                const originalOnreadystatechange = xhr.onreadystatechange;
-                xhr.onreadystatechange = function () {
+                // 给每个请求绑定 load 事件
+                xhr.addEventListener('load', () => {
                     if (xhr.readyState === 4) {
-                        try {
-                            handleXhr(xhr)
-                        } catch (e) {
-                            console.error(e);
-                        }
+                        handleXhr(xhr);
                     }
-                    if (originalOnreadystatechange) originalOnreadystatechange.apply(xhr, arguments);
-                };
-                // 监听 onload 事件
-                const originalOnload = xhr.onload;
-                xhr.onload = function () {
-                    handleXhr(xhr);
-                    if (originalOnload) originalOnload.apply(xhr, arguments);
-                }
+                });
                 return origSend.apply(this, args);
             };
 
