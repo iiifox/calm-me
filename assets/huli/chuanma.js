@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.6
+// @version      0.0.1
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -208,12 +208,8 @@
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                         }
                     } else if (ret === 0) {
-                        // 只允许调用一次 handleResponse
-                        if (!xhr._responseHandled) {
-                            xhr._responseHandled = true;
-                            clearCapturedResponse();
-                            handleResponse(responseJSON);
-                        }
+                        clearCapturedResponse();
+                        handleResponse(responseJSON);
                     }
                 }
             }
