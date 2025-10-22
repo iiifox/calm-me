@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.5
+// @version      0.0.6
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -188,10 +188,6 @@
             };
 
             function handleXhr(xhr) {
-                // 如果已经处理过，直接返回
-                if (xhr._handled) return;
-                xhr._handled = true;
-
                 const responseJSON = JSON.parse(xhr.responseText)
                 const ret = responseJSON.ret;
                 // 捕获红番茄验证码响应内容
@@ -212,8 +208,12 @@
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                         }
                     } else if (ret === 0) {
-                        clearCapturedResponse();
-                        handleResponse(responseJSON);
+                        // 只允许调用一次 handleResponse
+                        if (!xhr._responseHandled) {
+                            xhr._responseHandled = true;
+                            clearCapturedResponse();
+                            handleResponse(responseJSON);
+                        }
                     }
                 }
             }
