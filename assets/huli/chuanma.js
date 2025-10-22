@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.4
+// @version      0.0.5
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -164,17 +164,34 @@
             const origSend = XMLHttpRequest.prototype.send;
             XMLHttpRequest.prototype.send = function (...args) {
                 if (!this._isTarget) return origSend.apply(this, args);
+
                 const xhr = this;
-                // 给每个请求绑定 load 事件
-                xhr.addEventListener('load', () => {
+                // 监听 readyState 事件
+                const originalOnreadystatechange = xhr.onreadystatechange;
+                xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
-                        handleXhr(xhr);
+                        try {
+                            handleXhr(xhr)
+                        } catch (e) {
+                            console.error(e);
+                        }
                     }
-                });
+                    if (originalOnreadystatechange) originalOnreadystatechange.apply(xhr, arguments);
+                };
+                // 监听 onload 事件
+                const originalOnload = xhr.onload;
+                xhr.onload = function () {
+                    handleXhr(xhr);
+                    if (originalOnload) originalOnload.apply(xhr, arguments);
+                }
                 return origSend.apply(this, args);
             };
 
             function handleXhr(xhr) {
+                // 如果已经处理过，直接返回
+                if (xhr._handled) return;
+                xhr._handled = true;
+
                 const responseJSON = JSON.parse(xhr.responseText)
                 const ret = responseJSON.ret;
                 // 捕获红番茄验证码响应内容
@@ -188,8 +205,8 @@
                     if (ret === 1138) {
                         const captured = getCapturedResponse();
                         if (captured) {
-                            Object.defineProperty(xhr, 'responseText', {get: () => captured, configurable: true});
-                            Object.defineProperty(xhr, 'response', {get: () => captured, configurable: true});
+                            Object.defineProperty(xhr, 'responseText', {get: () => captured});
+                            Object.defineProperty(xhr, 'response', {get: () => captured});
                             showToast('🔄 已将风险验证替换为验证码', 'warning');
                         } else {
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
