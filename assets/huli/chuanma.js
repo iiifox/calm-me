@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.1
+// @version      0.0.2
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -205,6 +205,7 @@
                                 responseText: {value: captured, writable: false, configurable: true},
                                 response: {value: captured, writable: false, configurable: true}
                             });
+                            clearCapturedResponse();
                             showToast('🔄 已将风险验证替换为验证码', 'warning');
                         } else {
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
@@ -212,7 +213,6 @@
                     } else if (ret === 0) {
                         if (!xhr._headlerXhr) {
                             xhr._headlerXhr = true
-                            clearCapturedResponse();
                             handleResponse(responseJSON);
                         }
                     }
@@ -241,6 +241,7 @@
                             if (ret === 1138) {
                                 const captured = getCapturedResponse();
                                 if (captured) {
+                                    clearCapturedResponse();
                                     showToast('🔄 已将风险验证替换为验证码', 'warning');
                                     return new Response(captured, {
                                         status: resp.status,
@@ -250,7 +251,6 @@
                                 }
                                 showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                             } else if (ret === 0) {
-                                clearCapturedResponse();
                                 handleResponse(json);
                             }
                         }
