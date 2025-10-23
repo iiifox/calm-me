@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.2
+// @version      0.1.0
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -146,7 +146,7 @@
         }
 
         // ---------------- 判断目标请求 ----------------
-        const TARGET_PATHS = ["/web_save", "/mobile_save", "/mobile_buy_page"];
+        const TARGET_PATHS = ["/web_save", "/mobile_save"];
 
         function isTargetUrl(url) {
             return TARGET_PATHS.some(path => url.includes(path));
