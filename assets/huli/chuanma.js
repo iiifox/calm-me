@@ -141,7 +141,7 @@
                 });
             });
             Promise.all(requests).then(() => {
-                alert(`传码完成：成功 ${successCount} 次`)
+                showToast(`传码完成：成功 ${successCount} 次`, "success")
             });
         }
 
@@ -201,15 +201,20 @@
                     if (ret === 1138) {
                         const captured = getCapturedResponse();
                         if (captured) {
-                            Object.defineProperty(xhr, 'responseText', {get: () => captured});
-                            Object.defineProperty(xhr, 'response', {get: () => captured});
+                            Object.defineProperties(xhr, {
+                                responseText: {value: captured, writable: false, configurable: true},
+                                response: {value: captured, writable: false, configurable: true}
+                            });
                             showToast('🔄 已将风险验证替换为验证码', 'warning');
                         } else {
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                         }
                     } else if (ret === 0) {
-                        clearCapturedResponse();
-                        handleResponse(responseJSON);
+                        if (!xhr._headlerXhr) {
+                            xhr._headlerXhr = true
+                            clearCapturedResponse();
+                            handleResponse(responseJSON);
+                        }
                     }
                 }
             }
