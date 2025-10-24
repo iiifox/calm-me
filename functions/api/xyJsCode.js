@@ -25,9 +25,9 @@ export async function onRequest({request}) {
             } else {
                 const prev = xyFull[timeKeys[i - 1]];
                 const diff = {};
-                for (const mode in curr) {
-                    if (curr[mode] !== prev[mode]) {
-                        diff[mode] = curr[mode];
+                for (const channel in curr) {
+                    if (curr[channel] !== prev[channel]) {
+                        diff[channel] = curr[channel];
                     }
                 }
                 if (Object.keys(diff).length > 0) {
