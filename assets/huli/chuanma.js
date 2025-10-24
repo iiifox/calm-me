@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸自动传码
 // @namespace    https://iiifox.me/
-// @version      0.1.0
+// @version      0.1.1
 // @description  狐狸自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -295,7 +295,7 @@
             </div>
             <div style="margin-bottom:4px;">
                 <label>传码次数:</label>
-                <input type="number" id="arrayLengthInput" value="${GM_getValue('arrayLength', '1')}" style="width:50px;font-size:12px;background:#333;color:#fff;border:1px solid #555;border-radius:3px;padding:2px 4px;">
+                <input type="number" id="arrayLengthInput" value="${GM_getValue('arrayLength', '3')}" style="width:50px;font-size:12px;background:#333;color:#fff;border:1px solid #555;border-radius:3px;padding:2px 4px;">
             </div>
             <button id="saveConfigBtn" style="font-size:10px;color:#fff;background:#4CAF50;border:none;padding:2px 4px;border-radius:3px;cursor:pointer;margin-top:2px;">保存</button>
         </div>
