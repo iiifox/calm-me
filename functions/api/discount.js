@@ -57,7 +57,9 @@ function parseXd(lines, profit) {
     const templateItems = [];
     channelsOrder.forEach(channel => {
         timeOrder.forEach(time => {
-            templateItems.push(`${channel}${time}/${xd[time][channel]}`);
+            if (xd[time][channel] !== undefined) {
+                templateItems.push(`${channel}${time}/${xd[time][channel]}`);
+            }
         });
     });
     xd.template = templateItems.join('\n');
@@ -74,6 +76,15 @@ function parseXd(lines, profit) {
         });
         xd[time] = newObj;
     });
+
+    // // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
+    // const templateItems = [];
+    // channelsOrder.forEach(channel => {
+    //     timeOrder.forEach(time => {
+    //         templateItems.push(`${channel}${time}/${xd[time][channel]}`);
+    //     });
+    // });
+    // xd.template = templateItems.join('\n');
 
     return xd;
 }
