@@ -53,17 +53,6 @@ function parseXd(lines, profit) {
     
     const channelsOrder = Array.from(channelsFirstIndex.keys());
 
-    // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
-    const templateItems = [];
-    channelsOrder.forEach(channel => {
-        timeOrder.forEach(time => {
-            if (xd[time][channel] !== undefined) {
-                templateItems.push(`${channel}${time}/${xd[time][channel]}`);
-            }
-        });
-    });
-    xd.template = templateItems.join('\n');
-
     // 补全缺失值（按时间填充）
     timeOrder.forEach((time, timeIndex) => {
         const newObj = {};
@@ -76,6 +65,20 @@ function parseXd(lines, profit) {
         });
         xd[time] = newObj;
     });
+
+    // 生成 template（按渠道优先，时间次序），去除与上一个时间折扣相同的重复项
+    const templateItems = [];
+    channelsOrder.forEach(channel => {
+        let prevValue = undefined;
+        timeOrder.forEach(time => {
+            const value = xd[time][channel];
+            if (value !== prevValue) {
+                templateItems.push(`${channel}${time}/${xd[time][channel]}`);
+                prevValue = value;
+            }
+        });
+    });
+    xd.template = templateItems.join('\n');
 
     // // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
     // const templateItems = [];
