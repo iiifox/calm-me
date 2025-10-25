@@ -94,13 +94,15 @@ function parseXd(lines, profit) {
 
 
 // ========== 解析星悦折扣 ==========
-function parseXy(lines, profit) {
+function parseXy(lines, profit, xdLines) {
     const xy = {};
     const timeOrder = [];
     let currentTimeKey = '';
 
-    const specialMap = {直拉: "钱包直拉", "单端": "微信单端", "小额": "微信小额", "双端": "微信通额", "扫码": "微信扫码"};
+    const specialMap = {"直拉": "钱包直拉", "单端": "微信单端", "小额": "微信小额", "双端": "微信通额", "扫码": "微信扫码"};
     const channelsFirstIndex = new Map();
+
+    const xdToXy = {"渠道A": "普通", "渠道B": "加速", "渠道C": "超速", "渠道D": "极速", "渠道E": "秒拉", "渠道F": "钱包直拉"}
 
     for (const line of lines) {
         // 时间匹配
@@ -110,6 +112,13 @@ function parseXy(lines, profit) {
             xy[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
             continue;
+        }
+
+        // 同步小刀折扣
+        if (line === "同步") {
+            for (const [channel, speedType] of Object.entries(xdToXy)) {
+                xy[currentTimeKey][speedType] = xd[currentTimeKey][channel];
+            }
         }
 
         // 渠道行匹配
@@ -242,6 +251,10 @@ export async function onRequest({request}) {
                 const m = line.replace(/^.*?星悦/, '').trim()
                     .match(/^(.*?)(?=\s*(?:，\s*)?(?:改(?:价)?为\s*)?\d)(?:\s*，?\s*(?:改(?:价)?为\s*)?)?(\d+(?:\.\d+)?)(?:，|$)/);
                 if (m) xyLines.push(m[1] + m[2]);
+                // 同步小刀
+                if (line === "价格同步星悦系统") {
+                    xyLines.push("同步")
+                }
                 continue;
             }
             xdLines.push(line);
@@ -249,7 +262,7 @@ export async function onRequest({request}) {
     }
 
     const xd = parseXd(xdLines, profit);
-    const xy = parseXy(xyLines, profit);
+    const xy = parseXy(xyLines, profit, xdLines);
     const gbo = await parseGbo(gboLines, request, profit);
 
     return new Response(JSON.stringify({ yesterdayPage, date, xd, xy, gbo}), {headers: {'Content-Type': 'application/json'}});
