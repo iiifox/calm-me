@@ -111,14 +111,11 @@ function parseXy(lines, profit, xd) {
         if (currentTimeKey && !(currentTimeKey in xy)) {
             xy[currentTimeKey] = {};
             timeOrder.push(currentTimeKey);
-            continue;
-        }
-
-        // 同步小刀折扣
-        if (line === "同步") {
+            // 钱包自动同步小刀折扣
             for (const [channel, speedType] of Object.entries(xdToXy)) {
                 xy[currentTimeKey][speedType] = xd[currentTimeKey][channel];
             }
+            continue;
         }
 
         // 渠道行匹配
