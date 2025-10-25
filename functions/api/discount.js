@@ -114,6 +114,9 @@ function parseXy(lines, profit, xd) {
             // 钱包自动同步小刀折扣
             for (const [channel, speedType] of Object.entries(xdToXy)) {
                 xy[currentTimeKey][speedType] = xd[currentTimeKey][channel];
+                if (!channelsFirstIndex.has(speedType)) {
+                    channelsFirstIndex.set(speedType, timeOrder.indexOf(currentTimeKey));
+                }
             }
             continue;
         }
