@@ -102,7 +102,7 @@ function parseXy(lines, profit, xd) {
     const specialMap = {"直拉": "钱包直拉", "单端": "微信单端", "小额": "微信小额", "双端": "微信通额", "扫码": "微信扫码"};
     const channelsFirstIndex = new Map();
 
-    const xdToXy = {"渠道A": "普通", "渠道B": "加速", "渠道C": "超速", "渠道D": "极速", "渠道E": "秒拉", "渠道F": "钱包直拉"}
+    const xdToXy = {"渠道A": "普通", "渠道B": "加速", "渠道C": "超速", "渠道D": "极速", "渠道E": "秒拉", "渠道F": "钱包直拉", "渠道TA": "怪额", "渠道TB": "超怪"}
 
     for (const line of lines) {
         // 时间匹配
