@@ -262,7 +262,7 @@ export async function onRequest({request}) {
     }
 
     const xd = parseXd(xdLines, profit);
-    const xy = parseXy(xyLines, profit, xdLines);
+    const xy = parseXy(xyLines, profit, xd);
     const gbo = await parseGbo(gboLines, request, profit);
 
     return new Response(JSON.stringify({ yesterdayPage, date, xd, xy, gbo}), {headers: {'Content-Type': 'application/json'}});
