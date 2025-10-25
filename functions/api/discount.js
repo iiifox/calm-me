@@ -94,7 +94,7 @@ function parseXd(lines, profit) {
 
 
 // ========== 解析星悦折扣 ==========
-function parseXy(lines, profit, xdLines) {
+function parseXy(lines, profit, xd) {
     const xy = {};
     const timeOrder = [];
     let currentTimeKey = '';
