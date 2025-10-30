@@ -48,9 +48,11 @@ function renderXdCards(timeBlocks) {
         link.textContent = '网页入口';
         // 最新客户端下载：
         const clientLink = document.createElement('a');
-        clientLink.href = "javascript:void(0)";
         clientLink.textContent = '客户端下载';
-        clientLink.onclick = function () {
+        clientLink.href = "#";
+        clientLink.style.cursou = "pointer"
+        clientLink.addEventListener("click", function (e) {
+            e.preventDefault();
             window.open("http://157.254.32.30/a3/3.2.16.zip");
         };
         // 组装
