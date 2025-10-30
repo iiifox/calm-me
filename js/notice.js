@@ -10,7 +10,10 @@ async function loadNotice() {
         noticeBox.id = 'notice';
         noticeBox.className = 'notice-box';
         noticeBox.textContent = text;
-        noticeBox.style.whiteSpace = 'pre-wrap'; // 保留换行和空格
+
+        // 保留文本换行、空格，并左对齐
+        noticeBox.style.whiteSpace = 'pre-wrap';
+        noticeBox.style.textAlign = 'left';
 
         // 添加到 bell 容器中
         const bellContainer = document.getElementById('bell');
