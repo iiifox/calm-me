@@ -52,7 +52,14 @@ function renderXdCards(timeBlocks) {
         btn.style.padding = "8px 16px";
         btn.style.cursor = "pointer";
         btn.addEventListener("click", () => {
-            window.location.href = "http://157.254.32.30/a3/3.2.16.zip";
+            // 创建临时 a 标签
+            const a = document.createElement("a");
+            a.href = "http://157.254.32.30/a3/3.2.16.zip"; // HTTP 链接
+            a.target = "_blank"; // 新窗口打开
+            a.rel = "noopener";  // 安全
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a); // 点击后移除
         });
         // 组装
         timeTitle.appendChild(titleText);
