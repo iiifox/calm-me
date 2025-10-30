@@ -58,14 +58,24 @@ function renderXdCards(timeBlocks) {
         const titleText = document.createTextNode(`小刀返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`);
         // 创建链接
         const link = document.createElement('a');
-        link.href = 'https://6w8.081w5a8cim.top/admin';
+        link.href = systemHrefs.xdWeb;
         link.target = '_blank';
         link.textContent = '网页入口';
         // 最新客户端下载
         const clientLink = document.createElement("a");
-        clientLink.href = 'http://157.254.32.30/a3/3.2.16.zip';
+        clientLink.href = '#';
         clientLink.textContent = "客户端下载";
-        clientLink.title = "鼠标右键复制链接地址，在新窗口中粘贴链接地址后回车即可下载。"; 
+        clientLink.title = "点击复制链接到剪贴板，然后在新窗口中粘贴链接下载。";
+        clientLink.style.cursor = 'pointer';
+        clientLink.addEventListener('click', () => {
+            if (!systemHrefs.xdClient) return;
+            navigator.clipboard.writeText(systemHrefs.xdClient)
+                .then(() => showNotification('客户端下载链接已复制，请在新窗口粘贴链接回车即可下载', false))
+                .catch(err => {
+                    showNotification('复制失败，请手动复制链接', true);
+                    console.error('复制失败:', err);
+                });
+        });
         // 组装
         timeTitle.appendChild(titleText);
         timeTitle.appendChild(link);
@@ -196,7 +206,7 @@ function renderXyCards(timeBlocks) {
         const titleText = document.createTextNode(`星悦返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`);
         // 创建链接
         const link = document.createElement('a');
-        link.href = 'https://mgr.k7m9x2n.com';
+        link.href = systemHrefs.xyWeb;
         link.target = '_blank';
         link.textContent = '网页入口';
         // 组装
