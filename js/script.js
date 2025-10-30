@@ -49,6 +49,8 @@ function renderXdCards(timeBlocks) {
         // 最新客户端下载：
         const clientLink = document.createElement('a');
         clientLink.href = "http://157.254.32.30/a3/3.2.16.zip";
+        clientLink.target = "_blank";
+        clientLink.rel = "noopener";
         clientLink.textContent = '客户端下载';
         // 组装
         timeTitle.appendChild(titleText);
