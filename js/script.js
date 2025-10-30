@@ -51,10 +51,10 @@ function renderXdCards(timeBlocks) {
         clientLink.textContent = '客户端下载';
         clientLink.href = "#";
         clientLink.style.cursou = "pointer"
-        clientLink.addEventListener("click", function (e) {
+        clientLink.addEventListener('click', function (e) {
             e.preventDefault();
             window.open("http://157.254.32.30/a3/3.2.16.zip");
-        };
+        });
         // 组装
         timeTitle.appendChild(titleText);
         timeTitle.appendChild(link);
