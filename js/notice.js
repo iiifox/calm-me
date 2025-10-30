@@ -4,12 +4,14 @@ async function loadNotice() {
         const response = await fetch('/notice/header.txt');
         if (!response.ok) throw new Error('请求失败: ' + response.status);
         const text = await response.text(); // 返回纯文本
+        // 替换换行符为 <br>
+        const htmlText = text.replace(/\n/g, '<br>');
 
         // 创建 notice-box
         const noticeBox = document.createElement('div');
         noticeBox.id = 'notice';
         noticeBox.className = 'notice-box';
-        noticeBox.textContent = text; // 纯文本安全显示
+        noticeBox.textContent = htmlText;
 
         // 添加到 bell 容器中
         const bellContainer = document.getElementById('bell');
@@ -18,7 +20,7 @@ async function loadNotice() {
         // 初始隐藏
         noticeBox.style.display = 'none';
 
-        // 点击铃铛显示/隐藏
+        // 点击小红点显示/隐藏
         bellContainer.addEventListener('click', () => {
             noticeBox.style.display = noticeBox.style.display === 'none' ? 'block' : 'none';
         });
