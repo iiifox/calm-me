@@ -1,3 +1,18 @@
+// 全局存储最新链接
+let systemHrefs = {};
+
+// 获取系统链接（只请求一次）
+async function fetchSystemHrefs() {
+    try {
+        const resp = await fetch('/config/hyperlink.json');
+        if (!resp.ok) throw new Error('接口请求失败');
+        systemHrefs = await resp.json();
+    } catch (err) {
+        console.error('获取系统链接失败', err);
+        systemHrefs = {};
+    }
+}
+
 // ========== 小刀 ==========
 function renderXdCards(timeBlocks) {
     const panel = document.getElementById('xd-panel');
@@ -335,6 +350,8 @@ function showNotification(message, isError = false, containerId = 'xd-notificati
 
 // 主数据加载逻辑
 async function loadData() {
+    await fetchSystemHrefs();
+    
     try {
         const params = new URLSearchParams(window.location.search);
         const profit = params.get('profit');
