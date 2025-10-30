@@ -4,14 +4,13 @@ async function loadNotice() {
         const response = await fetch('/notice/header.txt');
         if (!response.ok) throw new Error('请求失败: ' + response.status);
         const text = await response.text(); // 返回纯文本
-        // 替换换行符为 <br>
-        const htmlText = text.replace(/\n/g, '<br>');
 
         // 创建 notice-box
         const noticeBox = document.createElement('div');
         noticeBox.id = 'notice';
         noticeBox.className = 'notice-box';
-        noticeBox.textContent = htmlText;
+        noticeBox.textContent = text;
+        noticeBox.style.whiteSpace = 'pre-wrap'; // 保留换行和空格
 
         // 添加到 bell 容器中
         const bellContainer = document.getElementById('bell');
