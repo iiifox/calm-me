@@ -50,7 +50,7 @@ function renderXdCards(timeBlocks) {
         const clientLink = document.createElement("a");
         clientLink.href = 'http://157.254.32.30/a3/3.2.16.zip';
         clientLink.textContent = "客户端下载";
-        clientLink.title = "鼠标右键在新窗口中打开链接"; 
+        clientLink.title = "鼠标右键复制链接地址，在新窗口中粘贴链接地址"; 
         // 组装
         timeTitle.appendChild(titleText);
         timeTitle.appendChild(link);
