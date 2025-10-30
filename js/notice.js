@@ -27,7 +27,18 @@ async function loadNotice() {
 
         // 点击小红点显示/隐藏
         bellContainer.addEventListener('click', () => {
-            noticeBox.style.display = noticeBox.style.display === 'none' ? 'block' : 'none';
+            e.stopPropagation(); // 阻止冒泡，避免触发 body 点击事件
+            noticeBox.style.display = (noticeBox.style.display === 'none') ? 'block' : 'none';
+        });
+
+        // 点击 noticeBox 本身不关闭
+        noticeBox.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // 点击外部区域关闭
+        document.addEventListener('click', () => {
+            noticeBox.style.display = 'none';
         });
 
     } catch (err) {
