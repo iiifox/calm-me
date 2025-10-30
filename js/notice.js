@@ -12,8 +12,10 @@ async function loadNotice() {
         noticeBox.textContent = text;
 
         // 保留文本换行、空格，并左对齐
+        noticeBox.style.width = 'fit-content';
         noticeBox.style.whiteSpace = 'pre-wrap';
         noticeBox.style.textAlign = 'left';
+        noticeBox.style.maxWidth = '62vw';
         // 设置最大高度和滚动
         noticeBox.style.maxHeight = '500px';
         noticeBox.style.overflowY = 'auto';
