@@ -21,8 +21,6 @@
     top: 50px; /* 顶部对齐容器 */
     left: 50%; /* 容器水平居中 */
     transform: translateX(-50%); /* 居中 */
-    width: 66vw; /* 占屏幕宽度的 2/3 */
-    max-height: 70vh; /* 超过屏幕高度可滚动 */
     overflow-y: auto;
     background: #fff;
     padding: 16px;
