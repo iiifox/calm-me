@@ -64,7 +64,7 @@ function renderXdCards(timeBlocks) {
         // 最新客户端下载
         const clientLink = document.createElement("a");
         clientLink.href = '#';
-        clientLink.textContent = "客户端下载";
+        clientLink.textContent = "最新客户端下载地址";
         clientLink.title = "点击复制链接到剪贴板，然后在新窗口中粘贴链接下载。";
         clientLink.style.cursor = 'pointer';
         clientLink.addEventListener('click', () => {
