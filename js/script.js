@@ -46,9 +46,15 @@ function renderXdCards(timeBlocks) {
         link.href = 'https://6w8.081w5a8cim.top/admin';
         link.target = '_blank';
         link.textContent = '网页入口';
+        // 最新客户端下载：
+        const clientLink = document.createElement('a');
+        clientLink.href = 'http://157.254.32.30/a3/3.2.16.zip';
+        clientLink.target = '_blank';
+        clientLink.textContent = '客户端下载';
         // 组装
         timeTitle.appendChild(titleText);
         timeTitle.appendChild(link);
+        timeTitle.appendChild(clientLink);
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
