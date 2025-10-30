@@ -39,22 +39,8 @@ function renderXdCards(timeBlocks) {
         
         const timeTitle = document.createElement('h2');
         timeTitle.className = 'rebate-title';
-        // 创建文本节点
         const titleText = document.createTextNode(`小刀返利折扣${(index === 0 && timeBlocks.length === 1) ? '' : `（${block.time}开始）`}`);
-        // 创建链接
-        const link = document.createElement('a');
-        link.href = 'https://6w8.081w5a8cim.top/admin';
-        link.target = '_blank';
-        link.textContent = '网页入口';
-        // 最新客户端下载
-        const clientLink = document.createElement("a");
-        clientLink.href = 'http://157.254.32.30/a3/3.2.16.zip';
-        clientLink.textContent = "客户端下载";
-        clientLink.title = "鼠标右键复制链接地址，在新窗口中粘贴链接地址后回车即可下载。"; 
-        // 组装
         timeTitle.appendChild(titleText);
-        timeTitle.appendChild(link);
-        timeTitle.appendChild(clientLink);
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
