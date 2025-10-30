@@ -15,7 +15,7 @@ async function loadNotice() {
         noticeBox.style.whiteSpace = 'pre-wrap';
         noticeBox.style.textAlign = 'left';
         // 设置最大高度和滚动
-        noticeBox.style.maxHeight = '300px';
+        noticeBox.style.maxHeight = '500px';
         noticeBox.style.overflowY = 'auto';
 
         // 添加到 bell 容器中
