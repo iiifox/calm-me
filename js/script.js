@@ -47,18 +47,17 @@ function renderXdCards(timeBlocks) {
         link.target = '_blank';
         link.textContent = '网页入口';
         // 最新客户端下载：
-        const clientLink = document.createElement('a');
-        clientLink.href = "http://157.254.32.30/a3/3.2.16.zip";
-        clientLink.rel = "noopener";
-        clientLink.textContent = '客户端下载';
-        clientLink.addEventListener("click", function(e) {
-            e.preventDefault();
-            window.location.href = clientLink.href;
+        const btn = document.createElement("button");
+        btn.textContent = "客户端下载";
+        btn.style.padding = "8px 16px";
+        btn.style.cursor = "pointer";
+        btn.addEventListener("click", () => {
+            window.location.href = "http://157.254.32.30/a3/3.2.16.zip";
         });
         // 组装
         timeTitle.appendChild(titleText);
         timeTitle.appendChild(link);
-        timeTitle.appendChild(clientLink);
+        timeTitle.appendChild(btn);
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
