@@ -1,7 +1,7 @@
 // 获取通知内容并动态创建 notice-box
 async function loadNotice() {
     try {
-        const response = await fetch('/header-notice-box');
+        const response = await fetch('/notice/header.txt');
         if (!response.ok) throw new Error('请求失败: ' + response.status);
         const text = await response.text(); // 返回纯文本
 
