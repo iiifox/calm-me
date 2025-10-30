@@ -21,13 +21,18 @@
     top: 50px; /* 顶部对齐容器 */
     left: 50%; /* 容器水平居中 */
     transform: translateX(-50%); /* 居中 */
-    overflow-y: auto;
     background: #fff;
     padding: 16px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     font-size: 14px;
     z-index: 9999;
+    width: fit-content;
+    max-width: 62vw;
+    max-height: 62vh;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    text-align: left;
 }
 
 /* 滚动条样式（可选美化） */
