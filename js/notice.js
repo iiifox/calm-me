@@ -11,13 +11,6 @@ async function loadNotice() {
         noticeBox.className = 'notice-box';
         noticeBox.textContent = text;
 
-        noticeBox.style.width = 'fit-content';
-        noticeBox.style.whiteSpace = 'pre-wrap';
-        noticeBox.style.textAlign = 'left';
-        noticeBox.style.maxWidth = '62vw';
-        noticeBox.style.maxHeight = '62vh';
-        noticeBox.style.overflowY = 'auto';
-
         // 添加到 bell 容器中
         const bellContainer = document.getElementById('bell');
         bellContainer.appendChild(noticeBox);
