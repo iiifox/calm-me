@@ -46,25 +46,15 @@ function renderXdCards(timeBlocks) {
         link.href = 'https://6w8.081w5a8cim.top/admin';
         link.target = '_blank';
         link.textContent = '网页入口';
-        // 最新客户端下载：
-        const btn = document.createElement("button");
-        btn.textContent = "客户端下载";
-        btn.style.padding = "8px 16px";
-        btn.style.cursor = "pointer";
-        btn.addEventListener("click", () => {
-            // 创建临时 a 标签
-            const a = document.createElement("a");
-            a.href = "http://157.254.32.30/a3/3.2.16.zip"; // HTTP 链接
-            a.target = "_blank"; // 新窗口打开
-            a.rel = "noopener";  // 安全
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a); // 点击后移除
-        });
+        // 最新客户端下载
+        const clientLink = document.createElement("a");
+        clientLink.href = 'http://157.254.32.30/a3/3.2.16.zip';
+        clientLink.textContent = "客户端下载";
+        clientLink.title = "鼠标右键在新窗口中打开链接"; 
         // 组装
         timeTitle.appendChild(titleText);
         timeTitle.appendChild(link);
-        timeTitle.appendChild(btn);
+        timeTitle.appendChild(clientLink);
         slide.appendChild(timeTitle);
 
         // 渠道分组进行渲染
