@@ -26,7 +26,7 @@ async function loadNotice() {
         noticeBox.style.display = 'none';
 
         // 点击小红点显示/隐藏
-        bellContainer.addEventListener('click', () => {
+        bellContainer.addEventListener('click', (e) => {
             e.stopPropagation(); // 阻止冒泡，避免触发 body 点击事件
             noticeBox.style.display = (noticeBox.style.display === 'none') ? 'block' : 'none';
         });
