@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿自动传码
 // @namespace    https://iiifox.me/
-// @version      0.0.1
+// @version      0.0.2
 // @description  长颈鹿自动传码，此为初版，非正式版。功能待优化（没做红番茄校验，兼容所有pf，自己注意别操作错）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -54,15 +54,6 @@
             if (!url || !length) return null;
             return {url, length};
         }
-
-        function getPfFromPage() {
-            try {
-                return new URL(window.location.href).searchParams.get('pf');
-            } catch (e) {
-                return null;
-            }
-        }
-
 
         const rand4 = () => Math.floor(Math.random() * 10000).toString().padStart(4, '0');
 
@@ -223,7 +214,6 @@
                 let resp = await origFetch(input, init);
                 // fetch 响应是流 → clone 一份给 handleResponseWrapper
                 if (isTargetUrl(url)) {
-                    const pfInPage = getPfFromPage();
                     const cloned = resp.clone();
                     const text = await cloned.text();
                     try {
