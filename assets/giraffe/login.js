@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         狐狸登录页注入
+// @name         长颈鹿登录页注入
 // @namespace    https://iiifox.me/
 // @version      0.0.1
 // @description  狐狸登录页面注入iitaotao账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
-// @updateURL    https://iiifox.me/assets/griaffe/login.js
-// @downloadURL  https://iiifox.me/assets/griaffe/login.js
+// @updateURL    https://iiifox.me/assets/giraffe/login.js
+// @downloadURL  https://iiifox.me/assets/giraffe/login.js
 // ==/UserScript==
 
 (function() {
@@ -252,7 +252,7 @@
         const displayElements = createTotpPanel();
 
         const userInput = document.querySelector('input[id*="user"]');
-        if (userInput) userInput.value = "iitaotao";
+        if (userInput) userInput.value = "iiifox";
 
         const passInput = document.querySelector('input[id*="pass"]');
         if (passInput) passInput.value = "123456";
