@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿登录页注入
 // @namespace    https://iiifox.me/
-// @version      0.0.1
+// @version      0.0.2
 // @description  狐狸登录页面注入iitaotao账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
@@ -252,12 +252,12 @@
         const displayElements = createTotpPanel();
 
         const userInput = document.querySelector('input[id*="user"]');
-        if (userInput) userInput.value = "iiifox";
+        if (userInput) userInput.value = "iitaotao";
 
         const passInput = document.querySelector('input[id*="pass"]');
         if (passInput) passInput.value = "123456";
 
-        startTotpPanel(displayElements, "2IR64EE66RYXHSNEET5P3GRQ5ETFYRXK");
+        startTotpPanel(displayElements, "DWLXRL3WFOR2FVVKPQLSPORRHZH36YDQ");
     }
 
     // 确保页面完全加载后执行
