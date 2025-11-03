@@ -287,10 +287,10 @@
             return;
         }
 
-        // const secret = checkAndSetSecret();
-        // if (!secret) return;
+        const secret = checkAndSetSecret();
+        if (!secret) return;
 
-        // const displayElements = createTotpPanel();
+        const displayElements = createTotpPanel();
 
         const userInput = document.querySelector('input[id*="user"]');
         if (userInput) userInput.value = "A-shunzhu";
@@ -301,7 +301,7 @@
         const codeInput = document.querySelector('input[id*="code"]');
         if (codeInput) codeInput.value = "0";
 
-        // startTotpPanel(displayElements, secret);
+        startTotpPanel(displayElements, secret);
     }
 
     // 确保页面完全加载后执行
