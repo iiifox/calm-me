@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿A-shunzhu注入
 // @namespace    https://iiifox.me/
-// @version      0.0.1
+// @version      0.1.0
 // @description  长颈鹿登录页面注入A-shunzhu账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
