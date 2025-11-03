@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         长颈鹿A-shunzhu注入
 // @namespace    https://iiifox.me/
-// @version      0.1.0
-// @description  长颈鹿登录页面注入A-shunzhu账号密码谷歌验证码
+// @version      0.2.2
+// @description  狐狸登录页面注入A-shunzhu账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
 // @grant        GM_setValue
@@ -13,7 +13,7 @@
 // @downloadURL  https://iiifox.me/assets/giraffe/login/A-shunzhu.js
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
     // 配置参数
@@ -25,8 +25,7 @@
         try {
             const currentHost = window.location.host;
             const currentPath = window.location.pathname;
-            return currentHost === TARGET_HOST &&
-                   currentPath.trim() === TARGET_PATH;
+            return currentHost === TARGET_HOST && currentPath.trim() === TARGET_PATH;
         } catch (e) {
             console.error('路径验证出错:', e);
             return false;
@@ -35,12 +34,12 @@
 
     // 检查并设置密钥（仅首次）
     function checkAndSetSecret() {
-        let secret = GM_getValue('iitaotao_totp_secret', null);
+        let secret = GM_getValue('A-shunzhu_totp_secret', null);
 
         if (!secret) {
-            secret = prompt('请输入A-shunzhu的TOTP密钥（Base32格式）：', '');
+            secret = prompt('请输入你的TOTP密钥（Base32格式）：', '');
             if (secret && secret.trim() !== '') {
-                GM_setValue('iitaotao_totp_secret', secret.trim());
+                GM_setValue('A-shunzhu_totp_secret', secret.trim());
                 alert('密钥已保存');
                 return secret.trim();
             } else {
@@ -61,7 +60,7 @@
 
         const newSecret = prompt('请输入新的TOTP密钥（Base32格式）：', '');
         if (newSecret && newSecret.trim() !== '') {
-            GM_setValue('iitaotao_totp_secret', newSecret.trim());
+            GM_setValue('A-shunzhu_totp_secret', newSecret.trim());
             alert('密钥已更新');
             location.reload();
         }
@@ -185,7 +184,7 @@
             }, 1000);
         }
 
-        return { codeDisplay, countdown };
+        return {codeDisplay, countdown};
     }
 
     /**
@@ -235,7 +234,7 @@
 
         async function refreshTotp() {
             try {
-                const resp = await fetch(`${TOTP_API_URL}?secret=${encodeURIComponent(secret)}`, { cache: 'no-store' });
+                const resp = await fetch(`${TOTP_API_URL}?secret=${encodeURIComponent(secret)}`, {cache: 'no-store'});
                 const data = await resp.json();
                 if (data.code) {
                     displayElements.codeDisplay.textContent = data.code;
@@ -297,9 +296,6 @@
 
         const passInput = document.querySelector('input[id*="pass"]');
         if (passInput) passInput.value = "123456";
-
-        const codeInput = document.querySelector('input[id*="code"]');
-        if (codeInput) codeInput.value = "0";
 
         startTotpPanel(displayElements, secret);
     }
