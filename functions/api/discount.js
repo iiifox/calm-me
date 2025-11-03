@@ -23,7 +23,7 @@ function parseXd(lines, profit) {
     const timeOrder = [];
     let currentTimeKey = '';
 
-    const specialMap = {VB: "VB微信10起", VC: "VC微信50", VD: "VD100", VE: "VE200", "H": "渠道H（低价）88.5"};
+    const specialMap = {VB: "VB微信10起", VC: "VC微信50", VD: "VD100", VE: "VE200", "H": "渠道H（低价）"};
 
     const channelsFirstIndex = new Map();
 
