@@ -2,7 +2,7 @@
 // @name         长颈鹿iitaotao注入
 // @namespace    https://iiifox.me/
 // @version      0.0.1
-// @description  狐狸登录页面注入iitaotao账号密码谷歌验证码
+// @description  长颈鹿登录页面注入A-shunzhu账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
 // @grant        GM_setValue
