@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         长颈鹿iitaotao注入
+// @name         长颈鹿A-shunzhu注入
 // @namespace    https://iiifox.me/
 // @version      0.0.1
 // @description  长颈鹿登录页面注入A-shunzhu账号密码谷歌验证码
@@ -38,7 +38,7 @@
         let secret = GM_getValue('iitaotao_totp_secret', null);
 
         if (!secret) {
-            secret = prompt('请输入你的TOTP密钥（Base32格式）：', '');
+            secret = prompt('请输入A-shunzhu的TOTP密钥（Base32格式）：', '');
             if (secret && secret.trim() !== '') {
                 GM_setValue('iitaotao_totp_secret', secret.trim());
                 alert('密钥已保存');
