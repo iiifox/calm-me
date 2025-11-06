@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
-// @version      0.4.0
+// @version      0.4.1
 // @description  保留原样式和逻辑，优化可维护性，颜色区分账号/金额/传码次数，标题加大加粗
 // @author       iiifox
 // @match        *://pay.qq.com/*
