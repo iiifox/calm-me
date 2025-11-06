@@ -18,13 +18,12 @@
 (function () {
     'use strict';
 
-    const localStorage_TOMATOS_RESP_KEY = 'tomatos_pay_response';
-    const TOMATOS_PF = 'pay_R-__mds_bigR_S22N_commander_id_zhg_0_v1_0_0.common2_v1-android';
+    const localStorage_CAPTURE_RESP_KEY = 'capture_pay_response';
 
     // ---------------- 工具函数 ----------------
     function getCapturedResponse() {
         try {
-            return localStorage.getItem(localStorage_TOMATOS_RESP_KEY);
+            return localStorage.getItem(localStorage_CAPTURE_RESP_KEY);
         } catch {
             return null;
         }
@@ -32,7 +31,7 @@
 
     function setCapturedResponse(response) {
         try {
-            localStorage.setItem(localStorage_TOMATOS_RESP_KEY, response);
+            localStorage.setItem(localStorage_CAPTURE_RESP_KEY, response);
             return true;
         } catch {
             return false;
@@ -41,7 +40,7 @@
 
     function clearCapturedResponse() {
         try {
-            localStorage.removeItem(localStorage_TOMATOS_RESP_KEY);
+            localStorage.removeItem(localStorage_CAPTURE_RESP_KEY);
             return true;
         } catch {
             return false;
@@ -55,13 +54,20 @@
         return {url, length};
     }
 
-    function getPfFromPage() {
+    function captureUrl() {
         try {
-            return new URL(window.location.href).searchParams.get('pf');
-        } catch {
-            return null;
+            const pf = new URL(window.location.href).searchParams.get('pf');
+            if (!pf) return true;
+            // pf 格式示例：desktop_m_qq-10009163-android-10440385-qq-1104466820-xxxx
+            const match = pf.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
+            if (!match) return true;
+            // 不相等说明是上号的包体，不是长颈鹿包体，需要捕获
+            return match[1] !== match[2];
+        } catch (e) {
+            return false;
         }
     }
+
 
     const rand4 = () => Math.floor(Math.random() * 10000).toString().padStart(4, '0');
 
@@ -185,7 +191,7 @@
         function handleXhr(xhr) {
             const responseJSON = JSON.parse(xhr.responseText);
             const ret = responseJSON.ret;
-            if (getPfFromPage() === TOMATOS_PF) {
+            if (captureUrl()) {
                 if (ret === 2022) {
                     setCapturedResponse(JSON.stringify(responseJSON));
                     showToast('✅ 已捕获红番茄验证码响应内容 (xhr)', "success");
@@ -219,27 +225,30 @@
             const resp = await origFetch(input, init);
 
             if (isTargetUrl(url)) {
-                const pfInPage = getPfFromPage();
                 const cloned = resp.clone();
                 const text = await cloned.text();
                 try {
                     const json = JSON.parse(text);
                     const ret = json.ret;
-                    if (pfInPage === TOMATOS_PF && ret === 2022) {
-                        setCapturedResponse(JSON.stringify(json));
-                        showToast('✅ 已捕获红番茄验证码响应内容 (fetch)', "success");
-                    } else if (ret === 1138) {
-                        const captured = getCapturedResponse();
-                        if (captured) {
-                            clearCapturedResponse();
-                            showToast('🔄 已将风险验证替换为验证码', 'warning');
-                            return new Response(captured, {
-                                status: resp.status, statusText: resp.statusText, headers: resp.headers
-                            });
+                    if (captureUrl()) {
+                        if (ret === 2022) {
+                            setCapturedResponse(JSON.stringify(json));
+                            showToast('✅ 已捕获红番茄验证码响应内容 (fetch)', "success");
                         }
-                        showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
-                    } else if (ret === 0) {
-                        handleResponse(json);
+                    } else {
+                        if (ret === 1138) {
+                            const captured = getCapturedResponse();
+                            if (captured) {
+                                clearCapturedResponse();
+                                showToast('🔄 已将风险验证替换为验证码', 'warning');
+                                return new Response(captured, {
+                                    status: resp.status, statusText: resp.statusText, headers: resp.headers
+                                });
+                            }
+                            showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
+                        } else if (ret === 0) {
+                            handleResponse(json);
+                        }
                     }
                 } catch (e) {
                     console.error('fetch解析失败', e);
