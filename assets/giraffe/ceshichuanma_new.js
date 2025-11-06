@@ -176,6 +176,7 @@
         };
 
         function handleXhr(xhr) {
+            console.log(xhr._amt)
             const responseJSON = JSON.parse(xhr.responseText)
             const ret = responseJSON.ret;
             // 捕获非长颈鹿包体验证码响应内容
@@ -214,6 +215,7 @@
             let resp = await origFetch(input, init);
             // fetch 响应是流 → clone 一份给 handleResponseWrapper
             if (isTargetUrl(url)) {
+                console.log(getAmtFromFormData(init.body))
                 const cloned = resp.clone();
                 const text = await cloned.text();
                 try {
