@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         狐狸自动传码
+// @name         长颈鹿自动传码
 // @namespace    https://iiifox.me/
 // @version      0.1.2
-// @description  狐狸自动传码，防止配置框重复渲染版本
+// @description  长颈鹿自动传码，此为初版，非正式版。功能待优化
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
