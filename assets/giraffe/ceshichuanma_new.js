@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
-// @version      0.4.1
+// @version      0.4.3
 // @description  保留原样式和逻辑，优化可维护性，颜色区分账号/金额/传码次数，标题加大加粗
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -95,7 +95,7 @@
             }
 
             if (targetUrl) {
-                console.log(`传码url：${targetUrl} `)
+                console.log('传码url:', targetUrl); // ✅ 输出
                 let successCount = 0;
                 const requests = Array.from({length: times}).map(() => new Promise(resolve => {
                     const item = structuredClone(responseJSON);
@@ -139,7 +139,8 @@
             const wcp = params.get('wcp'); // 形如 "type=CNY&amt=123500"
             if (!wcp) return null;
 
-            const wcpParams = new URLSearchParams(wcp);
+            const wcpDecoded = decodeURIComponent(wcp);
+            const wcpParams = new URLSearchParams(wcpDecoded);
             const amt = wcpParams.get('amt');
             return amt ? Math.floor(Number(amt) / 100) : null; // 除以100得到整数
         } catch {
@@ -161,6 +162,7 @@
 
             const xhr = this;
             xhr._amt = getAmtFromFormData(args[0]);
+            console.log('解析到 amt: ', xhr._amt);
             // 监听 readystate 事件
             const origOnreadystatechange = xhr.onreadystatechange;
             xhr.onreadystatechange = function () {
@@ -177,7 +179,6 @@
         };
 
         function handleXhr(xhr) {
-            console.log(xhr._amt)
             const responseJSON = JSON.parse(xhr.responseText)
             const ret = responseJSON.ret;
             // 捕获非长颈鹿包体验证码响应内容
@@ -216,7 +217,6 @@
             let resp = await origFetch(input, init);
             // fetch 响应是流 → clone 一份给 handleResponseWrapper
             if (isTargetUrl(url)) {
-                console.log(getAmtFromFormData(init.body))
                 const cloned = resp.clone();
                 const text = await cloned.text();
                 try {
@@ -241,7 +241,7 @@
                             }
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                         } else if (ret === 0) {
-                            handleResponse(json, getAmtFromFormData(init.body));
+                            handleResponse(json, getAmtFromFormData(init?.body || ''));
                         }
                     }
                 } catch (e) {
