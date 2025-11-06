@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         狐狸导出代理统计
 // @namespace    https://iiifox.me/
-// @version      3.0.0
+// @version      3.0.1
 // @description  监听 dltj.aspx 响应，按渠道精确折扣导出代理统计，汇总同用户同业务
 // @match        *://121.43.147.96:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
@@ -14,7 +14,7 @@
 
     // ---------------- 折扣配置 ----------------
     const discountMap = {
-        "直冲": { channels: ["秒拉"], value: 0.1 },
+        "直冲": { channels: ["秒拉"], value: 0.105 },
         "慢充": { channels: [
             "王者Q钱点卷(电商)",
             "王者4笔Q钱点卷（电商）",
