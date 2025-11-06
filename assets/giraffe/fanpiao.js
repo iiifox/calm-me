@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
-// @version      0.4.4
-// @description  保留原样式和逻辑，优化可维护性，颜色区分账号/金额/传码次数，标题加大加粗
+// @version      1.0.0
+// @description  长颈鹿破风险，自动判断捕获、风险替换、传码、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start
-// @updateURL    https://iiifox.me/assets/giraffe/ceshichuanma_new.js
-// @downloadURL  https://iiifox.me/assets/giraffe/ceshichuanma_new.js
+// @updateURL    https://iiifox.me/assets/giraffe/fanpiao.js
+// @downloadURL  https://iiifox.me/assets/giraffe/fanpiao.js
 // @connect      081w5a8cim.top
 // @connect      8w0m6rjg3l.top
 // ==/UserScript==
@@ -81,7 +81,6 @@
             }
 
             if (targetUrl) {
-                console.log('传码url:', targetUrl); // ✅ 输出
                 let successCount = 0;
                 const requests = Array.from({length: times}).map(() => new Promise(resolve => {
                     const item = structuredClone(responseJSON);
@@ -148,7 +147,6 @@
 
             const xhr = this;
             xhr._amt = getAmtFromFormData(args[0]);
-            console.log('解析到 amt: ', xhr._amt);
             // 监听 readystate 事件
             const origOnreadystatechange = xhr.onreadystatechange;
             xhr.onreadystatechange = function () {
