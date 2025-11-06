@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         长颈鹿自动传码（完整重构+三色区分+标题优化）
+// @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
 // @version      0.4.0
 // @description  保留原样式和逻辑，优化可维护性，颜色区分账号/金额/传码次数，标题加大加粗
@@ -21,7 +21,7 @@
     const LOCAL_CAPTURE_KEY = 'capture_pay_response';
 
     // ---------------- 工具函数 ----------------
-    const storage = {
+    const captureStorage = {
         get: () => {
             try {
                 return localStorage.getItem(LOCAL_CAPTURE_KEY);
@@ -30,19 +30,23 @@
             }
         },
         set: val => {
+            localStorage.setItem(LOCAL_CAPTURE_KEY, val);
+            captureStorage.updateState(true)
+        },
+        clear: () => {
             try {
-                localStorage.setItem(LOCAL_CAPTURE_KEY, val);
+                localStorage.removeItem(LOCAL_CAPTURE_KEY);
+                captureStorage.updateState(false)
                 return true;
             } catch {
                 return false;
             }
         },
-        clear: () => {
-            try {
-                localStorage.removeItem(LOCAL_CAPTURE_KEY);
-                return true;
-            } catch {
-                return false;
+        updateState: isCaptured => {
+            const el = document.getElementById('captureStatus');
+            if (el) {
+                el.textContent = isCaptured ? '✔ 已捕获' : '✗ 未捕获';
+                el.style.color = isCaptured ? '#4CAF50' : '#ff4444';
             }
         }
     };
@@ -71,35 +75,79 @@
     };
 
     // ---------------- 自动传码 ----------------
-    function handleResponse(responseJSON) {
-        const config = GM_getValue('giraffeConfig', null);
-        if (!config) return;
+    function handleResponse(responseJSON, amt = null) {
+        const savedConfig = GM_getValue('giraffeConfig', null);
+        if (!savedConfig) return;
 
-        let successCount = 0;
-        const requests = Array.from({length: config.arrayLength ?? 3}).map(() => new Promise(resolve => {
-            const item = structuredClone(responseJSON);
-            item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
-            GM_xmlhttpRequest({
-                method: 'POST',
-                url: config.requestUrl ?? '',
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                data: encodeItem(item),
-                onload: () => {
-                    successCount++;
-                    resolve();
-                },
-                onerror: () => resolve()
-            });
-        }));
+        const autoSend = savedConfig.autoSend ?? false;
+        const times = savedConfig.times ?? 3;
+        const accounts = savedConfig.accounts ?? {};
 
-        Promise.all(requests).then(() => showToast(`传码完成：成功 ${successCount} 次`, 'success'));
+        if (autoSend && amt !== null) {
+            let targetUrl = null;
+            for (const [amountStr, accountUrl] of Object.entries(accounts)) {
+                const amount = Number(amountStr);
+                // 差额小于 60
+                if (Math.abs(amount - amt) < 60) {
+                    targetUrl = accountUrl;
+                    break;
+                }
+            }
+
+            if (targetUrl) {
+                let successCount = 0;
+                const requests = Array.from({length: times}).map(() => new Promise(resolve => {
+                    const item = structuredClone(responseJSON);
+                    item.qqwallet_info.qqwallet_tokenId += '&' + rand4();
+                    GM_xmlhttpRequest({
+                        method: 'POST',
+                        url: targetUrl,
+                        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                        data: encodeItem(item),
+                        onload: () => {
+                            successCount++;
+                            resolve()
+                        },
+                        onerror: () => resolve()
+                    });
+                }));
+                Promise.all(requests).then(() => showToast(`传码完成：成功 ${successCount} 次`, 'success'));
+            }
+        }
     }
 
-    // ---------------- XHR 拦截 ----------------
+
+    // ---------------- 拦截 ----------------
     const TARGET_PATHS = ["/web_save", "/mobile_save"];
     const isTargetUrl = url => TARGET_PATHS.some(path => url.includes(path));
 
+    const isCaptureUrl = () => {
+        try {
+            const pf = new URL(window.location.href).searchParams.get('pf');
+            const match = pf?.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
+            return !pf || !match || match[1] !== match[2];
+        } catch {
+            return false;
+        }
+    };
+
+    function getAmtFromFormData(body) {
+        try {
+            // body 是 send() 传入的字符串
+            const params = new URLSearchParams(body);
+            const wcp = params.get('wcp'); // 形如 "type=CNY&amt=123500"
+            if (!wcp) return null;
+
+            const wcpParams = new URLSearchParams(wcp);
+            const amt = wcpParams.get('amt');
+            return amt ? Math.floor(Number(amt) / 100) : null; // 除以100得到整数
+        } catch {
+            return null;
+        }
+    }
+
     function setupAPICapture() {
+        // ---------------- XHR 拦截 ----------------
         const origOpen = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function (method, url, ...args) {
             this._isTarget = isTargetUrl(url);
@@ -111,33 +159,94 @@
             if (!this._isTarget) return origSend.apply(this, args);
 
             const xhr = this;
+            xhr._amt = getAmtFromFormData(args[0]);
+            // 监听 readystate 事件
             const origOnreadystatechange = xhr.onreadystatechange;
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) handleXhr(xhr);
                 if (origOnreadystatechange) origOnreadystatechange.apply(xhr, arguments);
             };
-
+            // 监听 onload 事件
             const origOnload = xhr.onload;
             xhr.onload = function () {
                 handleXhr(xhr);
                 if (origOnload) origOnload.apply(xhr, arguments);
             };
-
             return origSend.apply(this, args);
         };
 
         function handleXhr(xhr) {
-            let res;
-            try {
-                res = JSON.parse(xhr.responseText);
-            } catch {
-                return;
-            }
-            if (res.ret === 0 && !xhr._handledXhr) {
-                xhr._handledXhr = true;
-                handleResponse(res);
+            const responseJSON = JSON.parse(xhr.responseText)
+            const ret = responseJSON.ret;
+            // 捕获非长颈鹿包体验证码响应内容
+            if (isCaptureUrl()) {
+                if (ret === 2022) {
+                    captureStorage.set(JSON.stringify(responseJSON));
+                    showToast('✅ 已捕获非长颈鹿包体验证码响应内容 (xhr)');
+                }
+            } else {
+                // 将长颈鹿风险验证替换为捕获的响应内容
+                if (ret === 1138) {
+                    const captured = captureStorage.get();
+                    if (captured) {
+                        Object.defineProperties(xhr, {
+                            responseText: {value: captured, writable: false, configurable: true},
+                            response: {value: captured, writable: false, configurable: true}
+                        });
+                        showToast('🔄 已将风险验证替换为验证码', 'warning');
+                        captureStorage.clear();
+                    } else {
+                        showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
+                    }
+                } else if (ret === 0) {
+                    if (!xhr._headlerXhr) {
+                        xhr._headlerXhr = true
+                        handleResponse(responseJSON, xhr._amt);
+                    }
+                }
             }
         }
+
+        // ----------- fetch 拦截 -----------
+        const origFetch = window.fetch;
+        window.fetch = async function (input, init) {
+            const url = typeof input === 'string' ? input : input?.url;
+            let resp = await origFetch(input, init);
+            // fetch 响应是流 → clone 一份给 handleResponseWrapper
+            if (isTargetUrl(url)) {
+                const cloned = resp.clone();
+                const text = await cloned.text();
+                try {
+                    const json = JSON.parse(text);
+                    const ret = json.ret
+                    if (isCaptureUrl()) {
+                        if (ret === 2022) {
+                            captureStorage.set(JSON.stringify(json));
+                            showToast('✅ 已捕获非长颈鹿包体验证码响应内容 (fetch)');
+                        }
+                    } else {
+                        if (ret === 1138) {
+                            const captured = captureStorage.get();
+                            if (captured) {
+                                showToast('🔄 已将风险验证替换为验证码', 'warning');
+                                captureStorage.clear();
+                                return new Response(captured, {
+                                    status: resp.status,
+                                    statusText: resp.statusText,
+                                    headers: resp.headers
+                                });
+                            }
+                            showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
+                        } else if (ret === 0) {
+                            handleResponse(json, getAmtFromFormData(init.body));
+                        }
+                    }
+                } catch (e) {
+                    console.error('fetch解析失败', e);
+                }
+            }
+            return resp;
+        };
     }
 
     // ---------------- 面板 ----------------
@@ -181,12 +290,12 @@
                     </label>
                     <label style="font-size:12px; display:flex; align-items:center; gap:4px;">
                         传码次数
-                        <input type="number" id="defaultArrayLength" value="${GM_getValue('arrayLength', 3)}" style="width:40px; font-size:12px; font-weight:bold; color:#00FF00; background:#333; border:1px solid #555; border-radius:3px; text-align:center;">
+                        <input type="number" id="defaultTimes" value="${GM_getValue('times', 3)}" style="width:40px; font-size:12px; font-weight:bold; color:#00FF00; background:#333; border:1px solid #555; border-radius:3px; text-align:center;">
                     </label>
                 </div>
             </div>
             <div id="accountTable" style="margin-bottom:6px; display:none;"></div>
-            <div style="display:flex;justify-content:space-between;align-items:center; display:none;">
+            <div style="justify-content:space-between;align-items:center; display:none;">
                 <button id="addRowBtn" style="background:#2196F3;color:white;border:none;padding:4px 6px;border-radius:3px;cursor:pointer;font-size:12px;">＋ 添加账号</button>
                 <button id="saveAccountsBtn" style="background:#4CAF50;color:white;border:none;padding:4px 6px;border-radius:3px;font-size:12px;">💾 保存配置</button>
             </div>
@@ -196,7 +305,7 @@
         // 折叠按钮
         const collapseBtn = document.createElement('button');
         collapseBtn.textContent = '⇕';
-        collapseBtn.title = '折叠/展开面板';
+        collapseBtn.title = '折叠/展开账号配置面板';
         collapseBtn.style.cssText = 'background:#FF9800;color:white;border:none;padding:2px 6px;border-radius:3px;cursor:pointer;font-size:12px;margin-left:6px;';
         panel.querySelector('#panelHeader').appendChild(collapseBtn);
 
@@ -261,39 +370,31 @@
         const savedConfig = GM_getValue('giraffeConfig', null);
         if (savedConfig) {
             panel.querySelector('#autoSendToggle').checked = savedConfig.autoSend ?? true;
-            panel.querySelector('#defaultArrayLength').value = savedConfig.arrayLength ?? 3;
+            panel.querySelector('#defaultTimes').value = savedConfig.times ?? 3;
             accountTable.innerHTML = '';
-            for (const [amount, account] of Object.entries(savedConfig.accounts ?? {})) addAccountRow(account, amount);
+            for (const [amount, accountUrl] of Object.entries(savedConfig.accounts ?? {})) addAccountRow(accountUrl, amount);
         }
 
         panel.querySelector('#saveAccountsBtn').addEventListener('click', () => {
             const autoSend = panel.querySelector('#autoSendToggle').checked;
-            const arrayLength = Number(panel.querySelector('#defaultArrayLength').value);
+            const times = Number(panel.querySelector('#defaultTimes').value);
             const accounts = {};
             accountTable.querySelectorAll('div').forEach(row => {
                 const inputs = row.querySelectorAll('input');
-                const account = inputs[0].value.trim();
+                const accountUrl = inputs[0].value.trim();
                 const amount = inputs[1].value.trim();
-                if (account && amount) accounts[amount] = account;
+                if (accountUrl && amount) accounts[amount] = accountUrl;
             });
-            GM_setValue('giraffeConfig', {autoSend, arrayLength, accounts});
-            alert('配置已保存，同域新开窗口也可读取');
+            GM_setValue('giraffeConfig', {autoSend, times, accounts});
+            showToast('配置已保存，同域新开窗口也可读取');
         });
 
         panel.querySelector('#clearCapture').addEventListener('click', () => {
-            storage.clear();
-            updateCaptureStatus(false);
-            alert('已清除捕获内容');
+            captureStorage.clear();
+            showToast('已清除捕获内容', "warning");
         });
     }
 
-    const updateCaptureStatus = captured => {
-        const el = document.getElementById('captureStatus');
-        if (el) {
-            el.textContent = captured ? '✔ 已捕获' : '✗ 未捕获';
-            el.style.color = captured ? '#4CAF50' : '#ff4444';
-        }
-    };
 
     window.addEventListener('load', () => {
         createControlPanel();
