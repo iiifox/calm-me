@@ -9,8 +9,8 @@
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start
-// @updateURL    https://iiifox.me/assets/huli/ceshichuanma_new.js
-// @downloadURL  https://iiifox.me/assets/huli/ceshichuanma_new.js
+// @updateURL    https://iiifox.me/assets/giraffe/ceshichuanma_new.js
+// @downloadURL  https://iiifox.me/assets/giraffe/ceshichuanma_new.js
 // @connect      081w5a8cim.top
 // @connect      8w0m6rjg3l.top
 // ==/UserScript==
