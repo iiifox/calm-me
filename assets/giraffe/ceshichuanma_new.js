@@ -95,6 +95,7 @@
             }
 
             if (targetUrl) {
+                console.log(`传码url：${targetUrl} `)
                 let successCount = 0;
                 const requests = Array.from({length: times}).map(() => new Promise(resolve => {
                     const item = structuredClone(responseJSON);
