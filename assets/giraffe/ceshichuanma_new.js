@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
-// @version      0.4.3
+// @version      0.4.4
 // @description  保留原样式和逻辑，优化可维护性，颜色区分账号/金额/传码次数，标题加大加粗
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -31,23 +31,9 @@
         },
         set: val => {
             localStorage.setItem(LOCAL_CAPTURE_KEY, val);
-            captureStorage.updateState(true)
         },
         clear: () => {
-            try {
-                localStorage.removeItem(LOCAL_CAPTURE_KEY);
-                captureStorage.updateState(false)
-                return true;
-            } catch {
-                return false;
-            }
-        },
-        updateState: isCaptured => {
-            const el = document.getElementById('captureStatus');
-            if (el) {
-                el.textContent = isCaptured ? '✔ 已捕获' : '✗ 未捕获';
-                el.style.color = isCaptured ? '#4CAF50' : '#ff4444';
-            }
+            localStorage.removeItem(LOCAL_CAPTURE_KEY);
         }
     };
 
@@ -396,6 +382,14 @@
             captureStorage.clear();
             showToast('已清除捕获内容', "warning");
         });
+
+        function updateStatus() {
+            const captureStatus = panel.querySelector('#captureStatus');
+            captureStatus.textContent = captureStorage.get() ? '✓ 已捕获' : '✗ 未捕获';
+            captureStatus.style.color = captureStorage.get() ? '#4CAF50' : '#ff4444';
+        }
+
+        setInterval(updateStatus, 1000);
     }
 
 
