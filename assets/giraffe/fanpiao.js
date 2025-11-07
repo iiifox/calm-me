@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
-// @version      1.0.1
+// @version      1.0.2
 // @description  长颈鹿破风险，自动判断捕获、风险替换、传码、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -182,6 +182,8 @@
                         });
                         showToast('🔄 已将风险验证替换为验证码', 'warning');
                         captureStorage.clear();
+                        // ✅ 记录一下本次用了捕获内容
+                        xhr._usedCaptured = true;
                     } else {
                         showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                     }
@@ -189,6 +191,11 @@
                     if (!xhr._headlerXhr) {
                         xhr._headlerXhr = true
                         handleResponse(responseJSON, xhr._amt);
+                        // ✅ 如果是上一次用了捕获内容，现在再清除
+                        if (xhr._usedCaptured) {
+                            captureStorage.clear();
+                            showToast('✅ 验证码已使用完，捕获内容已清空');
+                        }
                     }
                 }
             }
@@ -216,7 +223,8 @@
                             const captured = captureStorage.get();
                             if (captured) {
                                 showToast('🔄 已将风险验证替换为验证码', 'warning');
-                                captureStorage.clear();
+                                // 标记一下，稍后成功再清除
+                                init._usedCaptured = true;
                                 return new Response(captured, {
                                     status: resp.status,
                                     statusText: resp.statusText,
@@ -226,6 +234,10 @@
                             showToast('🔄 请先捕获验证码请求再来过风险验证', 'error');
                         } else if (ret === 0) {
                             handleResponse(json, getAmtFromFormData(init?.body || ''));
+                            if (init._usedCaptured) {
+                                captureStorage.clear();
+                                showToast('✅ 验证码已使用完，捕获内容已清空');
+                            }
                         }
                     }
                 } catch (e) {
@@ -373,7 +385,7 @@
                 if (accountUrl && amount) accounts[amount] = accountUrl;
             });
             GM_setValue('giraffeConfig', {autoSend, times, accounts});
-            showToast('配置已保存，同域新开窗口也可读取');
+            showToast('配置信息已保存', "success");
         });
 
         panel.querySelector('#clearCapture').addEventListener('click', () => {
@@ -390,11 +402,11 @@
         setInterval(updateStatus, 1000);
     }
 
-    if (window.top === window.self) {
+    // if (window.top === window.self) {
         window.addEventListener('load', () => {
             createControlPanel();
             setupAPICapture();
         });
-    }
+    // }
 
 })();
