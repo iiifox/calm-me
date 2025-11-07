@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿破风险
 // @namespace    https://iiifox.me/
-// @version      1.0.0
+// @version      1.0.1
 // @description  长颈鹿破风险，自动判断捕获、风险替换、传码、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -390,10 +390,11 @@
         setInterval(updateStatus, 1000);
     }
 
-
-    window.addEventListener('load', () => {
-        createControlPanel();
-        setupAPICapture();
-    });
+    if (window.top === window.self) {
+        window.addEventListener('load', () => {
+            createControlPanel();
+            setupAPICapture();
+        });
+    }
 
 })();
