@@ -38,7 +38,7 @@ function parseXd(lines, profit) {
         }
 
         // 渠道行匹配
-        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)(?:，|$)/);
+        const m = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)\s*(?:，|$)/);
         if (m && currentTimeKey) {
             let channel = m[1].toUpperCase();
             const matchedKey = Object.keys(specialMap).find(k => channel.includes(k));
@@ -79,15 +79,6 @@ function parseXd(lines, profit) {
         });
     });
     xd.template = templateItems.join('\n');
-
-    // // **按渠道优先** 生成 template（先遍历 channel 再遍历 time）
-    // const templateItems = [];
-    // channelsOrder.forEach(channel => {
-    //     timeOrder.forEach(time => {
-    //         templateItems.push(`${channel}${time}/${xd[time][channel]}`);
-    //     });
-    // });
-    // xd.template = templateItems.join('\n');
 
     return xd;
 }
