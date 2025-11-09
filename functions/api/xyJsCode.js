@@ -14,27 +14,8 @@ export async function onRequest({request}) {
         const date = data.date;
         
         // === 只保留变化的字段 ===
-        const xyFull = data.xy;
-        const timeKeys = Object.keys(xyFull).sort();
-        const xy = {};
-        for (let i = 0; i < timeKeys.length; i++) {
-            const key = timeKeys[i];
-            const curr = xyFull[key];
-            if (i === 0) {
-                xy[key] = curr;
-            } else {
-                const prev = xyFull[timeKeys[i - 1]];
-                const diff = {};
-                for (const channel in curr) {
-                    if (curr[channel] !== prev[channel]) {
-                        diff[channel] = curr[channel];
-                    }
-                }
-                if (Object.keys(diff).length > 0) {
-                    xy[key] = diff;
-                }
-            }
-        }
+        const timeKeys = Object.keys(data.xy).sort();
+        const xy = data.xy;
 
         // speed_mode 映射表
         const modeMap = {
