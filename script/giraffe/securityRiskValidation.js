@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name         长颈鹿破风险
+// @name         长颈鹿过安全风险验证
 // @namespace    https://iiifox.me/
-// @version      1.1.1
-// @description  长颈鹿破风险，自动判断捕获、风险替换、传码、qb破风险（qb暂时没写）
+// @version      1.0.0
+// @description  长颈鹿过安全风险验证。自动判断捕获、风险替换、传码、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start
-// @updateURL    https://iiifox.me/script/giraffe/riskBypass.js
-// @downloadURL  https://iiifox.me/script/giraffe/riskBypass.js
+// @updateURL    https://iiifox.me/script/giraffe/securityRiskValidation.js
+// @downloadURL  https://iiifox.me/script/giraffe/securityRiskValidation.js
 // @connect      081w5a8cim.top
 // @connect      8w0m6rjg3l.top
 // ==/UserScript==
