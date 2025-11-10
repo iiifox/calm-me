@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         长颈鹿破风险
+// @name         长颈鹿过安全风险验证
 // @namespace    https://iiifox.me/
-// @version      1.1.1
-// @description  长颈鹿破风险，自动判断捕获、风险替换、传码、qb破风险（qb暂时没写）
+// @version      1.1.2
+// @description  长颈鹿过安全风险验证，自动判断捕获、风险替换、传码小刀、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
@@ -113,7 +113,7 @@
         try {
             const pf = new URL(window.location.href).searchParams.get('pf');
             const match = pf?.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
-            return !pf || !match || match[1] !== match[2];
+            return !pf || !match || match[1] !== match[2] || !match[1].startsWith('1044');
         } catch {
             return false;
         }
