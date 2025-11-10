@@ -106,7 +106,7 @@
 
 
     // ---------------- 拦截 ----------------
-    const TARGET_PATHS = ["/web_save", "/mobile_save"];
+    const TARGET_PATHS = ["/web_save", "/mobile_save", "mobile_save_goods"];
     const isTargetUrl = url => TARGET_PATHS.some(path => url.includes(path));
 
     const isCaptureUrl = () => {
