@@ -31,6 +31,7 @@ export async function onRequest({request}) {
             "微信通额": "bz",
             "微信固额": "ge",
             "微信小额": "xe",
+            "微信点额": "de",
             "微信速额": "se",
             "微信扫码": "qr"
         };
