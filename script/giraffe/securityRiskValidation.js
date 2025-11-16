@@ -106,14 +106,14 @@
 
 
     // ---------------- 拦截 ----------------
-    const TARGET_PATHS = ["/web_save", "/mobile_save", "mobile_save_goods"];
+    const TARGET_PATHS = ["/web_save", "/mobile_save"];
     const isTargetUrl = url => TARGET_PATHS.some(path => url.includes(path));
 
     const isCaptureUrl = () => {
         try {
             const pf = new URL(window.location.href).searchParams.get('pf');
             const match = pf?.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
-            return !pf || !match || match[1] !== match[2];
+            return !pf || !match || match[1] !== match[2] || !match[1].startsWith('1044');
         } catch {
             return false;
         }
