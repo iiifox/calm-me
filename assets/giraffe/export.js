@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         长颈鹿导出代理统计
+// @name         长颈鹿导出(前缀为第一个字符)
 // @namespace    https://iiifox.me/
 // @version      1.0.0
 // @description  导出长颈鹿代理统计数据。支持前缀筛选导出与前缀汇总导出（下浮%）
