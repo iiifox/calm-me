@@ -251,7 +251,7 @@
 
         panel.innerHTML = `
             <div style="display:flex;justify-content:flex-start;align-items:center;margin-bottom:6px;" id="panelHeader">
-                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">破风险、钱包传码</span>
+                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">过安全验证(暂取消包体判断)、钱包传码</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" id="panelCaptureStatus">
                 <div style="display:flex;align-items:center;gap:6px;font-weight:bold;">
