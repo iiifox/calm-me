@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         长颈鹿过安全风险验证
 // @namespace    https://iiifox.me/
-// @version      1.1.2
-// @description  长颈鹿过安全风险验证，自动判断捕获、风险替换、传码小刀、qb破风险（qb暂时没写）
+// @version      1.2.0
+// @description  长颈鹿过安全风险验证，风险替换、传码小刀、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
@@ -109,15 +109,6 @@
     const TARGET_PATHS = ["/web_save", "/mobile_save"];
     const isTargetUrl = url => TARGET_PATHS.some(path => url.includes(path));
 
-    const isCaptureUrl = () => {
-        try {
-            const pf = new URL(window.location.href).searchParams.get('pf');
-            const match = pf?.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
-            return !pf || !match || match[1] !== match[2] || !match[1].startsWith('1044');
-        } catch {
-            return false;
-        }
-    };
 
     function getAmtFromFormData(body) {
         try {
@@ -167,12 +158,9 @@
         function handleXhr(xhr) {
             const responseJSON = JSON.parse(xhr.responseText)
             const ret = responseJSON.ret;
-            // 捕获非长颈鹿包体验证码响应内容
-            if (isCaptureUrl()) {
-                if (ret === 2022) {
-                    captureStorage.set(JSON.stringify(responseJSON));
-                    showToast('✅ 已捕获非长颈鹿包体验证码响应内容 (xhr)');
-                }
+            if (ret === 2022) {
+                captureStorage.set(JSON.stringify(responseJSON));
+                showToast('✅ 已捕获验证码响应内容 (xhr)');
             } else {
                 // 将长颈鹿风险验证替换为捕获的响应内容
                 if (ret === 1138) {
@@ -208,11 +196,9 @@
                 try {
                     const json = JSON.parse(text);
                     const ret = json.ret
-                    if (isCaptureUrl()) {
-                        if (ret === 2022) {
-                            captureStorage.set(JSON.stringify(json));
-                            showToast('✅ 已捕获非长颈鹿包体验证码响应内容 (fetch)');
-                        }
+                    if (ret === 2022) {
+                        captureStorage.set(JSON.stringify(json));
+                        showToast('✅ 已捕获验证码响应内容 (fetch)');
                     } else {
                         if (ret === 1138) {
                             const captured = captureStorage.get();
@@ -265,7 +251,7 @@
 
         panel.innerHTML = `
             <div style="display:flex;justify-content:flex-start;align-items:center;margin-bottom:6px;" id="panelHeader">
-                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">自动识别捕获、破风险、钱包传码</span>
+                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">破风险、钱包传码</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" id="panelCaptureStatus">
                 <div style="display:flex;align-items:center;gap:6px;font-weight:bold;">
@@ -400,3 +386,4 @@
     });
 
 })();
+
