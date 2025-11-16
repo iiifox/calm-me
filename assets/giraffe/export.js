@@ -14,7 +14,7 @@
     'use strict';
 
     const discountMap = {
-        "直冲": {channels: ["秒拉"], value: 0.105},
+        "直冲": {channels: ["秒拉"], value: 0.095},
         "慢充": {
             channels: [
                 "王者Q钱点卷(电商)",
