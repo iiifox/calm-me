@@ -70,7 +70,7 @@ export async function onRequest({request}) {
 
         // 生成 JavaScript 文本
         const jsCode = `
-fetch("https://mgr.k7m9x2n.com/api/v1/system/qr-dealers/reckon/configs", {
+fetch("https://mgr.bo5ka6.com/api/v1/system/qr-dealers/reckon/configs", {
     method: "POST",
     body: JSON.stringify({
         id: null,
