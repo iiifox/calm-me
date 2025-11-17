@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿pizi1注入
 // @namespace    https://iiifox.me/
-// @version      0.0.1
+// @version      1.0.0
 // @description  狐狸登录页面注入pizi1账号密码谷歌验证码
 // @author       iiifox
 // @match        http://121.43.147.96:8369/WebLogin.aspx
@@ -295,7 +295,7 @@
         if (userInput) userInput.value = "pizi1";
 
         const passInput = document.querySelector('input[id*="pass"]');
-        if (passInput) passInput.value = "123456";
+        if (passInput) passInput.value = "654321";
 
         startTotpPanel(displayElements, secret);
     }
