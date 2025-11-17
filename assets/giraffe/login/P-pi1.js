@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         长颈鹿A-shunzhu注入
+// @name         长颈鹿P-pi1注入
 // @namespace    https://iiifox.me/
 // @version      0.0.1
 // @description  狐狸登录页面注入P-pi1账号密码谷歌验证码
