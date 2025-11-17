@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         提取狐狸代付链接
 // @namespace    https://iiifox.me/
-// @version      3.0
+// @version      4.0
 // @description  打开狐狸直冲链接时，捕获代付链接并提供按钮点击复制功能，支持 http 环境，带 Toast 提示（右下角），避免假复制问题。
 // @author       iiifox
 // @match        *://104.143.33.20/*
@@ -77,7 +77,7 @@
 
         const btn = document.createElement('button');
         btn.id = 'df-copy-btn';
-        btn.textContent = '复制代付链接';
+        btn.textContent = '复制代付链接(不信谣不造谣，15号13%全结清的)';
         Object.assign(btn.style, {
             position: 'fixed',
             top: '20px',
