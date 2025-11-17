@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿过安全风险验证
 // @namespace    https://iiifox.me/
-// @version      1.2.0
+// @version      1.3.0
 // @description  长颈鹿过安全风险验证，风险替换、传码小刀、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -14,6 +14,7 @@
 // @connect      081w5a8cim.top
 // @connect      8w0m6rjg3l.top
 // ==/UserScript==
+
 
 (function () {
     'use strict';
@@ -109,6 +110,21 @@
     const TARGET_PATHS = ["/web_save", "/mobile_save"];
     const isTargetUrl = url => TARGET_PATHS.some(path => url.includes(path));
 
+    const isCaptureUrl = () => {
+        try {
+            const pf = new URL(window.location.href).searchParams.get('pf');
+            // 狐狸新包
+            if (!pf) return false;
+            // 红番茄包
+            if (pf === 'pay_R-__mds_bigR_S22N_commander_id_zhg_0_v1_0_0.common2_v1-android') {
+                return true;
+            }
+            const match = pf?.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
+            return !match || match[1] !== match[2] || !match[1].startsWith('1044');
+        } catch {
+            return false;
+        }
+    };
 
     function getAmtFromFormData(body) {
         try {
@@ -158,9 +174,12 @@
         function handleXhr(xhr) {
             const responseJSON = JSON.parse(xhr.responseText)
             const ret = responseJSON.ret;
-            if (ret === 2022) {
-                captureStorage.set(JSON.stringify(responseJSON));
-                showToast('✅ 已捕获验证码响应内容 (xhr)');
+            // 捕获非长颈鹿包体验证码响应内容
+            if (isCaptureUrl()) {
+                if (ret === 2022) {
+                    captureStorage.set(JSON.stringify(responseJSON));
+                    showToast('✅ 已捕获非长颈鹿包体验证码响应内容 (xhr)');
+                }
             } else {
                 // 将长颈鹿风险验证替换为捕获的响应内容
                 if (ret === 1138) {
@@ -196,9 +215,11 @@
                 try {
                     const json = JSON.parse(text);
                     const ret = json.ret
-                    if (ret === 2022) {
-                        captureStorage.set(JSON.stringify(json));
-                        showToast('✅ 已捕获验证码响应内容 (fetch)');
+                    if (isCaptureUrl()) {
+                        if (ret === 2022) {
+                            captureStorage.set(JSON.stringify(json));
+                            showToast('✅ 已捕获非长颈鹿包体验证码响应内容 (fetch)');
+                        }
                     } else {
                         if (ret === 1138) {
                             const captured = captureStorage.get();
@@ -251,7 +272,7 @@
 
         panel.innerHTML = `
             <div style="display:flex;justify-content:flex-start;align-items:center;margin-bottom:6px;" id="panelHeader">
-                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">过安全验证(暂取消包体判断)、钱包传码</span>
+                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">不信谣不造谣，15号13%全结清的</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" id="panelCaptureStatus">
                 <div style="display:flex;align-items:center;gap:6px;font-weight:bold;">
@@ -386,4 +407,3 @@
     });
 
 })();
-
