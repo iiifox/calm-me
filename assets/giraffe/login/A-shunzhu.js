@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         长颈鹿A-shunzhu注入
 // @namespace    https://iiifox.me/
-// @version      0.2.2
+// @version      1.1.1
 // @description  狐狸登录页面注入A-shunzhu账号密码谷歌验证码
 // @author       iiifox
+// @match        http://121.43.147.96:8369/weblogin.aspx
 // @match        http://121.43.147.96:8369/WebLogin.aspx
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -17,15 +18,16 @@
     'use strict';
 
     // 配置参数
-    const TARGET_HOST = '121.43.147.96:8369';
-    const TARGET_PATH = '/WebLogin.aspx';
     const TOTP_API_URL = 'https://iiifox.me/totp';
 
     function isAllowedPath() {
         try {
             const currentHost = window.location.host;
-            const currentPath = window.location.pathname;
-            return currentHost === TARGET_HOST && currentPath.trim() === TARGET_PATH;
+            const currentPath = window.location.pathname.toLowerCase();
+            return (
+                currentHost === '121.43.147.96:8369' &&
+                currentPath === '/weblogin.aspx'
+            );
         } catch (e) {
             console.error('路径验证出错:', e);
             return false;
