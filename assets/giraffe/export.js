@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         长颈鹿导出(前缀为第一个字符)
 // @namespace    https://iiifox.me/
-// @version      1.0.0
+// @version      2.0.0
 // @description  导出长颈鹿代理统计数据。支持前缀筛选导出与前缀汇总导出（下浮%）
-// @match        *://121.43.147.96:8369/dltj.aspx*
+// @match        *://116.62.161.34:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
 // @downloadURL  https://iiifox.me/assets/giraffe/export.js
 // @updateURL    https://iiifox.me/assets/giraffe/export.js
