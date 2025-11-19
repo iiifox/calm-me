@@ -1,12 +1,10 @@
 // ==UserScript==
 // @name         长颈鹿pizi1注入
 // @namespace    https://iiifox.me/
-// @version      1.2.0
+// @version      2.0.0
 // @description  狐狸登录页面注入pizi1账号密码谷歌验证码
 // @author       iiifox
-// @match        http://121.43.147.96:8369/weblogin.aspx
-// @match        http://121.43.147.96:8369/WebLogin.aspx
-// @match        http://121.43.147.96:8369/Weblogin.aspx
+// @match        http://116.62.161.34:8369/weblogin.aspx
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
@@ -26,7 +24,7 @@
             const currentHost = window.location.host;
             const currentPath = window.location.pathname.toLowerCase();
             return (
-                currentHost === '121.43.147.96:8369' &&
+                currentHost === '116.62.161.34:8369' &&
                 currentPath === '/weblogin.aspx'
             );
         } catch (e) {
