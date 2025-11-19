@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         长颈鹿导出代理统计
+// @name         长颈鹿导出(前缀为第一个减号前部分)
 // @namespace    https://iiifox.me/
-// @version      3.1.1
+// @version      3.1.2
 // @description  导出长颈鹿代理统计数据。支持前缀筛选导出与前缀汇总导出（下浮%）
-// @match        *://121.43.147.96:8369/dltj.aspx*
+// @match        *://116.62.161.34:8369/dltj.aspx*
 // @grant        GM_xmlhttpRequest
 // @downloadURL  https://iiifox.me/js/huli/export.js
 // @updateURL    https://iiifox.me/js/huli/export.js
