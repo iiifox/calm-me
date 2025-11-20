@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿过安全风险验证
 // @namespace    https://iiifox.me/
-// @version      1.3.0
+// @version      1.3.1
 // @description  长颈鹿过安全风险验证，风险替换、传码小刀、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -114,7 +114,7 @@
         try {
             const pf = new URL(window.location.href).searchParams.get('pf');
             // 狐狸新包
-            if (!pf) return false;
+            if (!pf || pf === 'vip_m-__mds_default-html5') return false;
             // 红番茄包
             if (pf === 'pay_R-__mds_bigR_S22N_commander_id_zhg_0_v1_0_0.common2_v1-android') {
                 return true;
