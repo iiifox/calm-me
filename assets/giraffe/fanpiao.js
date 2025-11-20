@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         长颈鹿过安全风险验证
 // @namespace    https://iiifox.me/
-// @version      1.3.1
+// @version      1.3.2
 // @description  长颈鹿过安全风险验证，风险替换、传码小刀、qb破风险（qb暂时没写）
 // @author       iiifox
 // @match        *://pay.qq.com/*
@@ -272,7 +272,7 @@
 
         panel.innerHTML = `
             <div style="display:flex;justify-content:flex-start;align-items:center;margin-bottom:6px;" id="panelHeader">
-                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">不信谣不造谣，15号13%全结清的</span>
+                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">长颈鹿过安全风险验证(自动识别包体)</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" id="panelCaptureStatus">
                 <div style="display:flex;align-items:center;gap:6px;font-weight:bold;">
