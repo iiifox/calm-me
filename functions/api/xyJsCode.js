@@ -74,7 +74,7 @@ export async function onRequest({request}) {
 
         // 生成 JavaScript 文本
         const jsCode =
-        `fetch("${xyWeb}/api/v1/system/qr-dealers/reckon/configs",{method:"POST",body:JSON.stringify({id:null,date:"${date}",rateConfigs:${JSON.stringify(rateConfigs)})})
+        `fetch("${xyWeb}/api/v1/system/qr-dealers/reckon/configs",{method:"POST",body:JSON.stringify({id:null,date:"${date}",rateConfigs:${JSON.stringify(rateConfigs)}})})
         .then(r=>r.json())
         .then(d=>console.log(d))
         .catch(e=>console.error("请求失败:",e));`;
