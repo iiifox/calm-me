@@ -1,8 +1,12 @@
 export async function onRequest({request}) {
     try {
+        // 读取 xyWeb (动态域名)
+        const hyper = await fetch(new URL("/config/hyperlink.json", request.url));
+        const hyperJson = await hyper.json();
+        const xyWeb = hyperJson.xyWeb; 
+        
         const url = new URL(request.url);
         const profit = url.searchParams.get("profit")
-
         let discountUrl = '/api/discount';
         if (profit) {
             discountUrl += `?profit=${encodeURIComponent(profit)}`;
@@ -69,19 +73,11 @@ export async function onRequest({request}) {
             }));
 
         // 生成 JavaScript 文本
-        const jsCode = `
-fetch("https://mgr.p7v8q3r.com/api/v1/system/qr-dealers/reckon/configs", {
-    method: "POST",
-    body: JSON.stringify({
-        id: null,
-        date: "${date}",
-        rateConfigs: ${JSON.stringify(rateConfigs, null, 4)}
-    })
-})
-.then(res => res.json())
-.then(data => console.log(data))
-.catch(err => console.error("请求失败:", err));
-`.trim();
+        const jsCode =
+        `fetch("${xyWeb}/api/v1/system/qr-dealers/reckon/configs",{method:"POST",body:JSON.stringify({id:null,date:"${date}",rateConfigs:${JSON.stringify(rateConfigs)})})
+        .then(r=>r.json())
+        .then(d=>console.log(d))
+        .catch(e=>console.error("请求失败:",e));`;
 
         // 返回纯文本
         return new Response(jsCode, {
