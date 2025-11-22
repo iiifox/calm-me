@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         提取长颈鹿代付链接
 // @namespace    https://iiifox.me/
-// @version      1.1.2
+// @version      1.1.3
 // @description  打开长颈鹿直冲链接时，捕获代付链接并提供按钮点击复制功能
 // @author       iiifox
 // @match        *://38.47.218.60/*
@@ -76,7 +76,7 @@
 
         const btn = document.createElement('button');
         btn.id = 'df-copy-btn';
-        btn.textContent = '复制代付链接(不信谣，13%返利全结清)';
+        btn.textContent = '复制代付链接';
         Object.assign(btn.style, {
             position: 'fixed',
             top: '20px',
