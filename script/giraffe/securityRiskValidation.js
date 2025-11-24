@@ -112,8 +112,14 @@
     const isCaptureUrl = () => {
         try {
             const pf = new URL(window.location.href).searchParams.get('pf');
+            // 狐狸新包
+            if (!pf || pf === 'vip_m-__mds_default-html5') return false;
+            // 红番茄包
+            if (pf === 'pay_R-__mds_bigR_S22N_commander_id_zhg_0_v1_0_0.common2_v1-android') {
+                return true;
+            }
             const match = pf?.match(/^desktop_m_qq-(\d+)-android-(\d+)-/);
-            return !pf || !match || match[1] !== match[2] || !match[1].startsWith('1044');
+            return !match || match[1] !== match[2] || !match[1].startsWith('1044');
         } catch {
             return false;
         }
@@ -265,7 +271,7 @@
 
         panel.innerHTML = `
             <div style="display:flex;justify-content:flex-start;align-items:center;margin-bottom:6px;" id="panelHeader">
-                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">自动识别捕获、破风险、钱包传码</span>
+                <span style="color:#4CAF50;font-weight:bold; font-size:13px;">长颈鹿过安全风险验证(自动识别包体)</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" id="panelCaptureStatus">
                 <div style="display:flex;align-items:center;gap:6px;font-weight:bold;">
