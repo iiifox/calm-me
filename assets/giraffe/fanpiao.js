@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         长颈鹿过安全风险验证
+// @name         fanpiao
 // @namespace    https://iiifox.me/
-// @version      2.2.2
-// @description  长颈鹿过安全风险验证，风险替换、传码小刀、qb破风险（qb暂时没写）
+// @version      3.0.0
+// @description  fanpiao
 // @author       iiifox
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
