@@ -197,7 +197,7 @@ export async function onRequest({request}) {
     
     let currentSystem = "xd";
     for (const line of lines) {
-        if (/^https?:\/\//i.test(line)) {
+        if (/^[a-z0-9]{8}$/.test(line)) {
             yesterdayPage = line;
             continue;
         }
