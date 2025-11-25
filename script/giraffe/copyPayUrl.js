@@ -3,7 +3,7 @@
 // @namespace    https://luei.me/
 // @version      1.0.0
 // @description  打开长颈鹿直冲链接时，捕获代付链接并提供按钮点击复制功能
-// @author       iiifox
+// @author       luei
 // @match        *://38.47.218.60/*
 // @grant        none
 // @run-at       document-start
