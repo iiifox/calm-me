@@ -348,6 +348,15 @@ function showNotification(message, isError = false, containerId = 'xd-notificati
 }
 
 
+function getRootDomain(hostname) {
+    const parts = hostname.split('.');
+    // 如果是 xxx.yyy.zz 或 xxx.yyy (常见)
+    if (parts.length >= 2) {
+        return parts.slice(-2).join('.');
+    }
+    return hostname;
+}
+
 // 主数据加载逻辑
 async function loadData() {
     await fetchSystemHrefs();
@@ -367,7 +376,9 @@ async function loadData() {
 
         // 设置昨日费率链接
         if (discountData.yesterdayPage) {
-            document.getElementById('yesterday').href = discountData.yesterdayPage;
+            const sub = discountData.yesterdayPage;
+            const root = getRootDomain(window.location.hostname);            
+            document.getElementById('yesterday').href = `https://${sub}.${root}`;
         }
 
         // 动态设置费率展示标题
