@@ -2,7 +2,7 @@
 // @name         长颈鹿过安全风险验证
 // @namespace    https://luei.me/
 // @version      1.0.0
-// @description  长颈鹿过安全风险验证。自动判断捕获、风险替换、传码（目前支持小刀、轻舟）、qb破风险（qb暂时没写）
+// @description  自动判断捕获、风险替换。传码（目前只支持小刀系）、qb破风险（避免自付暂时没写）
 // @author       luei
 // @match        *://pay.qq.com/*
 // @grant        GM_setValue
